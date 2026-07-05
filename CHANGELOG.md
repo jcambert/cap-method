@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.4.0] - 2026-07-05
+
+### Ajouté
+
+- Module 4 complet : **Mes besoins**.
+- LIVRABLE-023 : Google Forms Module 4.
+- LIVRABLE-024 : Google Sheets Module 4.
+- LIVRABLE-025 : Cahier de réflexion Module 4.
+- LIVRABLE-026 : Kit Messenger Module 4.
+- LIVRABLE-027 : Guide accompagnant Module 4.
+- LIVRABLE-028 : Restitution Module 4.
+- README mis à jour avec l'avancement du Module 4.
+
 ## [0.3.0] - 2026-07-05
 
 ### Ajouté
