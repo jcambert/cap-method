@@ -23,7 +23,8 @@ cap-method/
 │   ├── 09_mes_ressources_et_contraintes/
 │   ├── 10_projet_de_vie_et_scenarios/
 │   ├── 11_mon_plan_action/
-│   └── 12_synthese_finale/
+│   ├── 12_synthese_finale/
+│   └── 13_mode_emploi_accompagnant/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -110,6 +111,10 @@ cap-method/
 | LIVRABLE-074 – Kit Messenger clôture | ✅ Terminé |
 | LIVRABLE-075 – Suivi post-CAP | ✅ Terminé |
 | LIVRABLE-076 – Checklist clôture CAP | ✅ Terminé |
+| LIVRABLE-077 – Mode d'emploi accompagnant | ✅ Terminé |
+| LIVRABLE-078 – Roadmap utilisation terrain | ✅ Terminé |
+| LIVRABLE-079 – Checklist préparation accompagnement | ✅ Terminé |
+| LIVRABLE-080 – Modèle dossier participante | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -128,6 +133,7 @@ cap-method/
 | Module 10 – Mon projet de vie et scénarios professionnels | ✅ Complet |
 | Module 11 – Mon plan d'action | ✅ Complet |
 | Synthèse finale CAP | ✅ Complet |
+| Mode d'emploi accompagnant | ✅ Complet |
 
 ## Convention de nommage
 
