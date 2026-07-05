@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.11.0] - 2026-07-05
+
+### Ajouté
+
+- Module 11 complet : **Mon plan d'action**.
+- LIVRABLE-065 : Google Forms Module 11.
+- LIVRABLE-066 : Google Sheets Module 11.
+- LIVRABLE-067 : Cahier de réflexion Module 11.
+- LIVRABLE-068 : Kit Messenger Module 11.
+- LIVRABLE-069 : Guide accompagnant Module 11.
+- LIVRABLE-070 : Restitution Module 11.
+- README mis à jour avec l'avancement du Module 11.
+
 ## [0.10.0] - 2026-07-05
 
 ### Ajouté
