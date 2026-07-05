@@ -2,6 +2,17 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [1.1.0] - 2026-07-05
+
+### Ajouté
+
+- Mode d'emploi accompagnant CAP complet.
+- LIVRABLE-077 : Mode d'emploi accompagnant.
+- LIVRABLE-078 : Roadmap utilisation terrain CAP.
+- LIVRABLE-079 : Checklist préparation accompagnement.
+- LIVRABLE-080 : Modèle dossier participante.
+- README mis à jour avec l'avancement du mode d'emploi accompagnant.
+
 ## [1.0.0] - 2026-07-05
 
 ### Ajouté
