@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.5.0] - 2026-07-05
+
+### Ajouté
+
+- Module 5 complet : **Mes motivations profondes**.
+- LIVRABLE-029 : Google Forms Module 5.
+- LIVRABLE-030 : Google Sheets Module 5.
+- LIVRABLE-031 : Cahier de réflexion Module 5.
+- LIVRABLE-032 : Kit Messenger Module 5.
+- LIVRABLE-033 : Guide accompagnant Module 5.
+- LIVRABLE-034 : Restitution Module 5.
+- README mis à jour avec l'avancement du Module 5.
+
 ## [0.4.0] - 2026-07-05
 
 ### Ajouté
