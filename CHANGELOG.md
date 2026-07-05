@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.9.0] - 2026-07-05
+
+### Ajouté
+
+- Module 9 complet : **Mes ressources et contraintes**.
+- LIVRABLE-053 : Google Forms Module 9.
+- LIVRABLE-054 : Google Sheets Module 9.
+- LIVRABLE-055 : Cahier de réflexion Module 9.
+- LIVRABLE-056 : Kit Messenger Module 9.
+- LIVRABLE-057 : Guide accompagnant Module 9.
+- LIVRABLE-058 : Restitution Module 9.
+- README mis à jour avec l'avancement du Module 9.
+
 ## [0.8.0] - 2026-07-05
 
 ### Ajouté
