@@ -2,17 +2,24 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [1.5.0] - 2026-07-05
+
+### Ajouté
+
+- Pack publication CAP complet.
+- LIVRABLE-095 : Page présentation CAP.
+- LIVRABLE-096 : Avertissement méthodologique.
+- LIVRABLE-097 : Licence utilisation.
+- LIVRABLE-098 : README public amélioré.
+- LIVRABLE-099 : Checklist release GitHub.
+- README mis à jour avec l'avancement du pack publication.
+
 ## [1.4.0] - 2026-07-05
 
 ### Ajouté
 
 - Pack Google Sheets CAP complet.
-- LIVRABLE-090 : Guide création Google Sheets.
-- LIVRABLE-091 : Architecture classeur global CAP.
-- LIVRABLE-092 : Dictionnaire colonnes CAP.
-- LIVRABLE-093 : Checklist recette Google Sheets.
-- LIVRABLE-094 : Tableau de bord suivi CAP.
-- README mis à jour avec l'avancement du pack Google Sheets.
+- LIVRABLE-090 à LIVRABLE-094 ajoutés.
 
 ## [1.3.0] - 2026-07-05
 
