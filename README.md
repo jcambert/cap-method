@@ -19,7 +19,8 @@ cap-method/
 │   ├── 05_mes_motivations_profondes/
 │   ├── 06_mes_competences/
 │   ├── 07_mes_talents/
-│   └── 08_mon_environnement_ideal/
+│   ├── 08_mon_environnement_ideal/
+│   └── 09_mes_ressources_et_contraintes/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -82,6 +83,12 @@ cap-method/
 | LIVRABLE-050 – Kit Messenger Module 8 | ✅ Terminé |
 | LIVRABLE-051 – Guide accompagnant Module 8 | ✅ Terminé |
 | LIVRABLE-052 – Restitution Module 8 | ✅ Terminé |
+| LIVRABLE-053 – Google Forms Module 9 | ✅ Terminé |
+| LIVRABLE-054 – Google Sheets Module 9 | ✅ Terminé |
+| LIVRABLE-055 – Cahier de réflexion Module 9 | ✅ Terminé |
+| LIVRABLE-056 – Kit Messenger Module 9 | ✅ Terminé |
+| LIVRABLE-057 – Guide accompagnant Module 9 | ✅ Terminé |
+| LIVRABLE-058 – Restitution Module 9 | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -96,7 +103,8 @@ cap-method/
 | Module 6 – Mes compétences | ✅ Complet |
 | Module 7 – Mes talents | ✅ Complet |
 | Module 8 – Mon environnement idéal | ✅ Complet |
-| Module 9 – Mes ressources et contraintes | ⬜ À faire |
+| Module 9 – Mes ressources et contraintes | ✅ Complet |
+| Module 10 – Mon projet de vie et scénarios professionnels | ⬜ À faire |
 
 ## Convention de nommage
 
