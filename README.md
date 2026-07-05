@@ -25,122 +25,33 @@ cap-method/
 │   ├── 11_mon_plan_action/
 │   ├── 12_synthese_finale/
 │   ├── 13_mode_emploi_accompagnant/
-│   └── 14_pilote_terrain/
+│   ├── 14_pilote_terrain/
+│   └── 15_google_forms_pack/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
     └── messenger/
 ```
 
-## État d'avancement
+## État d'avancement synthétique
 
-| Livrable | Statut |
+| Bloc | Statut |
 |---|---|
-| LIVRABLE-001 – Guide de bienvenue | ✅ Terminé |
-| LIVRABLE-002 – Google Forms 0 | ✅ Terminé |
-| LIVRABLE-003 – Kit Messenger 0 | ✅ Terminé |
-| LIVRABLE-004 – Carnet CAP | ✅ Terminé |
-| LIVRABLE-005 – Google Forms Module 1 | ✅ Terminé |
-| LIVRABLE-006 – Google Sheets Module 1 | ✅ Terminé |
-| LIVRABLE-007 – Cahier de réflexion Module 1 | ✅ Terminé |
-| LIVRABLE-008 – Kit Messenger Module 1 | ✅ Terminé |
-| LIVRABLE-009 – Guide accompagnant Module 1 | ✅ Terminé |
-| LIVRABLE-010 – Restitution Module 1 | ✅ Terminé |
-| LIVRABLE-011 – Google Forms Module 2 | ✅ Terminé |
-| LIVRABLE-012 – Google Sheets Module 2 | ✅ Terminé |
-| LIVRABLE-013 – Cahier de réflexion Module 2 | ✅ Terminé |
-| LIVRABLE-014 – Kit Messenger Module 2 | ✅ Terminé |
-| LIVRABLE-015 – Guide accompagnant Module 2 | ✅ Terminé |
-| LIVRABLE-016 – Restitution Module 2 | ✅ Terminé |
-| LIVRABLE-017 – Google Forms Module 3 | ✅ Terminé |
-| LIVRABLE-018 – Google Sheets Module 3 | ✅ Terminé |
-| LIVRABLE-019 – Cahier de réflexion Module 3 | ✅ Terminé |
-| LIVRABLE-020 – Kit Messenger Module 3 | ✅ Terminé |
-| LIVRABLE-021 – Guide accompagnant Module 3 | ✅ Terminé |
-| LIVRABLE-022 – Restitution Module 3 | ✅ Terminé |
-| LIVRABLE-023 – Google Forms Module 4 | ✅ Terminé |
-| LIVRABLE-024 – Google Sheets Module 4 | ✅ Terminé |
-| LIVRABLE-025 – Cahier de réflexion Module 4 | ✅ Terminé |
-| LIVRABLE-026 – Kit Messenger Module 4 | ✅ Terminé |
-| LIVRABLE-027 – Guide accompagnant Module 4 | ✅ Terminé |
-| LIVRABLE-028 – Restitution Module 4 | ✅ Terminé |
-| LIVRABLE-029 – Google Forms Module 5 | ✅ Terminé |
-| LIVRABLE-030 – Google Sheets Module 5 | ✅ Terminé |
-| LIVRABLE-031 – Cahier de réflexion Module 5 | ✅ Terminé |
-| LIVRABLE-032 – Kit Messenger Module 5 | ✅ Terminé |
-| LIVRABLE-033 – Guide accompagnant Module 5 | ✅ Terminé |
-| LIVRABLE-034 – Restitution Module 5 | ✅ Terminé |
-| LIVRABLE-035 – Google Forms Module 6 | ✅ Terminé |
-| LIVRABLE-036 – Google Sheets Module 6 | ✅ Terminé |
-| LIVRABLE-037 – Cahier de réflexion Module 6 | ✅ Terminé |
-| LIVRABLE-038 – Kit Messenger Module 6 | ✅ Terminé |
-| LIVRABLE-039 – Guide accompagnant Module 6 | ✅ Terminé |
-| LIVRABLE-040 – Restitution Module 6 | ✅ Terminé |
-| LIVRABLE-041 – Google Forms Module 7 | ✅ Terminé |
-| LIVRABLE-042 – Google Sheets Module 7 | ✅ Terminé |
-| LIVRABLE-043 – Cahier de réflexion Module 7 | ✅ Terminé |
-| LIVRABLE-044 – Kit Messenger Module 7 | ✅ Terminé |
-| LIVRABLE-045 – Guide accompagnant Module 7 | ✅ Terminé |
-| LIVRABLE-046 – Restitution Module 7 | ✅ Terminé |
-| LIVRABLE-047 – Google Forms Module 8 | ✅ Terminé |
-| LIVRABLE-048 – Google Sheets Module 8 | ✅ Terminé |
-| LIVRABLE-049 – Cahier de réflexion Module 8 | ✅ Terminé |
-| LIVRABLE-050 – Kit Messenger Module 8 | ✅ Terminé |
-| LIVRABLE-051 – Guide accompagnant Module 8 | ✅ Terminé |
-| LIVRABLE-052 – Restitution Module 8 | ✅ Terminé |
-| LIVRABLE-053 – Google Forms Module 9 | ✅ Terminé |
-| LIVRABLE-054 – Google Sheets Module 9 | ✅ Terminé |
-| LIVRABLE-055 – Cahier de réflexion Module 9 | ✅ Terminé |
-| LIVRABLE-056 – Kit Messenger Module 9 | ✅ Terminé |
-| LIVRABLE-057 – Guide accompagnant Module 9 | ✅ Terminé |
-| LIVRABLE-058 – Restitution Module 9 | ✅ Terminé |
-| LIVRABLE-059 – Google Forms Module 10 | ✅ Terminé |
-| LIVRABLE-060 – Google Sheets Module 10 | ✅ Terminé |
-| LIVRABLE-061 – Cahier de réflexion Module 10 | ✅ Terminé |
-| LIVRABLE-062 – Kit Messenger Module 10 | ✅ Terminé |
-| LIVRABLE-063 – Guide accompagnant Module 10 | ✅ Terminé |
-| LIVRABLE-064 – Restitution Module 10 | ✅ Terminé |
-| LIVRABLE-065 – Google Forms Module 11 | ✅ Terminé |
-| LIVRABLE-066 – Google Sheets Module 11 | ✅ Terminé |
-| LIVRABLE-067 – Cahier de réflexion Module 11 | ✅ Terminé |
-| LIVRABLE-068 – Kit Messenger Module 11 | ✅ Terminé |
-| LIVRABLE-069 – Guide accompagnant Module 11 | ✅ Terminé |
-| LIVRABLE-070 – Restitution Module 11 | ✅ Terminé |
-| LIVRABLE-071 – Guide synthèse finale | ✅ Terminé |
-| LIVRABLE-072 – Template synthèse participante | ✅ Terminé |
-| LIVRABLE-073 – Grille validation synthèse | ✅ Terminé |
-| LIVRABLE-074 – Kit Messenger clôture | ✅ Terminé |
-| LIVRABLE-075 – Suivi post-CAP | ✅ Terminé |
-| LIVRABLE-076 – Checklist clôture CAP | ✅ Terminé |
-| LIVRABLE-077 – Mode d'emploi accompagnant | ✅ Terminé |
-| LIVRABLE-078 – Roadmap utilisation terrain | ✅ Terminé |
-| LIVRABLE-079 – Checklist préparation accompagnement | ✅ Terminé |
-| LIVRABLE-080 – Modèle dossier participante | ✅ Terminé |
-| LIVRABLE-081 – Protocole pilote CAP | ✅ Terminé |
-| LIVRABLE-082 – Fiche retour participante | ✅ Terminé |
-| LIVRABLE-083 – Fiche retour accompagnant | ✅ Terminé |
-| LIVRABLE-084 – Grille amélioration version 1.2 | ✅ Terminé |
-| LIVRABLE-085 – Rapport pilote CAP | ✅ Terminé |
+| LIVRABLE-001 à LIVRABLE-085 | ✅ Terminés |
+| LIVRABLE-086 – Guide création Google Forms | ✅ Terminé |
+| LIVRABLE-087 – Index Google Forms CAP | ✅ Terminé |
+| LIVRABLE-088 – Paramètres standards Google Forms | ✅ Terminé |
+| LIVRABLE-089 – Checklist recette Google Forms | ✅ Terminé |
 
 ## Modules opérationnels
 
 | Module | Statut |
 |---|---|
-| Module 0 – Accueil et démarrage | ✅ Complet |
-| Module 1 – Mon histoire | ✅ Complet |
-| Module 2 – Mes valeurs | ✅ Complet |
-| Module 3 – Ma façon de fonctionner | ✅ Complet |
-| Module 4 – Mes besoins | ✅ Complet |
-| Module 5 – Mes motivations profondes | ✅ Complet |
-| Module 6 – Mes compétences | ✅ Complet |
-| Module 7 – Mes talents | ✅ Complet |
-| Module 8 – Mon environnement idéal | ✅ Complet |
-| Module 9 – Mes ressources et contraintes | ✅ Complet |
-| Module 10 – Mon projet de vie et scénarios professionnels | ✅ Complet |
-| Module 11 – Mon plan d'action | ✅ Complet |
+| Module 0 à Module 11 | ✅ Complets |
 | Synthèse finale CAP | ✅ Complet |
 | Mode d'emploi accompagnant | ✅ Complet |
 | Pilote terrain CAP | ✅ Complet |
+| Pack Google Forms | ✅ Complet |
 
 ## Convention de nommage
 
