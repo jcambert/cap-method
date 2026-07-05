@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.8.0] - 2026-07-05
+
+### Ajouté
+
+- Module 8 complet : **Mon environnement idéal**.
+- LIVRABLE-047 : Google Forms Module 8.
+- LIVRABLE-048 : Google Sheets Module 8.
+- LIVRABLE-049 : Cahier de réflexion Module 8.
+- LIVRABLE-050 : Kit Messenger Module 8.
+- LIVRABLE-051 : Guide accompagnant Module 8.
+- LIVRABLE-052 : Restitution Module 8.
+- README mis à jour avec l'avancement du Module 8.
+
 ## [0.7.0] - 2026-07-05
 
 ### Ajouté
