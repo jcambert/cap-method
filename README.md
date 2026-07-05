@@ -26,7 +26,8 @@ cap-method/
 │   ├── 12_synthese_finale/
 │   ├── 13_mode_emploi_accompagnant/
 │   ├── 14_pilote_terrain/
-│   └── 15_google_forms_pack/
+│   ├── 15_google_forms_pack/
+│   └── 16_google_sheets_pack/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -37,11 +38,12 @@ cap-method/
 
 | Bloc | Statut |
 |---|---|
-| LIVRABLE-001 à LIVRABLE-085 | ✅ Terminés |
-| LIVRABLE-086 – Guide création Google Forms | ✅ Terminé |
-| LIVRABLE-087 – Index Google Forms CAP | ✅ Terminé |
-| LIVRABLE-088 – Paramètres standards Google Forms | ✅ Terminé |
-| LIVRABLE-089 – Checklist recette Google Forms | ✅ Terminé |
+| LIVRABLE-001 à LIVRABLE-089 | ✅ Terminés |
+| LIVRABLE-090 – Guide création Google Sheets | ✅ Terminé |
+| LIVRABLE-091 – Architecture classeur global CAP | ✅ Terminé |
+| LIVRABLE-092 – Dictionnaire colonnes CAP | ✅ Terminé |
+| LIVRABLE-093 – Checklist recette Google Sheets | ✅ Terminé |
+| LIVRABLE-094 – Tableau de bord suivi CAP | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -52,6 +54,7 @@ cap-method/
 | Mode d'emploi accompagnant | ✅ Complet |
 | Pilote terrain CAP | ✅ Complet |
 | Pack Google Forms | ✅ Complet |
+| Pack Google Sheets | ✅ Complet |
 
 ## Convention de nommage
 
