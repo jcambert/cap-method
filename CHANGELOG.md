@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.10.0] - 2026-07-05
+
+### Ajouté
+
+- Module 10 complet : **Mon projet de vie et scénarios professionnels**.
+- LIVRABLE-059 : Google Forms Module 10.
+- LIVRABLE-060 : Google Sheets Module 10.
+- LIVRABLE-061 : Cahier de réflexion Module 10.
+- LIVRABLE-062 : Kit Messenger Module 10.
+- LIVRABLE-063 : Guide accompagnant Module 10.
+- LIVRABLE-064 : Restitution Module 10.
+- README mis à jour avec l'avancement du Module 10.
+
 ## [0.9.0] - 2026-07-05
 
 ### Ajouté
