@@ -22,7 +22,8 @@ cap-method/
 │   ├── 08_mon_environnement_ideal/
 │   ├── 09_mes_ressources_et_contraintes/
 │   ├── 10_projet_de_vie_et_scenarios/
-│   └── 11_mon_plan_action/
+│   ├── 11_mon_plan_action/
+│   └── 12_synthese_finale/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -103,6 +104,12 @@ cap-method/
 | LIVRABLE-068 – Kit Messenger Module 11 | ✅ Terminé |
 | LIVRABLE-069 – Guide accompagnant Module 11 | ✅ Terminé |
 | LIVRABLE-070 – Restitution Module 11 | ✅ Terminé |
+| LIVRABLE-071 – Guide synthèse finale | ✅ Terminé |
+| LIVRABLE-072 – Template synthèse participante | ✅ Terminé |
+| LIVRABLE-073 – Grille validation synthèse | ✅ Terminé |
+| LIVRABLE-074 – Kit Messenger clôture | ✅ Terminé |
+| LIVRABLE-075 – Suivi post-CAP | ✅ Terminé |
+| LIVRABLE-076 – Checklist clôture CAP | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -120,7 +127,7 @@ cap-method/
 | Module 9 – Mes ressources et contraintes | ✅ Complet |
 | Module 10 – Mon projet de vie et scénarios professionnels | ✅ Complet |
 | Module 11 – Mon plan d'action | ✅ Complet |
-| Synthèse finale CAP | ⬜ À faire |
+| Synthèse finale CAP | ✅ Complet |
 
 ## Convention de nommage
 
