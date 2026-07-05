@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.6.0] - 2026-07-05
+
+### Ajouté
+
+- Module 6 complet : **Mes compétences**.
+- LIVRABLE-035 : Google Forms Module 6.
+- LIVRABLE-036 : Google Sheets Module 6.
+- LIVRABLE-037 : Cahier de réflexion Module 6.
+- LIVRABLE-038 : Kit Messenger Module 6.
+- LIVRABLE-039 : Guide accompagnant Module 6.
+- LIVRABLE-040 : Restitution Module 6.
+- README mis à jour avec l'avancement du Module 6.
+
 ## [0.5.0] - 2026-07-05
 
 ### Ajouté
