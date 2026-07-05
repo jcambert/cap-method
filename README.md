@@ -12,7 +12,8 @@ cap-method/
 ├── CHANGELOG.md
 ├── docs/
 │   ├── 00_bienvenue/
-│   └── 01_mon_histoire/
+│   ├── 01_mon_histoire/
+│   └── 02_mes_valeurs/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -33,6 +34,21 @@ cap-method/
 | LIVRABLE-008 – Kit Messenger Module 1 | ✅ Terminé |
 | LIVRABLE-009 – Guide accompagnant Module 1 | ✅ Terminé |
 | LIVRABLE-010 – Restitution Module 1 | ✅ Terminé |
+| LIVRABLE-011 – Google Forms Module 2 | ✅ Terminé |
+| LIVRABLE-012 – Google Sheets Module 2 | ✅ Terminé |
+| LIVRABLE-013 – Cahier de réflexion Module 2 | ✅ Terminé |
+| LIVRABLE-014 – Kit Messenger Module 2 | ✅ Terminé |
+| LIVRABLE-015 – Guide accompagnant Module 2 | ✅ Terminé |
+| LIVRABLE-016 – Restitution Module 2 | ✅ Terminé |
+
+## Modules opérationnels
+
+| Module | Statut |
+|---|---|
+| Module 0 – Accueil et démarrage | ✅ Complet |
+| Module 1 – Mon histoire | ✅ Complet |
+| Module 2 – Mes valeurs | ✅ Complet |
+| Module 3 – Ma façon de fonctionner | ⬜ À faire |
 
 ## Convention de nommage
 
