@@ -15,7 +15,8 @@ cap-method/
 │   ├── 01_mon_histoire/
 │   ├── 02_mes_valeurs/
 │   ├── 03_ma_facon_de_fonctionner/
-│   └── 04_mes_besoins/
+│   ├── 04_mes_besoins/
+│   └── 05_mes_motivations_profondes/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -54,6 +55,12 @@ cap-method/
 | LIVRABLE-026 – Kit Messenger Module 4 | ✅ Terminé |
 | LIVRABLE-027 – Guide accompagnant Module 4 | ✅ Terminé |
 | LIVRABLE-028 – Restitution Module 4 | ✅ Terminé |
+| LIVRABLE-029 – Google Forms Module 5 | ✅ Terminé |
+| LIVRABLE-030 – Google Sheets Module 5 | ✅ Terminé |
+| LIVRABLE-031 – Cahier de réflexion Module 5 | ✅ Terminé |
+| LIVRABLE-032 – Kit Messenger Module 5 | ✅ Terminé |
+| LIVRABLE-033 – Guide accompagnant Module 5 | ✅ Terminé |
+| LIVRABLE-034 – Restitution Module 5 | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -64,7 +71,8 @@ cap-method/
 | Module 2 – Mes valeurs | ✅ Complet |
 | Module 3 – Ma façon de fonctionner | ✅ Complet |
 | Module 4 – Mes besoins | ✅ Complet |
-| Module 5 – Mes motivations profondes | ⬜ À faire |
+| Module 5 – Mes motivations profondes | ✅ Complet |
+| Module 6 – Mes compétences | ⬜ À faire |
 
 ## Convention de nommage
 
