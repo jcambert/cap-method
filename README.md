@@ -24,7 +24,8 @@ cap-method/
 │   ├── 10_projet_de_vie_et_scenarios/
 │   ├── 11_mon_plan_action/
 │   ├── 12_synthese_finale/
-│   └── 13_mode_emploi_accompagnant/
+│   ├── 13_mode_emploi_accompagnant/
+│   └── 14_pilote_terrain/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -115,6 +116,11 @@ cap-method/
 | LIVRABLE-078 – Roadmap utilisation terrain | ✅ Terminé |
 | LIVRABLE-079 – Checklist préparation accompagnement | ✅ Terminé |
 | LIVRABLE-080 – Modèle dossier participante | ✅ Terminé |
+| LIVRABLE-081 – Protocole pilote CAP | ✅ Terminé |
+| LIVRABLE-082 – Fiche retour participante | ✅ Terminé |
+| LIVRABLE-083 – Fiche retour accompagnant | ✅ Terminé |
+| LIVRABLE-084 – Grille amélioration version 1.2 | ✅ Terminé |
+| LIVRABLE-085 – Rapport pilote CAP | ✅ Terminé |
 
 ## Modules opérationnels
 
@@ -134,6 +140,7 @@ cap-method/
 | Module 11 – Mon plan d'action | ✅ Complet |
 | Synthèse finale CAP | ✅ Complet |
 | Mode d'emploi accompagnant | ✅ Complet |
+| Pilote terrain CAP | ✅ Complet |
 
 ## Convention de nommage
 
