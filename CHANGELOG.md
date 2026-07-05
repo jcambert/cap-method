@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.3.0] - 2026-07-05
+
+### Ajouté
+
+- Module 3 complet : **Ma façon de fonctionner**.
+- LIVRABLE-017 : Google Forms Module 3.
+- LIVRABLE-018 : Google Sheets Module 3.
+- LIVRABLE-019 : Cahier de réflexion Module 3.
+- LIVRABLE-020 : Kit Messenger Module 3.
+- LIVRABLE-021 : Guide accompagnant Module 3.
+- LIVRABLE-022 : Restitution Module 3.
+- README mis à jour avec l'avancement du Module 3.
+
 ## [0.2.0] - 2026-07-05
 
 ### Ajouté
@@ -26,5 +39,5 @@ Toutes les modifications notables de CAP seront documentées ici.
 
 ### Décision
 
-- Les fichiers sources sont maintenus en Markdown pour faciliter le versionnement.
+- Les fichiers sources sont maintenus en Markdown afin de faciliter le versionnement.
 - Les fichiers DOCX/PDF seront considérés comme des exports générés depuis les sources Markdown.
