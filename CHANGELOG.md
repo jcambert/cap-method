@@ -12,7 +12,11 @@ Toutes les modifications notables de CAP seront documentées ici.
 - LIVRABLE-097 : Licence utilisation.
 - LIVRABLE-098 : README public amélioré.
 - LIVRABLE-099 : Checklist release GitHub.
-- README mis à jour avec l'avancement du pack publication.
+- Dossier `docs/18_release_v1_5_0/` ajouté.
+- Notes de release v1.5.0 ajoutées.
+- Manifeste des exports v1.5.0 ajouté.
+- Procédure de publication GitHub ajoutée.
+- README mis à jour avec l'avancement du pack publication et de la préparation release.
 
 ## [1.4.0] - 2026-07-05
 
