@@ -28,7 +28,8 @@ cap-method/
 │   ├── 14_pilote_terrain/
 │   ├── 15_google_forms_pack/
 │   ├── 16_google_sheets_pack/
-│   └── 17_publication/
+│   ├── 17_publication/
+│   └── 18_release_v1_5_0/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -39,12 +40,8 @@ cap-method/
 
 | Bloc | Statut |
 |---|---|
-| LIVRABLE-001 à LIVRABLE-094 | ✅ Terminés |
-| LIVRABLE-095 – Page présentation CAP | ✅ Terminé |
-| LIVRABLE-096 – Avertissement méthodologique | ✅ Terminé |
-| LIVRABLE-097 – Licence utilisation | ✅ Terminé |
-| LIVRABLE-098 – README public amélioré | ✅ Terminé |
-| LIVRABLE-099 – Checklist release GitHub | ✅ Terminé |
+| LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
+| Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
 
 ## Modules opérationnels
 
@@ -57,6 +54,7 @@ cap-method/
 | Pack Google Forms | ✅ Complet |
 | Pack Google Sheets | ✅ Complet |
 | Pack publication | ✅ Complet |
+| Préparation release GitHub v1.5.0 | ✅ Complet |
 
 ## Convention de nommage
 
