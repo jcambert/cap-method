@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [1.0.0] - 2026-07-05
+
+### Ajouté
+
+- Synthèse finale CAP complète.
+- LIVRABLE-071 : Guide synthèse finale.
+- LIVRABLE-072 : Template synthèse participante.
+- LIVRABLE-073 : Grille validation synthèse.
+- LIVRABLE-074 : Kit Messenger clôture.
+- LIVRABLE-075 : Suivi post-CAP.
+- LIVRABLE-076 : Checklist clôture CAP.
+- README mis à jour avec l'avancement complet du parcours CAP.
+
 ## [0.11.0] - 2026-07-05
 
 ### Ajouté
