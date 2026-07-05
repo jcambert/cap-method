@@ -2,28 +2,30 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [1.3.0] - 2026-07-05
+
+### Ajouté
+
+- Pack Google Forms CAP complet.
+- LIVRABLE-086 : Guide création Google Forms.
+- LIVRABLE-087 : Index Google Forms CAP.
+- LIVRABLE-088 : Paramètres standards Google Forms.
+- LIVRABLE-089 : Checklist recette Google Forms.
+- README mis à jour avec l'avancement du pack Google Forms.
+
 ## [1.2.0] - 2026-07-05
 
 ### Ajouté
 
 - Kit pilote terrain CAP complet.
-- LIVRABLE-081 : Protocole pilote CAP.
-- LIVRABLE-082 : Fiche retour participante.
-- LIVRABLE-083 : Fiche retour accompagnant.
-- LIVRABLE-084 : Grille amélioration version 1.2.
-- LIVRABLE-085 : Rapport pilote CAP.
-- README mis à jour avec l'avancement du pilote terrain CAP.
+- LIVRABLE-081 à LIVRABLE-085 ajoutés.
 
 ## [1.1.0] - 2026-07-05
 
 ### Ajouté
 
 - Mode d'emploi accompagnant CAP complet.
-- LIVRABLE-077 : Mode d'emploi accompagnant.
-- LIVRABLE-078 : Roadmap utilisation terrain CAP.
-- LIVRABLE-079 : Checklist préparation accompagnement.
-- LIVRABLE-080 : Modèle dossier participante.
-- README mis à jour avec l'avancement du mode d'emploi accompagnant.
+- LIVRABLE-077 à LIVRABLE-080 ajoutés.
 
 ## [1.0.0] - 2026-07-05
 
@@ -31,7 +33,6 @@ Toutes les modifications notables de CAP seront documentées ici.
 
 - Synthèse finale CAP complète.
 - LIVRABLE-071 à LIVRABLE-076 ajoutés.
-- README mis à jour avec l'avancement complet du parcours CAP.
 
 ## [0.11.0] - 2026-07-05
 
@@ -110,7 +111,6 @@ Toutes les modifications notables de CAP seront documentées ici.
 - Initialisation du dépôt `cap-method`.
 - Création de la structure documentaire initiale.
 - Ajout des livrables opérationnels 001 à 010.
-- Mise en place du suivi d'avancement dans le README.
 
 ### Décision
 
