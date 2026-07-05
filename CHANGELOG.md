@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [0.7.0] - 2026-07-05
+
+### Ajouté
+
+- Module 7 complet : **Mes talents**.
+- LIVRABLE-041 : Google Forms Module 7.
+- LIVRABLE-042 : Google Sheets Module 7.
+- LIVRABLE-043 : Cahier de réflexion Module 7.
+- LIVRABLE-044 : Kit Messenger Module 7.
+- LIVRABLE-045 : Guide accompagnant Module 7.
+- LIVRABLE-046 : Restitution Module 7.
+- README mis à jour avec l'avancement du Module 7.
+
 ## [0.6.0] - 2026-07-05
 
 ### Ajouté
