@@ -2,16 +2,24 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [1.4.0] - 2026-07-05
+
+### Ajouté
+
+- Pack Google Sheets CAP complet.
+- LIVRABLE-090 : Guide création Google Sheets.
+- LIVRABLE-091 : Architecture classeur global CAP.
+- LIVRABLE-092 : Dictionnaire colonnes CAP.
+- LIVRABLE-093 : Checklist recette Google Sheets.
+- LIVRABLE-094 : Tableau de bord suivi CAP.
+- README mis à jour avec l'avancement du pack Google Sheets.
+
 ## [1.3.0] - 2026-07-05
 
 ### Ajouté
 
 - Pack Google Forms CAP complet.
-- LIVRABLE-086 : Guide création Google Forms.
-- LIVRABLE-087 : Index Google Forms CAP.
-- LIVRABLE-088 : Paramètres standards Google Forms.
-- LIVRABLE-089 : Checklist recette Google Forms.
-- README mis à jour avec l'avancement du pack Google Forms.
+- LIVRABLE-086 à LIVRABLE-089 ajoutés.
 
 ## [1.2.0] - 2026-07-05
 
