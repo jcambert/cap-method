@@ -1,0 +1,15 @@
+id: FORM-006
+title: Pistes professionnelles
+version: 0.1.0
+language: fr-FR
+module: project
+status: draft
+sections:
+  - id: OPTION
+    title: Piste
+    order: 1
+    questions:
+      - id: Q001
+        type: text
+        label: Nom de la piste
+        required: true
