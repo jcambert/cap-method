@@ -79,6 +79,7 @@ function validate(file, content) {
 
   checkDuplicates(readSectionIds(content), 'section id', issues);
   checkDuplicates(readQuestionIds(content), 'question id', issues);
+  checkRequiredBlocks(content, issues);
 
   return issues;
 }
@@ -110,5 +111,26 @@ function checkDuplicates(values, label, issues) {
       issues.push(`Duplicate ${label}: ${value}`);
     }
     seen.add(value);
+  }
+}
+
+function checkRequiredBlocks(content, issues) {
+  const blocks = content.split(/\n\s*-\s+id:\s+/).slice(1);
+
+  for (const block of blocks) {
+    const id = block.split('\n')[0].trim();
+    const type = readValue(block, 'type');
+
+    if (!type) {
+      continue;
+    }
+
+    if ((type === 'singleChoice' || type === 'multipleChoice') && !block.includes('options:')) {
+      issues.push(`Question ${id} uses ${type} without options`);
+    }
+
+    if (type === 'matrix' && !block.includes('rows:')) {
+      issues.push(`Question ${id} uses matrix without rows`);
+    }
   }
 }
