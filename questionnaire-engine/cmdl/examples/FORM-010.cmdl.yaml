@@ -1,0 +1,15 @@
+id: FORM-010
+title: Suivi six mois
+version: 0.1.0
+language: fr-FR
+module: followup
+status: draft
+sections:
+  - id: CURRENT
+    title: Situation
+    order: 1
+    questions:
+      - id: Q001
+        type: text
+        label: Situation actuelle
+        required: true
