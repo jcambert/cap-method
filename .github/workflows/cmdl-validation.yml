@@ -1,0 +1,27 @@
+name: CMDL Validation
+
+on:
+  push:
+    paths:
+      - 'questionnaire-engine/**'
+      - '.github/workflows/cmdl-validation.yml'
+  pull_request:
+    paths:
+      - 'questionnaire-engine/**'
+      - '.github/workflows/cmdl-validation.yml'
+
+jobs:
+  validate-cmdl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate CMDL examples
+        run: node questionnaire-engine/tools/validate-cmdl.mjs
