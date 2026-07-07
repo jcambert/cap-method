@@ -1,0 +1,24 @@
+id: FORM-002
+title: Valeurs professionnelles
+version: 0.1.0
+language: fr-FR
+module: values
+status: draft
+estimatedDurationMinutes: 20
+sections:
+  - id: VALUE_SELECTION
+    title: Selection des valeurs
+    order: 1
+    questions:
+      - id: Q001
+        type: multipleChoice
+        label: Selectionnez les valeurs importantes pour vous
+        required: true
+  - id: PRIORITIZATION
+    title: Priorisation
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Expliquez vos valeurs prioritaires
+        required: true
