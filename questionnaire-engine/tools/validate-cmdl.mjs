@@ -77,6 +77,9 @@ function validate(file, content) {
     }
   }
 
+  checkDuplicates(readSectionIds(content), 'section id', issues);
+  checkDuplicates(readQuestionIds(content), 'question id', issues);
+
   return issues;
 }
 
@@ -88,4 +91,24 @@ function readValue(content, field) {
 function readTypes(content) {
   return [...content.matchAll(/^\s*type:\s*(.+)$/gm)]
     .map(match => match[1].trim());
+}
+
+function readSectionIds(content) {
+  return [...content.matchAll(/^\s*-\s+id:\s*([A-Z][A-Z0-9_]*)\s*$/gm)]
+    .map(match => match[1].trim());
+}
+
+function readQuestionIds(content) {
+  return [...content.matchAll(/^\s*-\s+id:\s*(Q\d{3})\s*$/gm)]
+    .map(match => match[1].trim());
+}
+
+function checkDuplicates(values, label, issues) {
+  const seen = new Set();
+  for (const value of values) {
+    if (seen.has(value)) {
+      issues.push(`Duplicate ${label}: ${value}`);
+    }
+    seen.add(value);
+  }
 }
