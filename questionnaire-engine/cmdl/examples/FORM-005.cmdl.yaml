@@ -1,16 +1,23 @@
 id: FORM-005
 title: Interets professionnels
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: exploration
 status: draft
-estimatedDurationMinutes: 25
+estimatedDurationMinutes: 30
 sections:
-  - id: ACTIVITIES
-    title: Activites preferees
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
+        type: information
+        label: Ce questionnaire permet d explorer vos interets professionnels, les activites qui vous attirent et les environnements qui vous motivent.
+  - id: ACTIVITIES
+    title: Activites preferees
+    order: 2
+    questions:
+      - id: Q002
         type: multipleChoice
         label: Selectionnez les activites qui vous attirent
         required: true
@@ -22,11 +29,86 @@ sections:
           - Vendre
           - Former
           - Produire
+          - Piloter
+          - Chercher
+          - Ameliorer
+      - id: Q003
+        type: longText
+        label: Quelles activites aimeriez vous pratiquer plus souvent ?
+        required: true
+      - id: Q004
+        type: longText
+        label: Quelles activites souhaitez vous eviter autant que possible ?
+        required: false
+  - id: SECTORS
+    title: Secteurs et domaines
+    order: 3
+    questions:
+      - id: Q005
+        type: multipleChoice
+        label: Quels secteurs vous interessent ?
+        required: false
+        options:
+          - Industrie
+          - Numerique
+          - Sante
+          - Education
+          - Conseil
+          - Commerce
+          - Social
+          - Public
+          - Environnement
+          - Artisanat
+      - id: Q006
+        type: longText
+        label: Expliquez les secteurs qui vous attirent le plus
+        required: false
   - id: ENVIRONMENTS
     title: Environnements
-    order: 2
+    order: 4
     questions:
-      - id: Q002
-        type: longText
+      - id: Q007
+        type: multipleChoice
         label: Quels environnements de travail vous interessent ?
+        required: true
+        options:
+          - Petite structure
+          - Grande organisation
+          - Terrain
+          - Bureau
+          - Teletravail
+          - Equipe projet
+          - Contact client
+          - Environnement technique
+      - id: Q008
+        type: longText
+        label: Decrivez l environnement professionnel qui vous motive
+        required: true
+  - id: MOTIVATION
+    title: Motivation
+    order: 5
+    questions:
+      - id: Q009
+        type: rating10
+        label: Niveau de motivation pour explorer de nouvelles pistes
+        required: true
+      - id: Q010
+        type: longText
+        label: Qu est ce qui vous donne envie de vous investir durablement ?
+        required: true
+      - id: Q011
+        type: longText
+        label: Quels sujets ou missions pourriez vous approfondir avec plaisir ?
         required: false
+  - id: SYNTHESIS
+    title: Synthese personnelle
+    order: 6
+    questions:
+      - id: Q012
+        type: longText
+        label: Quelles pistes semblent les plus naturelles au regard de vos interets ?
+        required: true
+      - id: Q013
+        type: rating10
+        label: Clarte actuelle de vos interets professionnels
+        required: true
