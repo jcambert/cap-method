@@ -1,0 +1,24 @@
+id: FORM-004
+title: Mode de fonctionnement
+version: 0.1.0
+language: fr-FR
+module: self-awareness
+status: draft
+estimatedDurationMinutes: 25
+sections:
+  - id: WORK_STYLE
+    title: Mode de travail
+    order: 1
+    questions:
+      - id: Q001
+        type: rating10
+        label: Je travaille efficacement de maniere autonome
+        required: true
+  - id: COMMUNICATION
+    title: Communication
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Decrivez votre facon de communiquer au travail
+        required: false
