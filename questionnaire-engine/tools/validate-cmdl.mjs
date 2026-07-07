@@ -2,6 +2,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.argv[2] ?? 'questionnaire-engine/cmdl/examples';
+const supportedTypes = new Set([
+  'text',
+  'longText',
+  'email',
+  'phone',
+  'date',
+  'singleChoice',
+  'multipleChoice',
+  'rating5',
+  'rating10',
+  'matrix',
+  'information',
+  'consent',
+  'fileReference'
+]);
+
 const files = fs.readdirSync(root)
   .filter(file => file.endsWith('.cmdl.yaml'))
   .map(file => path.join(root, file));
@@ -50,8 +66,15 @@ function validate(file, content) {
     issues.push(`Invalid version: ${version}`);
   }
 
-  if (!content.includes('type:')) {
+  const types = readTypes(content);
+  if (types.length === 0) {
     issues.push('No question type found');
+  }
+
+  for (const type of types) {
+    if (!supportedTypes.has(type)) {
+      issues.push(`Unsupported question type: ${type}`);
+    }
   }
 
   return issues;
@@ -60,4 +83,9 @@ function validate(file, content) {
 function readValue(content, field) {
   const match = content.match(new RegExp(`^${field}:\\s*(.+)$`, 'm'));
   return match ? match[1].trim() : null;
+}
+
+function readTypes(content) {
+  return [...content.matchAll(/^\s*type:\s*(.+)$/gm)]
+    .map(match => match[1].trim());
 }
