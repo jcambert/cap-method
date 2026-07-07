@@ -1,0 +1,24 @@
+id: FORM-007
+title: Plan professionnel
+version: 0.1.0
+language: fr-FR
+module: roadmap
+status: draft
+estimatedDurationMinutes: 30
+sections:
+  - id: TARGET
+    title: Objectif
+    order: 1
+    questions:
+      - id: Q001
+        type: longText
+        label: Quel est votre objectif professionnel principal ?
+        required: true
+  - id: FOLLOW_UP
+    title: Suivi
+    order: 2
+    questions:
+      - id: Q002
+        type: rating10
+        label: Niveau d engagement personnel
+        required: true
