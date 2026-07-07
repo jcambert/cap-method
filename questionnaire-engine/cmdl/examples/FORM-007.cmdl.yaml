@@ -1,24 +1,112 @@
 id: FORM-007
 title: Plan professionnel
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: roadmap
 status: draft
-estimatedDurationMinutes: 30
+estimatedDurationMinutes: 35
 sections:
-  - id: TARGET
-    title: Objectif
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: longText
-        label: Quel est votre objectif professionnel principal ?
-        required: true
-  - id: FOLLOW_UP
-    title: Suivi
+        type: information
+        label: Ce questionnaire formalise votre objectif professionnel et les prochaines etapes concretes.
+  - id: TARGET
+    title: Objectif professionnel
     order: 2
     questions:
       - id: Q002
+        type: longText
+        label: Quel est votre objectif professionnel principal ?
+        required: true
+      - id: Q003
+        type: singleChoice
+        label: Nature de l objectif
+        required: true
+        options:
+          - Evolution interne
+          - Changement de poste
+          - Reconversion
+          - Creation activite
+          - Formation
+          - Recherche emploi
+          - Clarification progressive
+      - id: Q004
+        type: rating10
+        label: Clarte de l objectif
+        required: true
+  - id: MOTIVATION
+    title: Motivation et sens
+    order: 3
+    questions:
+      - id: Q005
+        type: longText
+        label: Pourquoi cet objectif est important pour vous ?
+        required: true
+      - id: Q006
+        type: rating10
+        label: Niveau de motivation pour cet objectif
+        required: true
+      - id: Q007
+        type: longText
+        label: Quelles valeurs cet objectif respecte-t-il ?
+        required: false
+  - id: STEPS
+    title: Etapes du plan
+    order: 4
+    questions:
+      - id: Q008
+        type: longText
+        label: Quelle est la premiere action concrete a realiser ?
+        required: true
+      - id: Q009
+        type: longText
+        label: Quelles actions doivent suivre ensuite ?
+        required: true
+      - id: Q010
+        type: multipleChoice
+        label: Quels moyens seront utiles ?
+        required: false
+        options:
+          - Formation
+          - Entretien reseau
+          - Mise a jour CV
+          - Recherche offres
+          - Immersion metier
+          - Validation financement
+          - Portfolio
+          - Coaching
+  - id: RESOURCES
+    title: Ressources
+    order: 5
+    questions:
+      - id: Q011
+        type: longText
+        label: Quelles ressources possedez vous deja ?
+        required: false
+      - id: Q012
+        type: longText
+        label: Quelles ressources devez vous mobiliser ?
+        required: false
+      - id: Q013
+        type: longText
+        label: Quelles personnes peuvent vous aider ?
+        required: false
+  - id: FOLLOW_UP
+    title: Suivi
+    order: 6
+    questions:
+      - id: Q014
         type: rating10
         label: Niveau d engagement personnel
         required: true
+      - id: Q015
+        type: longText
+        label: Quel indicateur permettra de mesurer votre progression ?
+        required: true
+      - id: Q016
+        type: longText
+        label: Quelle sera votre prochaine decision importante ?
+        required: false
