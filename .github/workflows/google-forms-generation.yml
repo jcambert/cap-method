@@ -1,0 +1,45 @@
+name: Google Forms Generation
+
+on:
+  push:
+    paths:
+      - 'questionnaire-engine/cmdl/**'
+      - 'questionnaire-engine/generators/google-forms/**'
+      - '.github/workflows/google-forms-generation.yml'
+  pull_request:
+    paths:
+      - 'questionnaire-engine/cmdl/**'
+      - 'questionnaire-engine/generators/google-forms/**'
+      - '.github/workflows/google-forms-generation.yml'
+
+jobs:
+  generate-google-forms:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate CMDL examples
+        run: node questionnaire-engine/tools/validate-cmdl.mjs
+
+      - name: Generate Google Forms suite
+        run: node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples /tmp/cap_method_generated_suite.gs
+
+      - name: Check generated suite contains all forms
+        run: |
+          grep -q "build_FORM_001_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_002_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_003_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_004_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_005_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_006_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_007_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_008_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_009_" /tmp/cap_method_generated_suite.gs
+          grep -q "build_FORM_010_" /tmp/cap_method_generated_suite.gs
