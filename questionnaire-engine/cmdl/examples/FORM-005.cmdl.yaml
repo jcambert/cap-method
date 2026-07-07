@@ -14,6 +14,14 @@ sections:
         type: multipleChoice
         label: Selectionnez les activites qui vous attirent
         required: true
+        options:
+          - Concevoir
+          - Organiser
+          - Accompagner
+          - Analyser
+          - Vendre
+          - Former
+          - Produire
   - id: ENVIRONMENTS
     title: Environnements
     order: 2
