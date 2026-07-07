@@ -1,24 +1,110 @@
 id: FORM-003
 title: Competences et realisations
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: skills
 status: draft
-estimatedDurationMinutes: 30
+estimatedDurationMinutes: 35
 sections:
-  - id: TECHNICAL_SKILLS
-    title: Competences techniques
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: longText
-        label: Listez vos principales competences techniques
-        required: true
-  - id: ACHIEVEMENTS
-    title: Realisations
+        type: information
+        label: Ce questionnaire permet de formaliser vos competences, vos realisations et vos axes de developpement.
+  - id: TECHNICAL_SKILLS
+    title: Competences techniques
     order: 2
     questions:
       - id: Q002
         type: longText
-        label: Decrivez vos realisations significatives
+        label: Listez vos principales competences techniques
+        required: true
+      - id: Q003
+        type: longText
+        label: Quels outils, logiciels ou methodes maitrisez vous ?
+        required: false
+      - id: Q004
+        type: rating10
+        label: Niveau de confiance dans vos competences techniques
+        required: true
+  - id: BEHAVIORAL_SKILLS
+    title: Competences comportementales
+    order: 3
+    questions:
+      - id: Q005
+        type: multipleChoice
+        label: Selectionnez vos principales competences comportementales
+        required: true
+        options:
+          - Communication
+          - Organisation
+          - Adaptabilite
+          - Leadership
+          - Cooperation
+          - Autonomie
+          - Analyse
+          - Creativite
+          - Rigueur
+          - Gestion du stress
+      - id: Q006
+        type: longText
+        label: Donnez un exemple concret pour vos competences comportementales principales
+        required: false
+  - id: ACHIEVEMENTS
+    title: Realisations
+    order: 4
+    questions:
+      - id: Q007
+        type: longText
+        label: Decrivez une realisation professionnelle significative
+        required: true
+      - id: Q008
+        type: longText
+        label: Quel etait votre role exact dans cette realisation ?
+        required: true
+      - id: Q009
+        type: longText
+        label: Quels resultats avez vous obtenus ?
+        required: false
+      - id: Q010
+        type: longText
+        label: Quelles competences cette realisation demontre-t-elle ?
+        required: true
+  - id: TRANSFERABLE_SKILLS
+    title: Competences transferables
+    order: 5
+    questions:
+      - id: Q011
+        type: longText
+        label: Quelles competences pourriez vous utiliser dans un autre metier ou secteur ?
+        required: true
+      - id: Q012
+        type: rating10
+        label: Niveau de facilite a valoriser vos competences
+        required: true
+  - id: DEVELOPMENT_NEEDS
+    title: Besoins de developpement
+    order: 6
+    questions:
+      - id: Q013
+        type: longText
+        label: Quelles competences souhaitez vous renforcer ?
+        required: true
+      - id: Q014
+        type: multipleChoice
+        label: Quels moyens pourraient vous aider a progresser ?
+        required: false
+        options:
+          - Formation
+          - Mentorat
+          - Mise en pratique
+          - Lecture ou veille
+          - Certification
+          - Accompagnement
+          - Experience terrain
+      - id: Q015
+        type: longText
+        label: Quelle competence serait prioritaire pour votre projet professionnel ?
         required: true
