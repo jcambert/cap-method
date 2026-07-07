@@ -79,7 +79,7 @@ function validate(file, content) {
 
   checkDuplicates(readSectionIds(content), 'section id', issues);
   checkDuplicates(readQuestionIds(content), 'question id', issues);
-  checkRequiredBlocks(content, issues);
+  checkQuestionBlocks(content, issues);
 
   return issues;
 }
@@ -114,15 +114,28 @@ function checkDuplicates(values, label, issues) {
   }
 }
 
-function checkRequiredBlocks(content, issues) {
+function checkQuestionBlocks(content, issues) {
   const blocks = content.split(/\n\s*-\s+id:\s+/).slice(1);
 
   for (const block of blocks) {
     const id = block.split('\n')[0].trim();
     const type = readValue(block, 'type');
 
-    if (!type) {
+    if (!id.startsWith('Q')) {
       continue;
+    }
+
+    if (!type) {
+      issues.push(`Question ${id} has no type`);
+      continue;
+    }
+
+    if (!block.includes('label:')) {
+      issues.push(`Question ${id} has no label`);
+    }
+
+    if (type !== 'information' && !block.includes('required:')) {
+      issues.push(`Question ${id} has no required flag`);
     }
 
     if ((type === 'singleChoice' || type === 'multipleChoice') && !block.includes('options:')) {
