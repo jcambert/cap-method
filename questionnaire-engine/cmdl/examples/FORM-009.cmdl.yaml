@@ -1,0 +1,24 @@
+id: FORM-009
+title: Evaluation finale
+version: 0.1.0
+language: fr-FR
+module: evaluation
+status: draft
+estimatedDurationMinutes: 20
+sections:
+  - id: FINAL_SATISFACTION
+    title: Satisfaction finale
+    order: 1
+    questions:
+      - id: Q001
+        type: rating10
+        label: Satisfaction globale
+        required: true
+  - id: RESULTS
+    title: Resultats obtenus
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Quels resultats avez vous obtenus ?
+        required: true
