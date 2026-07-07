@@ -1,15 +1,121 @@
 id: FORM-010
 title: Suivi six mois
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: followup
 status: draft
+estimatedDurationMinutes: 20
 sections:
-  - id: CURRENT
-    title: Situation
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: text
-        label: Situation actuelle
+        type: information
+        label: Ce questionnaire permet de faire le point environ six mois apres la fin du parcours CAP Method.
+  - id: CURRENT_SITUATION
+    title: Situation actuelle
+    order: 2
+    questions:
+      - id: Q002
+        type: singleChoice
+        label: Quelle est votre situation actuelle ?
         required: true
+        options:
+          - Meme poste
+          - Nouveau poste
+          - Formation
+          - Recherche emploi
+          - Creation activite
+          - Transition en cours
+          - Autre
+      - id: Q003
+        type: longText
+        label: Decrivez votre situation actuelle
+        required: true
+      - id: Q004
+        type: rating10
+        label: Satisfaction actuelle concernant votre situation professionnelle
+        required: true
+  - id: PROGRESS
+    title: Progression depuis le parcours
+    order: 3
+    questions:
+      - id: Q005
+        type: longText
+        label: Quelles actions avez vous realisees depuis la fin du parcours ?
+        required: true
+      - id: Q006
+        type: multipleChoice
+        label: Quels elements du parcours vous ont encore aide apres la fin ?
+        required: false
+        options:
+          - Synthese finale
+          - Plan d action
+          - Travail sur les valeurs
+          - Travail sur les competences
+          - Analyse des pistes
+          - Confiance personnelle
+          - Methodologie de decision
+      - id: Q007
+        type: rating10
+        label: Niveau de progression depuis la fin du parcours
+        required: true
+  - id: PROJECT_STATUS
+    title: Etat du projet
+    order: 4
+    questions:
+      - id: Q008
+        type: singleChoice
+        label: Etat actuel du projet professionnel
+        required: true
+        options:
+          - Realise
+          - En cours
+          - Modifie
+          - Mis en attente
+          - Remplace par une autre piste
+      - id: Q009
+        type: longText
+        label: Expliquez l etat actuel de votre projet
+        required: false
+      - id: Q010
+        type: rating10
+        label: Clarte actuelle de votre projet
+        required: true
+  - id: SUPPORT_NEEDS
+    title: Besoins pour la suite
+    order: 5
+    questions:
+      - id: Q011
+        type: multipleChoice
+        label: Quels besoins identifiez vous aujourd hui ?
+        required: false
+        options:
+          - Suivi ponctuel
+          - Formation
+          - Reseau
+          - Mise a jour CV
+          - Preparation entretien
+          - Recherche information metier
+          - Clarification supplementaire
+      - id: Q012
+        type: longText
+        label: Quelle prochaine action souhaitez vous realiser ?
+        required: true
+      - id: Q013
+        type: rating10
+        label: Niveau de confiance pour continuer a avancer
+        required: true
+  - id: FEEDBACK
+    title: Retour sur le parcours
+    order: 6
+    questions:
+      - id: Q014
+        type: longText
+        label: Avec le recul, ce que le parcours vous a apporte
+        required: false
+      - id: Q015
+        type: longText
+        label: Ce qui pourrait etre ameliore pour les futurs beneficiaires
+        required: false
