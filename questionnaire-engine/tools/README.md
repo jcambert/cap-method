@@ -18,22 +18,23 @@ node questionnaire-engine/tools/validate-cmdl.mjs path/to/cmdl/files
 
 The validator currently checks:
 
-- required root fields;
+- root fields;
 - form id format;
 - semantic version format;
-- presence of at least one question type;
+- question type presence;
 - supported question types;
 - duplicate section ids;
 - duplicate question ids;
-- options block for singleChoice and multipleChoice questions;
+- question labels;
+- required flags for non-information questions;
+- options block for choice questions;
 - rows block for matrix questions.
 
 ## Next checks
 
 Planned checks:
 
-- question id format coverage;
-- section id format coverage;
+- stricter id coverage;
 - status compatibility rules;
 - minimum option count for choice questions;
 - minimum row count for matrix questions.
