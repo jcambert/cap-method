@@ -1,16 +1,23 @@
 id: FORM-002
 title: Valeurs professionnelles
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: values
 status: draft
-estimatedDurationMinutes: 20
+estimatedDurationMinutes: 25
 sections:
-  - id: VALUE_SELECTION
-    title: Selection des valeurs
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
+        type: information
+        label: Ce questionnaire aide a identifier les valeurs professionnelles importantes pour vous.
+  - id: VALUE_SELECTION
+    title: Selection des valeurs
+    order: 2
+    questions:
+      - id: Q002
         type: multipleChoice
         label: Selectionnez les valeurs importantes pour vous
         required: true
@@ -21,11 +28,70 @@ sections:
           - Apprentissage
           - Equilibre
           - Utilite
+          - Responsabilite
+          - Creativite
+          - Stabilite
+          - Challenge
+          - Transmission
+          - Cooperation
+      - id: Q003
+        type: longText
+        label: Ajoutez d autres valeurs importantes si besoin
+        required: false
   - id: PRIORITIZATION
     title: Priorisation
-    order: 2
+    order: 3
     questions:
-      - id: Q002
+      - id: Q004
+        type: text
+        label: Valeur prioritaire numero 1
+        required: true
+      - id: Q005
+        type: text
+        label: Valeur prioritaire numero 2
+        required: true
+      - id: Q006
+        type: text
+        label: Valeur prioritaire numero 3
+        required: true
+      - id: Q007
         type: longText
-        label: Expliquez vos valeurs prioritaires
+        label: Expliquez pourquoi ces valeurs sont prioritaires
+        required: true
+  - id: CURRENT_ALIGNMENT
+    title: Alignement actuel
+    order: 4
+    questions:
+      - id: Q008
+        type: rating10
+        label: Niveau d alignement entre vos valeurs et votre situation actuelle
+        required: true
+      - id: Q009
+        type: longText
+        label: Quelles valeurs sont actuellement respectees ?
+        required: false
+      - id: Q010
+        type: longText
+        label: Quelles valeurs sont actuellement peu respectees ?
+        required: false
+  - id: FUTURE_ALIGNMENT
+    title: Projection
+    order: 5
+    questions:
+      - id: Q011
+        type: multipleChoice
+        label: Quelles conditions favoriseraient un meilleur alignement ?
+        required: false
+        options:
+          - Plus d autonomie
+          - Plus de reconnaissance
+          - Plus de sens
+          - Plus d apprentissage
+          - Meilleur equilibre
+          - Cadre plus stable
+          - Missions plus stimulantes
+          - Relations de travail plus cooperatives
+      - id: Q012
+        type: longText
+        label: Decrivez l environnement professionnel qui respecterait le mieux vos valeurs
         required: true
