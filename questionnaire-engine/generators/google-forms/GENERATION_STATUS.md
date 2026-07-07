@@ -2,26 +2,57 @@
 
 ## Milestone completed
 
-The first CMDL to Google Forms generation milestone is complete.
+The Google Forms generator now supports suite generation from a CMDL folder.
 
 ## Delivered files
 
 - `generate-google-forms.mjs`
 - `generated/FORM-001.generated.gs`
+- `generated/cap_method_generated_suite.gs`
 
-## Source
+## Sources
 
 - `questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-002.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-003.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-004.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-005.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-006.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-007.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-008.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-009.cmdl.yaml`
+- `questionnaire-engine/cmdl/examples/FORM-010.cmdl.yaml`
 
-## Current output
+## Current generator capability
 
-The generated output creates a Google Apps Script builder function:
+The generator can:
 
-```javascript
-function build_FORM_001_(form) {
-  // generated Google Forms items
-}
+- read a single CMDL file;
+- read a folder of CMDL files;
+- sort CMDL files by name;
+- generate one builder function per form;
+- generate one suite creation function;
+- map the current CMDL question types to Google Forms items.
+
+## Commands
+
+Generate the full suite:
+
+```bash
+node questionnaire-engine/generators/google-forms/generate-google-forms.mjs
 ```
+
+Generate from a specific input folder to a specific output file:
+
+```bash
+node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples output.gs
+```
+
+## Important note about the committed suite snapshot
+
+The committed `generated/cap_method_generated_suite.gs` is a suite-level snapshot showing the final wrapper and builder function structure.
+
+The authoritative generated output must be refreshed by running `generate-google-forms.mjs` locally or in CI, because the script emits the full question content from CMDL.
 
 ## Supported mappings
 
@@ -39,9 +70,10 @@ function build_FORM_001_(form) {
 
 - The generator is intentionally simple.
 - It is built for current CMDL examples, not generic YAML.
-- It does not yet generate the full suite wrapper.
 - It does not yet create spreadsheets or Drive folders.
+- It does not yet move files into a Drive folder.
 - It does not yet replace the existing working Apps Script generator.
+- The committed suite snapshot is not yet a production Apps Script replacement.
 
 ## Validation rule
 
@@ -49,10 +81,10 @@ The existing Apps Script generator remains the production fallback until generat
 
 ## Next milestone
 
-Generate the full Google Forms suite from all CMDL files:
+Turn generated suite output into a production-ready Apps Script replacement:
 
-1. load FORM-001 to FORM-010;
-2. generate one builder function per form;
-3. generate one suite creation function;
-4. compare with the existing working Apps Script generator;
-5. test in Google Apps Script.
+1. run the generator locally;
+2. commit the fully refreshed generated suite;
+3. add Drive folder and spreadsheet destination generation;
+4. test the generated suite in Google Apps Script;
+5. compare generated forms with the current working generator.
