@@ -24,14 +24,16 @@ The validator currently checks:
 - presence of at least one question type;
 - supported question types;
 - duplicate section ids;
-- duplicate question ids.
+- duplicate question ids;
+- options block for singleChoice and multipleChoice questions;
+- rows block for matrix questions.
 
 ## Next checks
 
 Planned checks:
 
-- required options for choice questions;
-- required rows for matrix questions;
 - question id format coverage;
 - section id format coverage;
-- status compatibility rules.
+- status compatibility rules;
+- minimum option count for choice questions;
+- minimum row count for matrix questions.
