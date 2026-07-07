@@ -1,24 +1,99 @@
 id: FORM-008
 title: Evaluation intermediaire
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: evaluation
 status: draft
-estimatedDurationMinutes: 15
+estimatedDurationMinutes: 20
 sections:
-  - id: SATISFACTION
-    title: Satisfaction a mi parcours
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: rating10
-        label: Satisfaction globale a ce stade
-        required: true
-  - id: ADJUSTMENTS
-    title: Ajustements
+        type: information
+        label: Ce questionnaire mesure l avancement a mi-parcours et prepare les ajustements utiles.
+  - id: SATISFACTION
+    title: Satisfaction a mi parcours
     order: 2
     questions:
       - id: Q002
+        type: rating10
+        label: Satisfaction globale a ce stade
+        required: true
+      - id: Q003
+        type: rating10
+        label: Clarte des objectifs du parcours
+        required: true
+      - id: Q004
+        type: rating10
+        label: Utilite des travaux realises jusqu ici
+        required: true
+  - id: PROGRESS
+    title: Progression
+    order: 3
+    questions:
+      - id: Q005
         type: longText
-        label: Quels ajustements seraient utiles ?
+        label: Qu avez vous deja clarifie depuis le debut ?
+        required: true
+      - id: Q006
+        type: longText
+        label: Quelles prises de conscience sont importantes pour vous ?
+        required: false
+      - id: Q007
+        type: rating10
+        label: Niveau de progression ressenti
+        required: true
+  - id: CONTENT_AND_METHOD
+    title: Contenu et methode
+    order: 4
+    questions:
+      - id: Q008
+        type: multipleChoice
+        label: Quels elements du parcours vous aident le plus ?
+        required: false
+        options:
+          - Questionnaires
+          - Entretiens
+          - Exercices personnels
+          - Syntheses
+          - Recherches metier
+          - Feedback consultant
+          - Supports fournis
+      - id: Q009
+        type: longText
+        label: Que faudrait il approfondir davantage ?
+        required: false
+  - id: ADJUSTMENTS
+    title: Ajustements
+    order: 5
+    questions:
+      - id: Q010
+        type: longText
+        label: Quels ajustements seraient utiles pour la suite ?
+        required: false
+      - id: Q011
+        type: singleChoice
+        label: Rythme actuel du parcours
+        required: true
+        options:
+          - Trop lent
+          - Adapte
+          - Trop rapide
+      - id: Q012
+        type: longText
+        label: Quelle priorite souhaitez vous travailler lors des prochaines seances ?
+        required: true
+  - id: CONFIDENCE
+    title: Confiance pour la suite
+    order: 6
+    questions:
+      - id: Q013
+        type: rating10
+        label: Niveau de confiance pour la suite du parcours
+        required: true
+      - id: Q014
+        type: longText
+        label: Qu est ce qui renforcerait votre confiance ?
         required: false
