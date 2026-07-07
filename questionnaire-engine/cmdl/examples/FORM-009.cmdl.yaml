@@ -1,24 +1,103 @@
 id: FORM-009
 title: Evaluation finale
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: evaluation
 status: draft
-estimatedDurationMinutes: 20
+estimatedDurationMinutes: 25
 sections:
-  - id: FINAL_SATISFACTION
-    title: Satisfaction finale
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: rating10
-        label: Satisfaction globale
-        required: true
-  - id: RESULTS
-    title: Resultats obtenus
+        type: information
+        label: Ce questionnaire mesure la satisfaction finale et les resultats obtenus a l issue du parcours.
+  - id: FINAL_SATISFACTION
+    title: Satisfaction finale
     order: 2
     questions:
       - id: Q002
+        type: rating10
+        label: Satisfaction globale
+        required: true
+      - id: Q003
+        type: rating10
+        label: Qualite de l accompagnement
+        required: true
+      - id: Q004
+        type: rating10
+        label: Utilite des supports et exercices
+        required: true
+  - id: RESULTS
+    title: Resultats obtenus
+    order: 3
+    questions:
+      - id: Q005
         type: longText
         label: Quels resultats avez vous obtenus ?
+        required: true
+      - id: Q006
+        type: multipleChoice
+        label: Quels livrables ou acquis retenez vous ?
+        required: false
+        options:
+          - Projet professionnel clarifie
+          - Competences identifiees
+          - Valeurs clarifiees
+          - Plan d action defini
+          - Pistes comparees
+          - Confiance renforcee
+          - CV ou supports prepares
+      - id: Q007
+        type: rating10
+        label: Niveau d atteinte de vos objectifs initiaux
+        required: true
+  - id: PROJECT_CLARITY
+    title: Clarte du projet
+    order: 4
+    questions:
+      - id: Q008
+        type: rating10
+        label: Clarte actuelle de votre projet professionnel
+        required: true
+      - id: Q009
+        type: longText
+        label: Decrivez votre projet professionnel a la fin du parcours
+        required: true
+      - id: Q010
+        type: longText
+        label: Quelle decision importante avez vous prise ou preparee ?
+        required: false
+  - id: ACTION_PLAN
+    title: Plan d action
+    order: 5
+    questions:
+      - id: Q011
+        type: rating10
+        label: Niveau de confiance dans votre plan d action
+        required: true
+      - id: Q012
+        type: longText
+        label: Quelle est votre prochaine action concrete ?
+        required: true
+      - id: Q013
+        type: longText
+        label: Quels points devront etre suivis apres le parcours ?
+        required: false
+  - id: IMPROVEMENT
+    title: Amelioration continue
+    order: 6
+    questions:
+      - id: Q014
+        type: longText
+        label: Ce que vous avez le plus apprecie dans le parcours
+        required: false
+      - id: Q015
+        type: longText
+        label: Ce qui pourrait etre ameliore
+        required: false
+      - id: Q016
+        type: rating10
+        label: Recommanderiez vous ce parcours ?
         required: true
