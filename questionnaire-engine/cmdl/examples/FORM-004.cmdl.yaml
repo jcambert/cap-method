@@ -1,24 +1,115 @@
 id: FORM-004
 title: Mode de fonctionnement
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: self-awareness
 status: draft
-estimatedDurationMinutes: 25
+estimatedDurationMinutes: 30
 sections:
-  - id: WORK_STYLE
-    title: Mode de travail
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
-        type: rating10
-        label: Je travaille efficacement de maniere autonome
-        required: true
-  - id: COMMUNICATION
-    title: Communication
+        type: information
+        label: Ce questionnaire aide a mieux comprendre votre fonctionnement professionnel.
+  - id: WORK_STYLE
+    title: Mode de travail
     order: 2
     questions:
       - id: Q002
+        type: rating10
+        label: Je travaille efficacement de maniere autonome
+        required: true
+      - id: Q003
+        type: rating10
+        label: Je travaille efficacement en equipe
+        required: true
+      - id: Q004
+        type: multipleChoice
+        label: Dans quelles conditions travaillez vous le mieux ?
+        required: true
+        options:
+          - Autonomie
+          - Cadre clair
+          - Equipe proche
+          - Objectifs precis
+          - Variete
+          - Temps long
+          - Urgence moderee
+          - Feedback regulier
+  - id: ORGANIZATION
+    title: Organisation
+    order: 3
+    questions:
+      - id: Q005
+        type: rating10
+        label: Niveau d organisation personnelle
+        required: true
+      - id: Q006
+        type: longText
+        label: Comment organisez vous vos priorites ?
+        required: false
+      - id: Q007
+        type: multipleChoice
+        label: Quels outils ou pratiques vous aident a vous organiser ?
+        required: false
+        options:
+          - Agenda
+          - Liste de taches
+          - Tableaux de suivi
+          - Rituels d equipe
+          - Notes personnelles
+          - Outils numeriques
+          - Planification hebdomadaire
+  - id: COMMUNICATION
+    title: Communication
+    order: 4
+    questions:
+      - id: Q008
         type: longText
         label: Decrivez votre facon de communiquer au travail
         required: false
+      - id: Q009
+        type: multipleChoice
+        label: Quels modes de communication vous conviennent le mieux ?
+        required: false
+        options:
+          - Ecrit
+          - Oral
+          - Reunion courte
+          - Entretien individuel
+          - Documentation partagee
+          - Message instantane
+      - id: Q010
+        type: rating10
+        label: Aisance dans les echanges professionnels
+        required: true
+  - id: DECISION_AND_STRESS
+    title: Decision et pression
+    order: 5
+    questions:
+      - id: Q011
+        type: longText
+        label: Comment prenez vous une decision importante ?
+        required: false
+      - id: Q012
+        type: rating10
+        label: Niveau de confort face a la pression
+        required: true
+      - id: Q013
+        type: longText
+        label: Quelles situations vous demandent le plus d energie ?
+        required: false
+  - id: PREFERRED_ENVIRONMENT
+    title: Environnement favorable
+    order: 6
+    questions:
+      - id: Q014
+        type: longText
+        label: Decrivez l environnement de travail le plus favorable pour vous
+        required: true
+      - id: Q015
+        type: rating10
+        label: Clarte actuelle sur votre mode de fonctionnement
+        required: true
