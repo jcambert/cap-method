@@ -1,0 +1,24 @@
+id: FORM-008
+title: Evaluation intermediaire
+version: 0.1.0
+language: fr-FR
+module: evaluation
+status: draft
+estimatedDurationMinutes: 15
+sections:
+  - id: SATISFACTION
+    title: Satisfaction a mi parcours
+    order: 1
+    questions:
+      - id: Q001
+        type: rating10
+        label: Satisfaction globale a ce stade
+        required: true
+  - id: ADJUSTMENTS
+    title: Ajustements
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Quels ajustements seraient utiles ?
+        required: false
