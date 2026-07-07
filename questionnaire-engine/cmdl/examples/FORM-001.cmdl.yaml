@@ -1,0 +1,73 @@
+id: FORM-001
+title: Diagnostic initial
+version: 0.1.0
+language: fr-FR
+module: diagnostic
+status: draft
+estimatedDurationMinutes: 30
+sections:
+  - id: WELCOME
+    title: Bienvenue
+    order: 1
+    questions:
+      - id: Q001
+        type: information
+        label: Ce questionnaire prepare le premier entretien CAP Method.
+  - id: PERSONAL_INFORMATION
+    title: Vos informations
+    order: 2
+    questions:
+      - id: Q002
+        type: text
+        label: Nom
+        required: true
+      - id: Q003
+        type: text
+        label: Prenom
+        required: true
+      - id: Q004
+        type: email
+        label: Adresse e-mail
+        required: true
+      - id: Q005
+        type: phone
+        label: Telephone
+        required: false
+  - id: PROFESSIONAL_SITUATION
+    title: Situation professionnelle
+    order: 3
+    questions:
+      - id: Q006
+        type: singleChoice
+        label: Situation actuelle
+        required: true
+        options:
+          - Salarie
+          - Independant
+          - Demandeur emploi
+          - Reconversion
+          - Autre
+      - id: Q007
+        type: text
+        label: Poste actuel ou derniere fonction
+        required: false
+  - id: SATISFACTION
+    title: Satisfaction professionnelle
+    order: 4
+    questions:
+      - id: Q008
+        type: rating10
+        label: Satisfaction au travail
+        required: true
+      - id: Q009
+        type: rating10
+        label: Confiance dans l avenir professionnel
+        required: true
+  - id: EXPECTATIONS
+    title: Attentes
+    order: 5
+    questions:
+      - id: Q010
+        type: longText
+        label: Qu attendez vous principalement de ce bilan de competences ?
+        required: true
