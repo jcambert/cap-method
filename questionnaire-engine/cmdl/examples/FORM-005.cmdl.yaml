@@ -1,0 +1,24 @@
+id: FORM-005
+title: Interets professionnels
+version: 0.1.0
+language: fr-FR
+module: exploration
+status: draft
+estimatedDurationMinutes: 25
+sections:
+  - id: ACTIVITIES
+    title: Activites preferees
+    order: 1
+    questions:
+      - id: Q001
+        type: multipleChoice
+        label: Selectionnez les activites qui vous attirent
+        required: true
+  - id: ENVIRONMENTS
+    title: Environnements
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Quels environnements de travail vous interessent ?
+        required: false
