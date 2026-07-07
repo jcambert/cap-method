@@ -1,15 +1,109 @@
 id: FORM-006
-title: Pistes professionnelles
-version: 0.1.0
+title: Analyse des pistes
+version: 0.2.0
 language: fr-FR
 module: project
 status: draft
+estimatedDurationMinutes: 35
 sections:
-  - id: OPTION
-    title: Piste
+  - id: INTRODUCTION
+    title: Introduction
     order: 1
     questions:
       - id: Q001
+        type: information
+        label: Ce questionnaire aide a comparer les pistes professionnelles identifiees pendant le parcours.
+  - id: MAIN_OPTION
+    title: Piste principale
+    order: 2
+    questions:
+      - id: Q002
         type: text
-        label: Nom de la piste
+        label: Nom de la piste professionnelle principale
+        required: true
+      - id: Q003
+        type: longText
+        label: Decrivez cette piste en quelques lignes
+        required: true
+      - id: Q004
+        type: rating10
+        label: Niveau de motivation pour cette piste
+        required: true
+  - id: FIT
+    title: Adequation personnelle
+    order: 3
+    questions:
+      - id: Q005
+        type: rating10
+        label: Adequation avec vos valeurs
+        required: true
+      - id: Q006
+        type: rating10
+        label: Adequation avec vos competences actuelles
+        required: true
+      - id: Q007
+        type: rating10
+        label: Adequation avec vos interets professionnels
+        required: true
+      - id: Q008
+        type: longText
+        label: Pourquoi cette piste semble pertinente pour vous ?
+        required: true
+  - id: FEASIBILITY
+    title: Faisabilite
+    order: 4
+    questions:
+      - id: Q009
+        type: rating10
+        label: Faisabilite globale de cette piste
+        required: true
+      - id: Q010
+        type: multipleChoice
+        label: Quels elements restent a verifier ?
+        required: false
+        options:
+          - Formation necessaire
+          - Marche de l emploi
+          - Remuneration
+          - Mobilite
+          - Rythme de travail
+          - Prerequis techniques
+          - Conditions d acces
+          - Reseau professionnel
+      - id: Q011
+        type: longText
+        label: Quels elements concrets confirment cette piste ?
+        required: false
+  - id: COMPARISON
+    title: Comparaison avec les autres pistes
+    order: 5
+    questions:
+      - id: Q012
+        type: longText
+        label: Quelles autres pistes souhaitez vous comparer ?
+        required: false
+      - id: Q013
+        type: longText
+        label: Quels sont les avantages de la piste principale ?
+        required: true
+      - id: Q014
+        type: longText
+        label: Quels sont ses points a approfondir ?
+        required: false
+  - id: DECISION
+    title: Decision provisoire
+    order: 6
+    questions:
+      - id: Q015
+        type: singleChoice
+        label: Statut actuel de cette piste
+        required: true
+        options:
+          - A retenir
+          - A approfondir
+          - A mettre en attente
+          - A abandonner
+      - id: Q016
+        type: longText
+        label: Quelle prochaine action permettrait d avancer sur cette piste ?
         required: true
