@@ -1,17 +1,34 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const input = process.argv[2] ?? 'questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml';
-const output = process.argv[3] ?? 'questionnaire-engine/generators/google-forms/generated/FORM-001.generated.gs';
+const defaultInput = 'questionnaire-engine/cmdl/examples';
+const defaultOutput = 'questionnaire-engine/generators/google-forms/generated/cap_method_generated_suite.gs';
 
-const source = fs.readFileSync(input, 'utf8');
-const definition = parseCmdl(source);
-const script = renderAppsScript(definition);
+const input = process.argv[2] ?? defaultInput;
+const output = process.argv[3] ?? defaultOutput;
+
+const definitions = loadDefinitions(input);
+const script = renderSuite(definitions);
 
 fs.mkdirSync(path.dirname(output), { recursive: true });
 fs.writeFileSync(output, script, 'utf8');
 
 console.log(`Generated ${output}`);
+console.log(`Forms: ${definitions.length}`);
+
+function loadDefinitions(inputPath) {
+  const stats = fs.statSync(inputPath);
+
+  if (stats.isFile()) {
+    return [parseCmdl(fs.readFileSync(inputPath, 'utf8'))];
+  }
+
+  return fs.readdirSync(inputPath)
+    .filter(file => file.endsWith('.cmdl.yaml'))
+    .sort()
+    .map(file => path.join(inputPath, file))
+    .map(file => parseCmdl(fs.readFileSync(file, 'utf8')));
+}
 
 function parseCmdl(source) {
   const lines = source.split('\n');
@@ -98,13 +115,37 @@ function valueAfter(text, prefix) {
   return text.slice(prefix.length).trim();
 }
 
-function renderAppsScript(definition) {
+function renderSuite(definitions) {
   const lines = [];
   lines.push('// GENERATED FILE - DO NOT EDIT MANUALLY');
-  lines.push(`// Source: ${definition.id}.cmdl.yaml`);
-  lines.push(`// Version: ${definition.version}`);
+  lines.push('// Source: CAP Method CMDL questionnaire definitions');
   lines.push('');
-  lines.push(`function build_${definition.id.replace('-', '_')}_(form) {`);
+  lines.push('function createCapMethodGeneratedFormsSuite() {');
+  lines.push('  const forms = [];');
+  lines.push('');
+
+  for (const definition of definitions) {
+    const builderName = buildFunctionName(definition);
+    lines.push(`  const form_${safeId(definition.id)} = FormApp.create('${escapeJs(definition.id + ' - ' + definition.title)}');`);
+    lines.push(`  ${builderName}(form_${safeId(definition.id)});`);
+    lines.push(`  forms.push(form_${safeId(definition.id)});`);
+    lines.push('');
+  }
+
+  lines.push('  return forms;');
+  lines.push('}');
+  lines.push('');
+
+  for (const definition of definitions) {
+    lines.push(renderBuilder(definition));
+  }
+
+  return lines.join('\n');
+}
+
+function renderBuilder(definition) {
+  const lines = [];
+  lines.push(`function ${buildFunctionName(definition)}(form) {`);
   lines.push(`  form.setTitle('${escapeJs(definition.id + ' - ' + definition.title)}');`);
   lines.push(`  form.setDescription('${escapeJs('Generated from CAP Method CMDL.')}');`);
   lines.push('');
@@ -122,6 +163,14 @@ function renderAppsScript(definition) {
   lines.push('}');
   lines.push('');
   return lines.join('\n');
+}
+
+function buildFunctionName(definition) {
+  return `build_${safeId(definition.id)}_`;
+}
+
+function safeId(id) {
+  return id.replaceAll('-', '_');
 }
 
 function renderQuestion(lines, question) {
