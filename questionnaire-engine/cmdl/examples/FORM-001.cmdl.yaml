@@ -1,10 +1,10 @@
 id: FORM-001
 title: Diagnostic initial
-version: 0.1.0
+version: 0.2.0
 language: fr-FR
 module: diagnostic
 status: draft
-estimatedDurationMinutes: 30
+estimatedDurationMinutes: 35
 sections:
   - id: WELCOME
     title: Bienvenue
@@ -51,23 +51,123 @@ sections:
         type: text
         label: Poste actuel ou derniere fonction
         required: false
-  - id: SATISFACTION
+      - id: Q008
+        type: text
+        label: Secteur ou domaine actuel
+        required: false
+      - id: Q009
+        type: longText
+        label: Decrivez brievement votre contexte professionnel actuel
+        required: false
+  - id: WORK_SATISFACTION
     title: Satisfaction professionnelle
     order: 4
     questions:
-      - id: Q008
+      - id: Q010
         type: rating10
-        label: Satisfaction au travail
+        label: Satisfaction globale au travail
         required: true
-      - id: Q009
+      - id: Q011
         type: rating10
         label: Confiance dans l avenir professionnel
         required: true
-  - id: EXPECTATIONS
-    title: Attentes
+      - id: Q012
+        type: longText
+        label: Qu est ce qui fonctionne bien aujourd hui ?
+        required: false
+      - id: Q013
+        type: longText
+        label: Qu est ce qui ne vous convient plus ?
+        required: false
+  - id: STARTING_REASONS
+    title: Raisons de la demarche
     order: 5
     questions:
-      - id: Q010
+      - id: Q014
+        type: multipleChoice
+        label: Pourquoi souhaitez vous demarrer ce bilan ?
+        required: true
+        options:
+          - Clarifier un projet
+          - Changer de metier
+          - Evoluer dans l entreprise
+          - Retrouver du sens
+          - Valoriser mes competences
+          - Preparer une transition
+          - Autre
+      - id: Q015
+        type: longText
+        label: Expliquez votre motivation principale
+        required: true
+  - id: EXPECTATIONS
+    title: Attentes
+    order: 6
+    questions:
+      - id: Q016
         type: longText
         label: Qu attendez vous principalement de ce bilan de competences ?
+        required: true
+      - id: Q017
+        type: multipleChoice
+        label: Quels resultats souhaitez vous obtenir ?
+        required: false
+        options:
+          - Projet professionnel clair
+          - Plan d action concret
+          - Meilleure connaissance de soi
+          - Reperes sur le marche
+          - Confiance renforcee
+          - Decision argumentee
+  - id: SKILLS_AND_ACHIEVEMENTS
+    title: Competences et realisations
+    order: 7
+    questions:
+      - id: Q018
+        type: longText
+        label: Listez vos principales competences
+        required: false
+      - id: Q019
+        type: longText
+        label: Decrivez une realisation professionnelle dont vous etes fier
+        required: false
+      - id: Q020
+        type: longText
+        label: Quelles competences souhaitez vous developper ?
+        required: false
+  - id: BLOCKERS
+    title: Points de vigilance
+    order: 8
+    questions:
+      - id: Q021
+        type: multipleChoice
+        label: Quels elements peuvent compliquer votre projet ?
+        required: false
+        options:
+          - Temps disponible
+          - Budget
+          - Mobilite
+          - Confiance
+          - Formation
+          - Contraintes familiales
+          - Connaissance du marche
+          - Autre
+      - id: Q022
+        type: longText
+        label: Precisez les points importants a prendre en compte
+        required: false
+  - id: PROJECTION
+    title: Projection
+    order: 9
+    questions:
+      - id: Q023
+        type: rating10
+        label: Clarte actuelle de votre projet professionnel
+        required: true
+      - id: Q024
+        type: rating10
+        label: Niveau d energie pour avancer
+        required: true
+      - id: Q025
+        type: longText
+        label: Si le bilan reussit, que devra-t-il avoir change pour vous ?
         required: true
