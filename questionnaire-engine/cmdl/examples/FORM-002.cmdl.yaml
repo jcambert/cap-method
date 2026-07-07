@@ -14,6 +14,13 @@ sections:
         type: multipleChoice
         label: Selectionnez les valeurs importantes pour vous
         required: true
+        options:
+          - Autonomie
+          - Securite
+          - Reconnaissance
+          - Apprentissage
+          - Equilibre
+          - Utilite
   - id: PRIORITIZATION
     title: Priorisation
     order: 2
