@@ -1,0 +1,24 @@
+id: FORM-003
+title: Competences et realisations
+version: 0.1.0
+language: fr-FR
+module: skills
+status: draft
+estimatedDurationMinutes: 30
+sections:
+  - id: TECHNICAL_SKILLS
+    title: Competences techniques
+    order: 1
+    questions:
+      - id: Q001
+        type: longText
+        label: Listez vos principales competences techniques
+        required: true
+  - id: ACHIEVEMENTS
+    title: Realisations
+    order: 2
+    questions:
+      - id: Q002
+        type: longText
+        label: Decrivez vos realisations significatives
+        required: true
