@@ -21,14 +21,17 @@ The validator currently checks:
 - required root fields;
 - form id format;
 - semantic version format;
-- presence of at least one question type.
+- presence of at least one question type;
+- supported question types;
+- duplicate section ids;
+- duplicate question ids.
 
 ## Next checks
 
 Planned checks:
 
-- supported question types;
-- unique section ids;
-- unique question ids;
 - required options for choice questions;
-- required rows for matrix questions.
+- required rows for matrix questions;
+- question id format coverage;
+- section id format coverage;
+- status compatibility rules.
