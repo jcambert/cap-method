@@ -85,7 +85,7 @@ function validate(file, content) {
 }
 
 function readValue(content, field) {
-  const match = content.match(new RegExp(`^${field}:\\s*(.+)$`, 'm'));
+  const match = content.match(new RegExp(`^\\s*${field}:\\s*(.+)$`, 'm'));
   return match ? match[1].trim() : null;
 }
 
