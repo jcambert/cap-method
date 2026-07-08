@@ -43,3 +43,11 @@ jobs:
           grep -q "build_FORM_008_" /tmp/cap_method_generated_suite.gs
           grep -q "build_FORM_009_" /tmp/cap_method_generated_suite.gs
           grep -q "build_FORM_010_" /tmp/cap_method_generated_suite.gs
+
+      - name: Check generated suite production features
+        run: |
+          grep -q "DriveApp" /tmp/cap_method_generated_suite.gs
+          grep -q "SpreadsheetApp.create" /tmp/cap_method_generated_suite.gs
+          grep -q "setDestination" /tmp/cap_method_generated_suite.gs
+          grep -q "getOrCreateGeneratedFolder_" /tmp/cap_method_generated_suite.gs
+          grep -q "moveFileToFolder_" /tmp/cap_method_generated_suite.gs
