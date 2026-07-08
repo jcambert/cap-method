@@ -120,15 +120,26 @@ function renderSuite(definitions) {
   lines.push('// GENERATED FILE - DO NOT EDIT MANUALLY');
   lines.push('// Source: CAP Method CMDL questionnaire definitions');
   lines.push('');
+  lines.push('const CAP_METHOD_GENERATED_CONFIG = {');
+  lines.push("  folderName: 'CAP Method - Generated Google Forms Suite',");
+  lines.push("  description: 'Generated from CAP Method CMDL.',");
+  lines.push("  confirmationMessage: 'Merci pour vos reponses.'");
+  lines.push('};');
+  lines.push('');
   lines.push('function createCapMethodGeneratedFormsSuite() {');
+  lines.push('  const folder = getOrCreateGeneratedFolder_(CAP_METHOD_GENERATED_CONFIG.folderName);');
   lines.push('  const forms = [];');
   lines.push('');
 
   for (const definition of definitions) {
     const builderName = buildFunctionName(definition);
     lines.push(`  const form_${safeId(definition.id)} = FormApp.create('${escapeJs(definition.id + ' - ' + definition.title)}');`);
+    lines.push(`  const sheet_${safeId(definition.id)} = SpreadsheetApp.create('${escapeJs(definition.id + ' - Reponses - ' + definition.title)}');`);
     lines.push(`  ${builderName}(form_${safeId(definition.id)});`);
-    lines.push(`  forms.push(form_${safeId(definition.id)});`);
+    lines.push(`  form_${safeId(definition.id)}.setDestination(FormApp.DestinationType.SPREADSHEET, sheet_${safeId(definition.id)}.getId());`);
+    lines.push(`  moveFileToFolder_(form_${safeId(definition.id)}.getId(), folder);`);
+    lines.push(`  moveFileToFolder_(sheet_${safeId(definition.id)}.getId(), folder);`);
+    lines.push(`  forms.push({ code: '${escapeJs(definition.id)}', form: form_${safeId(definition.id)}, sheet: sheet_${safeId(definition.id)} });`);
     lines.push('');
   }
 
@@ -140,6 +151,7 @@ function renderSuite(definitions) {
     lines.push(renderBuilder(definition));
   }
 
+  lines.push(renderHelpers());
   return lines.join('\n');
 }
 
@@ -147,7 +159,8 @@ function renderBuilder(definition) {
   const lines = [];
   lines.push(`function ${buildFunctionName(definition)}(form) {`);
   lines.push(`  form.setTitle('${escapeJs(definition.id + ' - ' + definition.title)}');`);
-  lines.push(`  form.setDescription('${escapeJs('Generated from CAP Method CMDL.')}');`);
+  lines.push('  form.setDescription(CAP_METHOD_GENERATED_CONFIG.description);');
+  lines.push('  form.setConfirmationMessage(CAP_METHOD_GENERATED_CONFIG.confirmationMessage);');
   lines.push('');
 
   for (const section of definition.sections) {
@@ -163,6 +176,25 @@ function renderBuilder(definition) {
   lines.push('}');
   lines.push('');
   return lines.join('\n');
+}
+
+function renderHelpers() {
+  return [
+    'function getOrCreateGeneratedFolder_(folderName) {',
+    '  const folders = DriveApp.getFoldersByName(folderName);',
+    '  if (folders.hasNext()) {',
+    '    return folders.next();',
+    '  }',
+    '  return DriveApp.createFolder(folderName);',
+    '}',
+    '',
+    'function moveFileToFolder_(fileId, folder) {',
+    '  const file = DriveApp.getFileById(fileId);',
+    '  folder.addFile(file);',
+    '  DriveApp.getRootFolder().removeFile(file);',
+    '}',
+    ''
+  ].join('\n');
 }
 
 function buildFunctionName(definition) {
