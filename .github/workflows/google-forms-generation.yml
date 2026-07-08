@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - 'questionnaire-engine/cmdl/**'
+      - 'questionnaire-engine/tools/**'
       - 'questionnaire-engine/generators/google-forms/**'
       - '.github/workflows/google-forms-generation.yml'
   pull_request:
     paths:
       - 'questionnaire-engine/cmdl/**'
+      - 'questionnaire-engine/tools/**'
       - 'questionnaire-engine/generators/google-forms/**'
       - '.github/workflows/google-forms-generation.yml'
 
