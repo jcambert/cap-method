@@ -66,7 +66,9 @@ function validate(file, content) {
     issues.push(`Invalid version: ${version}`);
   }
 
-  const types = readTypes(content);
+  const questionBlocks = readQuestionBlocks(content);
+  const types = questionBlocks.map(block => block.type).filter(Boolean);
+
   if (types.length === 0) {
     issues.push('No question type found');
   }
@@ -78,8 +80,8 @@ function validate(file, content) {
   }
 
   checkDuplicates(readSectionIds(content), 'section id', issues);
-  checkDuplicates(readQuestionIds(content), 'question id', issues);
-  checkQuestionBlocks(content, issues);
+  checkDuplicates(questionBlocks.map(block => block.id), 'question id', issues);
+  checkQuestionBlocks(questionBlocks, issues);
 
   return issues;
 }
@@ -89,19 +91,64 @@ function readValue(content, field) {
   return match ? match[1].trim() : null;
 }
 
-function readTypes(content) {
-  return [...content.matchAll(/^\s*type:\s*(.+)$/gm)]
-    .map(match => match[1].trim());
-}
-
 function readSectionIds(content) {
   return [...content.matchAll(/^\s*-\s+id:\s*([A-Z][A-Z0-9_]*)\s*$/gm)]
-    .map(match => match[1].trim());
+    .map(match => match[1].trim())
+    .filter(value => !/^Q\d{3}$/.test(value));
 }
 
-function readQuestionIds(content) {
-  return [...content.matchAll(/^\s*-\s+id:\s*(Q\d{3})\s*$/gm)]
-    .map(match => match[1].trim());
+function readQuestionBlocks(content) {
+  const blocks = [];
+  const lines = content.split('\n');
+  let current = null;
+
+  for (const line of lines) {
+    const idMatch = line.match(/^\s*-\s+id:\s*(Q\d{3})\s*$/);
+    if (idMatch) {
+      current = {
+        id: idMatch[1],
+        type: null,
+        label: null,
+        required: null,
+        hasOptions: false,
+        hasRows: false
+      };
+      blocks.push(current);
+      continue;
+    }
+
+    if (!current) {
+      continue;
+    }
+
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith('type:')) {
+      current.type = trimmed.slice('type:'.length).trim();
+      continue;
+    }
+
+    if (trimmed.startsWith('label:')) {
+      current.label = trimmed.slice('label:'.length).trim();
+      continue;
+    }
+
+    if (trimmed.startsWith('required:')) {
+      current.required = trimmed.slice('required:'.length).trim();
+      continue;
+    }
+
+    if (trimmed === 'options:') {
+      current.hasOptions = true;
+      continue;
+    }
+
+    if (trimmed === 'rows:') {
+      current.hasRows = true;
+    }
+  }
+
+  return blocks;
 }
 
 function checkDuplicates(values, label, issues) {
@@ -114,36 +161,27 @@ function checkDuplicates(values, label, issues) {
   }
 }
 
-function checkQuestionBlocks(content, issues) {
-  const blocks = content.split(/\n\s*-\s+id:\s+/).slice(1);
-
+function checkQuestionBlocks(blocks, issues) {
   for (const block of blocks) {
-    const id = block.split('\n')[0].trim();
-    const type = readValue(block, 'type');
-
-    if (!id.startsWith('Q')) {
+    if (!block.type) {
+      issues.push(`Question ${block.id} has no type`);
       continue;
     }
 
-    if (!type) {
-      issues.push(`Question ${id} has no type`);
-      continue;
+    if (!block.label) {
+      issues.push(`Question ${block.id} has no label`);
     }
 
-    if (!block.includes('label:')) {
-      issues.push(`Question ${id} has no label`);
+    if (block.type !== 'information' && block.required === null) {
+      issues.push(`Question ${block.id} has no required flag`);
     }
 
-    if (type !== 'information' && !block.includes('required:')) {
-      issues.push(`Question ${id} has no required flag`);
+    if ((block.type === 'singleChoice' || block.type === 'multipleChoice') && !block.hasOptions) {
+      issues.push(`Question ${block.id} uses ${block.type} without options`);
     }
 
-    if ((type === 'singleChoice' || type === 'multipleChoice') && !block.includes('options:')) {
-      issues.push(`Question ${id} uses ${type} without options`);
-    }
-
-    if (type === 'matrix' && !block.includes('rows:')) {
-      issues.push(`Question ${id} uses matrix without rows`);
+    if (block.type === 'matrix' && !block.hasRows) {
+      issues.push(`Question ${block.id} uses matrix without rows`);
     }
   }
 }
