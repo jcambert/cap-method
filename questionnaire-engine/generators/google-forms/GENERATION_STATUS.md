@@ -2,7 +2,7 @@
 
 ## Milestone completed
 
-The Google Forms generator now supports suite generation from a CMDL folder and is verified by GitHub Actions.
+The Google Forms generator now supports suite generation from a CMDL folder, is verified by GitHub Actions, and has passed a first manual Google Apps Script test.
 
 ## Delivered files
 
@@ -10,6 +10,7 @@ The Google Forms generator now supports suite generation from a CMDL folder and 
 - `generated/FORM-001.generated.gs`
 - `generated/cap_method_generated_suite.gs`
 - `.github/workflows/google-forms-generation.yml`
+- `GOOGLE_APPS_SCRIPT_TEST_PLAN.md`
 
 ## Sources
 
@@ -33,21 +34,37 @@ The generator can:
 - sort CMDL files by name;
 - generate one builder function per form;
 - generate one suite creation function;
+- create Google Forms;
+- create response spreadsheets;
+- connect each form to its response spreadsheet;
+- move generated files into a Drive folder;
 - map the current CMDL question types to Google Forms items.
 
 ## CI validation
 
-GitHub Actions now checks that:
+GitHub Actions checks that:
 
 - CMDL examples are valid;
 - the Google Forms generator runs;
-- generated output contains builders from FORM-001 to FORM-010.
+- generated output contains builders from FORM-001 to FORM-010;
+- generated output contains Drive and spreadsheet integration calls.
 
 Workflow:
 
 ```text
 .github/workflows/google-forms-generation.yml
 ```
+
+## Manual Google Apps Script validation
+
+Status: passed.
+
+Result reported after manual test:
+
+- generated Apps Script executed successfully;
+- no correction was identified at this stage.
+
+The existing manual Apps Script generator remains available as fallback until final comparison is complete.
 
 ## Commands
 
@@ -62,12 +79,6 @@ Generate from a specific input folder to a specific output file:
 ```bash
 node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples output.gs
 ```
-
-## Important note about the committed suite snapshot
-
-The committed `generated/cap_method_generated_suite.gs` is a suite-level snapshot showing the final wrapper and builder function structure.
-
-The authoritative generated output must be refreshed by running `generate-google-forms.mjs` locally or in CI, because the script emits the full question content from CMDL.
 
 ## Supported mappings
 
@@ -85,21 +96,23 @@ The authoritative generated output must be refreshed by running `generate-google
 
 - The generator is intentionally simple.
 - It is built for current CMDL examples, not generic YAML.
-- It does not yet create spreadsheets or Drive folders.
-- It does not yet move files into a Drive folder.
 - It does not yet replace the existing working Apps Script generator.
-- The committed suite snapshot is not yet a production Apps Script replacement.
-- Google Apps Script execution is not yet tested from this repository.
+- Final side-by-side comparison with the original generator is still pending.
 
 ## Validation rule
 
-The existing Apps Script generator remains the production fallback until generated output has been tested in Google Apps Script.
+The generated Apps Script suite can move to candidate status.
+
+The existing Apps Script generator remains the production fallback until side-by-side comparison is complete.
 
 ## Next milestone
 
-Turn generated suite output into a production-ready Apps Script replacement:
+Compare generated forms with the current working Apps Script generator and produce a migration decision:
 
-1. add Drive folder and spreadsheet destination generation;
-2. commit the fully refreshed generated suite;
-3. test the generated suite in Google Apps Script;
-4. compare generated forms with the current working generator.
+1. compare form titles;
+2. compare section titles;
+3. compare question wording;
+4. compare choice options;
+5. compare required flags;
+6. compare response destination behavior;
+7. decide whether generated suite can replace the manual generator.
