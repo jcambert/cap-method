@@ -2,7 +2,7 @@
 
 ## Milestone completed
 
-The Google Forms generator now supports suite generation from a CMDL folder, is verified by GitHub Actions, and has passed a first manual Google Apps Script test.
+The Google Forms generator now supports suite generation from a CMDL folder, is verified by GitHub Actions, has passed a first manual Google Apps Script test, and is accepted as candidate primary generator.
 
 ## Delivered files
 
@@ -11,6 +11,7 @@ The Google Forms generator now supports suite generation from a CMDL folder, is 
 - `generated/cap_method_generated_suite.gs`
 - `.github/workflows/google-forms-generation.yml`
 - `GOOGLE_APPS_SCRIPT_TEST_PLAN.md`
+- `COMPARISON_REPORT.md`
 
 ## Sources
 
@@ -64,7 +65,18 @@ Result reported after manual test:
 - generated Apps Script executed successfully;
 - no correction was identified at this stage.
 
-The existing manual Apps Script generator remains available as fallback until final comparison is complete.
+## Comparison status
+
+Comparison report:
+
+```text
+questionnaire-engine/generators/google-forms/COMPARISON_REPORT.md
+```
+
+Decision:
+
+- CMDL generator is accepted as candidate primary generator;
+- manual Apps Script generator remains fallback until the next validation cycle.
 
 ## Commands
 
@@ -96,23 +108,23 @@ node questionnaire-engine/generators/google-forms/generate-google-forms.mjs ques
 
 - The generator is intentionally simple.
 - It is built for current CMDL examples, not generic YAML.
-- It does not yet replace the existing working Apps Script generator.
-- Final side-by-side comparison with the original generator is still pending.
+- The manual generator remains available as emergency fallback.
+- A complete beneficiary test campaign is still required before removing or archiving the manual generator.
 
 ## Validation rule
 
-The generated Apps Script suite can move to candidate status.
+New questionnaire changes should now be made in CMDL first.
 
-The existing Apps Script generator remains the production fallback until side-by-side comparison is complete.
+Generated Google Forms output should be produced from CMDL.
+
+The existing manual Apps Script generator remains fallback during the next validation cycle.
 
 ## Next milestone
 
-Compare generated forms with the current working Apps Script generator and produce a migration decision:
+Run one complete beneficiary-style test campaign with generated forms:
 
-1. compare form titles;
-2. compare section titles;
-3. compare question wording;
-4. compare choice options;
-5. compare required flags;
-6. compare response destination behavior;
-7. decide whether generated suite can replace the manual generator.
+1. submit test responses for all 10 forms;
+2. inspect generated Google Sheets;
+3. confirm answer collection and structure;
+4. identify response normalization needs;
+5. prepare the next data model for analysis and synthesis.
