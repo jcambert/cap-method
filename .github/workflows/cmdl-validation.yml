@@ -81,3 +81,16 @@ jobs:
           grep -q "## 4. Actions court terme - 0 à 30 jours" /tmp/sample.action-plan.md
           grep -q "## 10. Contraintes et points de vigilance" /tmp/sample.action-plan.md
           grep -q "## 14. Validation du plan" /tmp/sample.action-plan.md
+
+      - name: Generate deliverables end-to-end
+        run: node questionnaire-engine/tools/generate-deliverables.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples /tmp/cap-method-deliverables
+
+      - name: Check deliverables manifest
+        run: |
+          test -f /tmp/cap-method-deliverables/response-session.json
+          test -f /tmp/cap-method-deliverables/analysis-snapshot.json
+          test -f /tmp/cap-method-deliverables/synthesis-draft.md
+          test -f /tmp/cap-method-deliverables/final-synthesis.md
+          test -f /tmp/cap-method-deliverables/action-plan.md
+          test -f /tmp/cap-method-deliverables/manifest.json
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-deliverables/manifest.json', 'utf8')); if (data.status !== 'generated') throw new Error('Deliverables were not generated'); if (!data.files.finalSynthesis || !data.files.actionPlan) throw new Error('Missing deliverable file references'); if (data.coverage.formsImported !== 10) throw new Error('Invalid deliverable coverage');"
