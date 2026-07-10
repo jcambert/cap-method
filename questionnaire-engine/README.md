@@ -40,6 +40,7 @@ Manifest JSON
 - **FinalSynthesis**: structured final synthesis Markdown document.
 - **ActionPlan**: professional action plan Markdown document.
 - **Manifest**: JSON index of generated files and metadata.
+- **Versioned package**: future export-ready folder separating source, exports and review files.
 
 ## Current structure
 
@@ -95,8 +96,10 @@ questionnaire-engine/
 | ActionPlan Markdown generation | ✅ Operational |
 | End-to-end deliverable generation | ✅ Operational |
 | CI end-to-end validation | ✅ Operational |
-| DOCX/PDF export | ⏳ Next |
-| Versioned deliverable package | ⏳ Next |
+| DOCX/PDF export plan | 🧭 Defined |
+| Versioned deliverable package structure | 🧭 Defined |
+| Package preparation command | ⏳ Next |
+| DOCX/PDF export commands | ⏳ Later |
 
 ## Recommended command
 
@@ -118,6 +121,23 @@ synthesis-draft.md
 final-synthesis.md
 action-plan.md
 manifest.json
+```
+
+## Export planning documents
+
+```text
+questionnaire-engine/deliverables/EXPORT_PLAN.md
+questionnaire-engine/deliverables/VERSIONED_PACKAGE.md
+```
+
+Target package structure:
+
+```text
+CAP-DELIVERABLES-{session-id}/
+├── source/
+├── exports/
+├── review/
+└── manifest.json
 ```
 
 ## Unit commands
@@ -231,11 +251,12 @@ Workflow:
 - Generated Markdown files are working deliverables, not automatically approved final documents.
 - Final synthesis and action plan must remain human-reviewed.
 - DOCX/PDF export must happen after Markdown validation.
+- PDF files are distribution artifacts, not editable sources.
 
 ## Next steps
 
-1. Define the export strategy for DOCX/PDF.
-2. Create an export-ready package structure.
-3. Add a versioned deliverable manifest.
-4. Add optional ZIP generation.
-5. Prepare future Google Sheets API import to replace manual CSV export.
+1. Create `prepare-deliverable-package.mjs`.
+2. Generate `source/`, `exports/`, `review/` and enhanced `manifest.json`.
+3. Add CI validation for the package structure.
+4. Add DOCX export command later.
+5. Add PDF export command later.
