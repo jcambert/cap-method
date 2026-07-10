@@ -4,15 +4,15 @@ CAP est une méthode d'accompagnement personnel et professionnel visant à aider
 
 Ce dépôt contient la documentation source de la méthode CAP ainsi que les briques techniques permettant d'automatiser les questionnaires, l'import des réponses, l'analyse, la préparation des livrables consultant et les exports finaux.
 
-## Jalon actuel
+## Release actuelle
 
 ```text
-CAP Method v1.0-pro
+CAP Method v1.0-pro — publiée
 ```
 
-`v1.0-pro` est le jalon d'exploitation professionnelle de CAP Method.
+`v1.0-pro` est la première version officielle d'exploitation professionnelle de CAP Method.
 
-Il marque la fin de la phase de construction initiale et permet d'exploiter CAP avec une chaîne complète : questionnaires, réponses, analyse, livrables, exports DOCX/PDF et ZIP final.
+Elle permet d'exploiter CAP avec une chaîne complète : questionnaires, réponses, analyse, livrables, exports DOCX/PDF et ZIP final.
 
 Documentation du jalon :
 
@@ -20,6 +20,7 @@ Documentation du jalon :
 docs/19_release_v1_0_pro/MILESTONE.md
 docs/19_release_v1_0_pro/RELEASE_NOTES.md
 docs/19_release_v1_0_pro/RELEASE_CHECKLIST.md
+docs/19_release_v1_0_pro/RELEASE_STATUS.md
 ```
 
 ## Organisation
@@ -67,12 +68,12 @@ cap-method/
 
 | Bloc | Statut |
 |---|---|
-| CAP Method v1.0-pro | ✅ Jalon posé |
+| CAP Method v1.0-pro | ✅ Publié |
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Questionnaire Engine | ✅ Chaîne complète jusqu'au ZIP final |
 | Export DOCX/PDF | ✅ Généré et validé en CI |
 | Pack versionné de livrables | ✅ Généré et validé en CI |
-| Release v1.0-pro | 🟡 Prête à publier après dernière CI verte |
+| Release v1.0-pro | ✅ Publiée |
 
 ## Chaîne technique complète
 
@@ -215,14 +216,14 @@ questionnaire-engine/deliverables/DOCX_STYLING.md
 
 ## Prochaine étape
 
-Finaliser la publication :
+Démarrer l'exploitation terrain :
 
 ```text
-CI verte
+release v1.0-pro publiée
   ↓
-tag v1.0-pro
+test terrain avec un vrai bénéficiaire
   ↓
-GitHub Release CAP Method v1.0-pro
+retours d'usage
   ↓
-démarrage test terrain
+jalon v1.1-docx-quality
 ```
