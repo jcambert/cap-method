@@ -25,3 +25,13 @@ jobs:
 
       - name: Validate CMDL examples
         run: node questionnaire-engine/tools/validate-cmdl.mjs
+
+      - name: Import sample FORM-001 response
+        run: node questionnaire-engine/tools/import-response-csv.mjs questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml questionnaire-engine/responses/samples/FORM-001.responses.sample.csv /tmp/FORM-001.response.normalized.json
+
+      - name: Check normalized FORM-001 response
+        run: |
+          grep -q '"formId": "FORM-001"' /tmp/FORM-001.response.normalized.json
+          grep -q '"questionId": "Q001"' /tmp/FORM-001.response.normalized.json
+          grep -q '"questionId": "Q023"' /tmp/FORM-001.response.normalized.json
+          grep -q '"status": "success"' /tmp/FORM-001.response.normalized.json
