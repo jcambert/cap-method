@@ -4,6 +4,24 @@ CAP est une méthode d'accompagnement personnel et professionnel visant à aider
 
 Ce dépôt contient la documentation source de la méthode CAP ainsi que les briques techniques permettant d'automatiser les questionnaires, l'import des réponses, l'analyse, la préparation des livrables consultant et les exports finaux.
 
+## Jalon actuel
+
+```text
+CAP Method v1.0-pro
+```
+
+`v1.0-pro` est le jalon d'exploitation professionnelle de CAP Method.
+
+Il marque la fin de la phase de construction initiale et permet d'exploiter CAP avec une chaîne complète : questionnaires, réponses, analyse, livrables, exports DOCX/PDF et ZIP final.
+
+Documentation du jalon :
+
+```text
+docs/19_release_v1_0_pro/MILESTONE.md
+docs/19_release_v1_0_pro/RELEASE_NOTES.md
+docs/19_release_v1_0_pro/RELEASE_CHECKLIST.md
+```
+
 ## Organisation
 
 ```text
@@ -29,7 +47,8 @@ cap-method/
 │   ├── 15_google_forms_pack/
 │   ├── 16_google_sheets_pack/
 │   ├── 17_publication/
-│   └── 18_release_v1_5_0/
+│   ├── 18_release_v1_5_0/
+│   └── 19_release_v1_0_pro/
 ├── questionnaire-engine/
 │   ├── cmdl/
 │   ├── generators/
@@ -48,11 +67,12 @@ cap-method/
 
 | Bloc | Statut |
 |---|---|
+| CAP Method v1.0-pro | ✅ Jalon posé |
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
-| Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
 | Questionnaire Engine | ✅ Chaîne complète jusqu'au ZIP final |
 | Export DOCX/PDF | ✅ Généré et validé en CI |
 | Pack versionné de livrables | ✅ Généré et validé en CI |
+| Release v1.0-pro | 🟡 Prête à publier après dernière CI verte |
 
 ## Chaîne technique complète
 
@@ -181,6 +201,7 @@ questionnaire-engine/deliverables/PACKAGE_PREPARATION.md
 questionnaire-engine/deliverables/DOCX_EXPORT.md
 questionnaire-engine/deliverables/PDF_EXPORT.md
 questionnaire-engine/deliverables/ZIP_PACKAGE.md
+questionnaire-engine/deliverables/DOCX_STYLING.md
 ```
 
 ## Règles importantes
@@ -190,19 +211,18 @@ questionnaire-engine/deliverables/ZIP_PACKAGE.md
 - Le ZIP est le package de distribution.
 - Toute correction doit être faite dans les sources Markdown, puis les exports doivent être régénérés.
 - Les livrables restent à relire et valider humainement avant remise réelle à un bénéficiaire.
+- Les améliorations non bloquantes passent en versions ultérieures.
 
 ## Prochaine étape
 
-La prochaine phase consiste à améliorer la qualité des exports :
+Finaliser la publication :
 
 ```text
-exports minimalistes validés
+CI verte
   ↓
-styles DOCX professionnels
+tag v1.0-pro
   ↓
-tables natives
+GitHub Release CAP Method v1.0-pro
   ↓
-page de garde
-  ↓
-entêtes / pieds de page
+démarrage test terrain
 ```
