@@ -2,7 +2,7 @@
 
 CAP est une méthode d'accompagnement personnel et professionnel visant à aider une personne à mieux se connaître, clarifier ses ressources, ses valeurs, ses besoins, ses compétences et construire des pistes d'évolution cohérentes.
 
-Ce dépôt contient la documentation source de la méthode CAP ainsi que les premières briques techniques permettant d'automatiser les questionnaires, l'import des réponses, l'analyse et la préparation des livrables consultant.
+Ce dépôt contient la documentation source de la méthode CAP ainsi que les briques techniques permettant d'automatiser les questionnaires, l'import des réponses, l'analyse, la préparation des livrables consultant et les exports finaux.
 
 ## Organisation
 
@@ -50,26 +50,13 @@ cap-method/
 |---|---|
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
-| Questionnaire Engine | ✅ Chaîne end-to-end opérationnelle jusqu'au pack livrables consultant |
-| Export DOCX/PDF | 🧭 Plan défini |
-| Pack versionné de livrables | 🧭 Structure cible définie |
+| Questionnaire Engine | ✅ Chaîne complète jusqu'au ZIP final |
+| Export DOCX/PDF | ✅ Généré et validé en CI |
+| Pack versionné de livrables | ✅ Généré et validé en CI |
 
-## Modules opérationnels
+## Chaîne technique complète
 
-| Module | Statut |
-|---|---|
-| Module 0 à Module 11 | ✅ Complets |
-| Synthèse finale CAP | ✅ Complet |
-| Mode d'emploi accompagnant | ✅ Complet |
-| Pilote terrain CAP | ✅ Complet |
-| Pack Google Forms | ✅ Complet |
-| Pack Google Sheets | ✅ Complet |
-| Pack publication | ✅ Complet |
-| Préparation release GitHub v1.5.0 | ✅ Complet |
-
-## Chaîne technique actuelle
-
-Le dossier `questionnaire-engine/` contient maintenant une chaîne automatisée de bout en bout :
+Le dossier `questionnaire-engine/` contient une chaîne automatisée complète :
 
 ```text
 CMDL FORM-001 à FORM-010
@@ -88,7 +75,13 @@ FinalSynthesis Markdown
   ↓
 ActionPlan Markdown
   ↓
-Manifest JSON
+Package source / exports / review
+  ↓
+DOCX
+  ↓
+PDF
+  ↓
+ZIP final
 ```
 
 ### Statut de la chaîne
@@ -108,13 +101,15 @@ Manifest JSON
 | Génération FinalSynthesis Markdown | ✅ OK |
 | Génération ActionPlan Markdown | ✅ OK |
 | Commande end-to-end `generate-deliverables.mjs` | ✅ OK |
-| Validation CI de bout en bout | ✅ OK |
-| Plan d'export DOCX/PDF | 🧭 Défini |
-| Structure de pack versionné | 🧭 Définie |
+| Préparation du package `prepare-deliverable-package.mjs` | ✅ OK |
+| Export DOCX `export-docx.mjs` | ✅ OK |
+| Export PDF `export-pdf.mjs` | ✅ OK |
+| ZIP final `package-deliverables.mjs` | ✅ OK |
+| Validation CI complète | ✅ OK |
 
 ## Commande principale recommandée
 
-Générer le pack complet de livrables consultant :
+Générer les livrables Markdown :
 
 ```bash
 node questionnaire-engine/tools/generate-deliverables.mjs \
@@ -123,124 +118,91 @@ node questionnaire-engine/tools/generate-deliverables.mjs \
   questionnaire-engine/deliverables/generated/sample-session
 ```
 
-Cette commande produit :
+Préparer le package exportable :
+
+```bash
+node questionnaire-engine/tools/prepare-deliverable-package.mjs \
+  questionnaire-engine/deliverables/generated/sample-session \
+  questionnaire-engine/deliverables/packages \
+  0.1.0
+```
+
+Générer les exports DOCX :
+
+```bash
+node questionnaire-engine/tools/export-docx.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session
+```
+
+Générer les exports PDF :
+
+```bash
+node questionnaire-engine/tools/export-pdf.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session
+```
+
+Générer le ZIP final :
+
+```bash
+node questionnaire-engine/tools/package-deliverables.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session \
+  questionnaire-engine/deliverables/packages
+```
+
+## Package final produit
 
 ```text
-response-session.json
-analysis-snapshot.json
-synthesis-draft.md
-final-synthesis.md
-action-plan.md
-manifest.json
+CAP-DELIVERABLES-{session-id}/
+├── source/
+│   ├── response-session.json
+│   ├── analysis-snapshot.json
+│   ├── synthesis-draft.md
+│   ├── final-synthesis.md
+│   └── action-plan.md
+├── exports/
+│   ├── CAP-SYNTHESE-FINALE.docx
+│   ├── CAP-SYNTHESE-FINALE.pdf
+│   ├── CAP-PLAN-ACTION.docx
+│   └── CAP-PLAN-ACTION.pdf
+├── review/
+│   ├── consultant-review.md
+│   └── beneficiary-validation.md
+└── manifest.json
+
+CAP-DELIVERABLES-{session-id}.zip
 ```
 
 ## Documentation export
 
-Le plan d'export et la structure de package sont documentés ici :
-
 ```text
 questionnaire-engine/deliverables/EXPORT_PLAN.md
 questionnaire-engine/deliverables/VERSIONED_PACKAGE.md
+questionnaire-engine/deliverables/PACKAGE_PREPARATION.md
+questionnaire-engine/deliverables/DOCX_EXPORT.md
+questionnaire-engine/deliverables/PDF_EXPORT.md
+questionnaire-engine/deliverables/ZIP_PACKAGE.md
 ```
 
-Objectif export cible :
+## Règles importantes
 
-```text
-Markdown livrables
-  ↓
-structure source / exports / review
-  ↓
-DOCX
-  ↓
-PDF
-  ↓
-ZIP versionné
-```
-
-## Commandes unitaires
-
-Valider les questionnaires CMDL :
-
-```bash
-node questionnaire-engine/tools/validate-cmdl.mjs
-```
-
-Générer les Google Forms depuis CMDL :
-
-```bash
-node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples
-```
-
-Générer des CSV de réponses de test :
-
-```bash
-node questionnaire-engine/tools/generate-sample-response-csvs.mjs
-```
-
-Importer une session complète :
-
-```bash
-node questionnaire-engine/tools/import-response-session.mjs
-```
-
-Générer une analyse :
-
-```bash
-node questionnaire-engine/tools/analyze-response-session.mjs
-```
-
-Générer un brouillon de synthèse consultant :
-
-```bash
-node questionnaire-engine/tools/generate-synthesis-draft.mjs
-```
-
-Générer une synthèse finale structurée :
-
-```bash
-node questionnaire-engine/tools/generate-final-synthesis.mjs
-```
-
-Générer un plan d'action :
-
-```bash
-node questionnaire-engine/tools/generate-action-plan.mjs
-```
-
-## Convention de nommage
-
-Les livrables sont stockés en Markdown afin de faciliter le versionnement et les revues.
-
-Les exports DOCX/PDF pourront être générés à partir de ces fichiers sources lorsque les modèles Markdown seront stabilisés.
-
-## Philosophie de travail
-
-Le dépôt GitHub devient la source officielle du projet. Le chat sert à produire, améliorer et valider les contenus avant commit.
-
-La logique retenue est progressive :
-
-```text
-contenu stable
-  ↓
-questionnaires structurés
-  ↓
-réponses normalisées
-  ↓
-analyse assistée
-  ↓
-livrables consultant
-  ↓
-exports finaux
-```
+- Les fichiers Markdown restent la source de vérité éditable.
+- Les DOCX/PDF sont des artefacts d'export.
+- Le ZIP est le package de distribution.
+- Toute correction doit être faite dans les sources Markdown, puis les exports doivent être régénérés.
+- Les livrables restent à relire et valider humainement avant remise réelle à un bénéficiaire.
 
 ## Prochaine étape
 
-Le prochain jalon est de créer la première commande de préparation du package :
+La prochaine phase consiste à améliorer la qualité des exports :
 
 ```text
-generate-deliverables.mjs output
+exports minimalistes validés
   ↓
-prepare-deliverable-package.mjs
+styles DOCX professionnels
   ↓
-source/ + exports/ + review/ + manifest.json
+tables natives
+  ↓
+page de garde
+  ↓
+entêtes / pieds de page
 ```
