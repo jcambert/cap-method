@@ -34,7 +34,7 @@ jobs:
 
       - name: Check normalized FORM-001 response
         run: |
-          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/FORM-001.response.normalized.json', 'utf8')); if (data.formId !== 'FORM-001') throw new Error('Invalid formId'); if (data.import.status !== 'success') throw new Error('Import status is not success'); if (!Array.isArray(data.answers) || data.answers.length === 0) throw new Error('No normalized answers'); if (!data.answers.some(answer => answer.questionId === 'Q001')) throw new Error('Q001 was not imported');"
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/FORM-001.response.normalized.json', 'utf8')); if (data.formId !== 'FORM-001') throw new Error('Invalid formId'); if (data.import.status !== 'success') throw new Error('Import status is not success'); if (!Array.isArray(data.answers) || data.answers.length === 0) throw new Error('No normalized answers'); if (!data.answers.every(answer => answer.formId === 'FORM-001')) throw new Error('Invalid answer formId'); if (!data.answers.every(answer => typeof answer.questionId === 'string' && answer.questionId.length > 0)) throw new Error('Missing questionId');"
 
       - name: Import sample response session
         run: node questionnaire-engine/tools/import-response-session.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples /tmp/session.response.normalized.json
