@@ -49,3 +49,13 @@ jobs:
       - name: Check analysis snapshot
         run: |
           node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/sample.analysis-snapshot.json', 'utf8')); if (data.status !== 'ready_for_consultant_review') throw new Error('Analysis snapshot is not ready'); if (!Array.isArray(data.indicators) || data.indicators.length === 0) throw new Error('Missing indicators'); if (!Array.isArray(data.consultantPrompts) || data.consultantPrompts.length === 0) throw new Error('Missing consultant prompts'); if (data.coverage.formsImported !== 10) throw new Error('Invalid coverage');"
+
+      - name: Generate synthesis draft
+        run: node questionnaire-engine/tools/generate-synthesis-draft.mjs /tmp/sample.analysis-snapshot.json /tmp/sample.synthesis-draft.md
+
+      - name: Check synthesis draft
+        run: |
+          grep -q "# Brouillon de synthèse consultant" /tmp/sample.synthesis-draft.md
+          grep -q "## Indicateurs principaux" /tmp/sample.synthesis-draft.md
+          grep -q "## Questions de préparation pour le consultant" /tmp/sample.synthesis-draft.md
+          grep -q "## Décision de suite" /tmp/sample.synthesis-draft.md
