@@ -1,12 +1,12 @@
 # CAP Method Questionnaire Engine
 
-This folder contains the questionnaire, response import, analysis and deliverable generation automation for CAP Method.
+This folder contains the questionnaire, response import, analysis, deliverable generation and export automation for CAP Method.
 
 ## Goal
 
 Provide a neutral source of truth and processing chain for CAP Method questionnaires, independent from Google Forms, Google Sheets, Blazor, PDF, DOCX or AI adapters.
 
-The current chain is:
+The current chain is complete up to a final ZIP package:
 
 ```text
 CMDL questionnaire definitions
@@ -25,7 +25,13 @@ FinalSynthesis Markdown
   ↓
 ActionPlan Markdown
   ↓
-Manifest JSON
+Prepared package
+  ↓
+DOCX exports
+  ↓
+PDF exports
+  ↓
+Final ZIP package
 ```
 
 ## Main concepts
@@ -39,8 +45,9 @@ Manifest JSON
 - **SynthesisDraft**: Markdown working document generated for the consultant.
 - **FinalSynthesis**: structured final synthesis Markdown document.
 - **ActionPlan**: professional action plan Markdown document.
-- **Manifest**: JSON index of generated files and metadata.
-- **Versioned package**: future export-ready folder separating source, exports and review files.
+- **Prepared package**: export-ready folder separating source, exports and review files.
+- **DOCX/PDF exports**: distribution artifacts generated from Markdown sources.
+- **ZIP package**: final distributable package.
 
 ## Current structure
 
@@ -50,16 +57,6 @@ questionnaire-engine/
 ├── cmdl/
 │   ├── specification.md
 │   └── examples/
-│       ├── FORM-001.cmdl.yaml
-│       ├── FORM-002.cmdl.yaml
-│       ├── FORM-003.cmdl.yaml
-│       ├── FORM-004.cmdl.yaml
-│       ├── FORM-005.cmdl.yaml
-│       ├── FORM-006.cmdl.yaml
-│       ├── FORM-007.cmdl.yaml
-│       ├── FORM-008.cmdl.yaml
-│       ├── FORM-009.cmdl.yaml
-│       └── FORM-010.cmdl.yaml
 ├── generators/
 │   └── google-forms/
 ├── responses/
@@ -75,7 +72,11 @@ questionnaire-engine/
     ├── generate-synthesis-draft.mjs
     ├── generate-final-synthesis.mjs
     ├── generate-action-plan.mjs
-    └── generate-deliverables.mjs
+    ├── generate-deliverables.mjs
+    ├── prepare-deliverable-package.mjs
+    ├── export-docx.mjs
+    ├── export-pdf.mjs
+    └── package-deliverables.mjs
 ```
 
 ## Current status
@@ -85,7 +86,6 @@ questionnaire-engine/
 | CMDL definitions FORM-001 to FORM-010 | ✅ Operational |
 | CMDL validation | ✅ Operational |
 | Google Forms generation | ✅ Operational and manually tested |
-| Beneficiary test campaign plan | ✅ Ready |
 | Response data model | ✅ Defined |
 | Normalization rules | ✅ Defined |
 | FORM-001 CSV import | ✅ Operational |
@@ -95,15 +95,15 @@ questionnaire-engine/
 | FinalSynthesis Markdown generation | ✅ Operational |
 | ActionPlan Markdown generation | ✅ Operational |
 | End-to-end deliverable generation | ✅ Operational |
-| CI end-to-end validation | ✅ Operational |
-| DOCX/PDF export plan | 🧭 Defined |
-| Versioned deliverable package structure | 🧭 Defined |
-| Package preparation command | ⏳ Next |
-| DOCX/PDF export commands | ⏳ Later |
+| Package preparation | ✅ Operational |
+| DOCX export | ✅ Operational |
+| PDF export | ✅ Operational |
+| ZIP package | ✅ Operational |
+| CI full-chain validation | ✅ Operational |
 
-## Recommended command
+## Full command chain
 
-Generate the full consultant deliverable pack:
+Generate the Markdown deliverables:
 
 ```bash
 node questionnaire-engine/tools/generate-deliverables.mjs \
@@ -112,104 +112,58 @@ node questionnaire-engine/tools/generate-deliverables.mjs \
   questionnaire-engine/deliverables/generated/sample-session
 ```
 
-Generated files:
+Prepare the export package:
 
-```text
-response-session.json
-analysis-snapshot.json
-synthesis-draft.md
-final-synthesis.md
-action-plan.md
-manifest.json
+```bash
+node questionnaire-engine/tools/prepare-deliverable-package.mjs \
+  questionnaire-engine/deliverables/generated/sample-session \
+  questionnaire-engine/deliverables/packages \
+  0.1.0
 ```
 
-## Export planning documents
+Generate DOCX exports:
 
-```text
-questionnaire-engine/deliverables/EXPORT_PLAN.md
-questionnaire-engine/deliverables/VERSIONED_PACKAGE.md
+```bash
+node questionnaire-engine/tools/export-docx.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session
 ```
 
-Target package structure:
+Generate PDF exports:
+
+```bash
+node questionnaire-engine/tools/export-pdf.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session
+```
+
+Generate final ZIP:
+
+```bash
+node questionnaire-engine/tools/package-deliverables.mjs \
+  questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session \
+  questionnaire-engine/deliverables/packages
+```
+
+## Final package structure
 
 ```text
 CAP-DELIVERABLES-{session-id}/
 ├── source/
+│   ├── response-session.json
+│   ├── analysis-snapshot.json
+│   ├── synthesis-draft.md
+│   ├── final-synthesis.md
+│   └── action-plan.md
 ├── exports/
+│   ├── CAP-SYNTHESE-FINALE.docx
+│   ├── CAP-SYNTHESE-FINALE.pdf
+│   ├── CAP-PLAN-ACTION.docx
+│   └── CAP-PLAN-ACTION.pdf
 ├── review/
+│   ├── consultant-review.md
+│   └── beneficiary-validation.md
 └── manifest.json
-```
 
-## Unit commands
-
-Validate CMDL examples:
-
-```bash
-node questionnaire-engine/tools/validate-cmdl.mjs
-```
-
-Generate Google Apps Script suite from CMDL:
-
-```bash
-node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples
-```
-
-Generate sample response CSV files from CMDL:
-
-```bash
-node questionnaire-engine/tools/generate-sample-response-csvs.mjs
-```
-
-Import one FORM-001 response CSV:
-
-```bash
-node questionnaire-engine/tools/import-response-csv.mjs \
-  questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml \
-  questionnaire-engine/responses/samples/FORM-001.responses.sample.csv \
-  questionnaire-engine/responses/generated/FORM-001.response.normalized.json
-```
-
-Import a full response session:
-
-```bash
-node questionnaire-engine/tools/import-response-session.mjs \
-  questionnaire-engine/cmdl/examples \
-  questionnaire-engine/responses/generated/samples \
-  questionnaire-engine/responses/generated/session.response.normalized.json
-```
-
-Generate an analysis snapshot:
-
-```bash
-node questionnaire-engine/tools/analyze-response-session.mjs \
-  questionnaire-engine/responses/generated/session.response.normalized.json \
-  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json
-```
-
-Generate a consultant synthesis draft:
-
-```bash
-node questionnaire-engine/tools/generate-synthesis-draft.mjs \
-  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
-  questionnaire-engine/synthesis/generated/sample.synthesis-draft.md
-```
-
-Generate a final synthesis:
-
-```bash
-node questionnaire-engine/tools/generate-final-synthesis.mjs \
-  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
-  questionnaire-engine/synthesis/generated/sample.synthesis-draft.md \
-  questionnaire-engine/synthesis/generated/sample.final-synthesis.md
-```
-
-Generate an action plan:
-
-```bash
-node questionnaire-engine/tools/generate-action-plan.mjs \
-  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
-  questionnaire-engine/synthesis/generated/sample.final-synthesis.md \
-  questionnaire-engine/synthesis/generated/sample.action-plan.md
+CAP-DELIVERABLES-{session-id}.zip
 ```
 
 ## CI validation
@@ -234,6 +188,14 @@ FinalSynthesis Markdown generation
 ActionPlan Markdown generation
   ↓
 End-to-end deliverable generation
+  ↓
+Package preparation
+  ↓
+DOCX export
+  ↓
+PDF export
+  ↓
+ZIP package
 ```
 
 Workflow:
@@ -249,14 +211,15 @@ Workflow:
 - Google Sheets column labels are used only as an import mapping mechanism.
 - `questionId` and `formId` must come from CMDL.
 - Generated Markdown files are working deliverables, not automatically approved final documents.
-- Final synthesis and action plan must remain human-reviewed.
-- DOCX/PDF export must happen after Markdown validation.
-- PDF files are distribution artifacts, not editable sources.
+- DOCX/PDF files are export artifacts, not editable sources.
+- PDF files are distribution artifacts.
+- ZIP files are distribution packages.
+- Human consultant validation remains mandatory before real delivery.
 
 ## Next steps
 
-1. Create `prepare-deliverable-package.mjs`.
-2. Generate `source/`, `exports/`, `review/` and enhanced `manifest.json`.
-3. Add CI validation for the package structure.
-4. Add DOCX export command later.
-5. Add PDF export command later.
+1. Improve DOCX styling.
+2. Convert Markdown tables into native DOCX tables.
+3. Add title pages.
+4. Add headers, footers and page numbers.
+5. Add a higher-level single command for the full export chain.
