@@ -70,3 +70,14 @@ jobs:
           grep -q "## 4. Compétences identifiées" /tmp/sample.final-synthesis.md
           grep -q "## 8. Projet retenu" /tmp/sample.final-synthesis.md
           grep -q "## 11. Points à valider avant remise" /tmp/sample.final-synthesis.md
+
+      - name: Generate action plan
+        run: node questionnaire-engine/tools/generate-action-plan.mjs /tmp/sample.analysis-snapshot.json /tmp/sample.final-synthesis.md /tmp/sample.action-plan.md
+
+      - name: Check action plan
+        run: |
+          grep -q "# Plan d action professionnel" /tmp/sample.action-plan.md
+          grep -q "## 1. Projet professionnel cible" /tmp/sample.action-plan.md
+          grep -q "## 4. Actions court terme - 0 à 30 jours" /tmp/sample.action-plan.md
+          grep -q "## 10. Contraintes et points de vigilance" /tmp/sample.action-plan.md
+          grep -q "## 14. Validation du plan" /tmp/sample.action-plan.md
