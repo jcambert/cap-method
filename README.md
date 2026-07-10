@@ -36,6 +36,7 @@ cap-method/
 │   ├── responses/
 │   ├── analysis/
 │   ├── synthesis/
+│   ├── deliverables/
 │   └── tools/
 └── templates/
     ├── google_forms/
@@ -49,7 +50,7 @@ cap-method/
 |---|---|
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
-| Questionnaire Engine | ✅ Chaîne opérationnelle jusqu'au brouillon de synthèse consultant |
+| Questionnaire Engine | ✅ Chaîne end-to-end opérationnelle jusqu'au pack livrables consultant |
 
 ## Modules opérationnels
 
@@ -80,6 +81,12 @@ ResponseSession JSON
 AnalysisSnapshot JSON
   ↓
 SynthesisDraft Markdown
+  ↓
+FinalSynthesis Markdown
+  ↓
+ActionPlan Markdown
+  ↓
+Manifest JSON
 ```
 
 ### Statut de la chaîne
@@ -96,9 +103,34 @@ SynthesisDraft Markdown
 | Import ResponseSession complète | ✅ OK |
 | Génération AnalysisSnapshot | ✅ OK |
 | Génération SynthesisDraft Markdown | ✅ OK |
+| Génération FinalSynthesis Markdown | ✅ OK |
+| Génération ActionPlan Markdown | ✅ OK |
+| Commande end-to-end `generate-deliverables.mjs` | ✅ OK |
 | Validation CI de bout en bout | ✅ OK |
 
-## Commandes principales
+## Commande principale recommandée
+
+Générer le pack complet de livrables consultant :
+
+```bash
+node questionnaire-engine/tools/generate-deliverables.mjs \
+  questionnaire-engine/cmdl/examples \
+  questionnaire-engine/responses/generated/samples \
+  questionnaire-engine/deliverables/generated/sample-session
+```
+
+Cette commande produit :
+
+```text
+response-session.json
+analysis-snapshot.json
+synthesis-draft.md
+final-synthesis.md
+action-plan.md
+manifest.json
+```
+
+## Commandes unitaires
 
 Valider les questionnaires CMDL :
 
@@ -136,6 +168,18 @@ Générer un brouillon de synthèse consultant :
 node questionnaire-engine/tools/generate-synthesis-draft.mjs
 ```
 
+Générer une synthèse finale structurée :
+
+```bash
+node questionnaire-engine/tools/generate-final-synthesis.mjs
+```
+
+Générer un plan d'action :
+
+```bash
+node questionnaire-engine/tools/generate-action-plan.mjs
+```
+
 ## Convention de nommage
 
 Les livrables sont stockés en Markdown afin de faciliter le versionnement et les revues.
@@ -164,12 +208,12 @@ exports finaux
 
 ## Prochaine étape
 
-Le prochain jalon est de passer du brouillon consultant vers les vrais livrables de fin de bilan :
+Le prochain jalon est de préparer les livrables pour l'export :
 
 ```text
-SynthesisDraft Markdown
+Markdown livrables
   ↓
-Synthèse finale structurée
+plan d'export DOCX/PDF
   ↓
-Plan d'action
+pack versionné de livrables
 ```
