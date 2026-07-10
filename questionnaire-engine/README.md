@@ -1,6 +1,6 @@
 # CAP Method Questionnaire Engine
 
-This folder contains the questionnaire, response import, analysis and synthesis-draft automation for CAP Method.
+This folder contains the questionnaire, response import, analysis and deliverable generation automation for CAP Method.
 
 ## Goal
 
@@ -19,7 +19,13 @@ ResponseSession JSON
   ↓
 AnalysisSnapshot JSON
   ↓
-Consultant synthesis draft Markdown
+SynthesisDraft Markdown
+  ↓
+FinalSynthesis Markdown
+  ↓
+ActionPlan Markdown
+  ↓
+Manifest JSON
 ```
 
 ## Main concepts
@@ -31,6 +37,9 @@ Consultant synthesis draft Markdown
 - **ResponseSession**: normalized response set for a full beneficiary journey.
 - **AnalysisSnapshot**: first structured analysis output for consultant review.
 - **SynthesisDraft**: Markdown working document generated for the consultant.
+- **FinalSynthesis**: structured final synthesis Markdown document.
+- **ActionPlan**: professional action plan Markdown document.
+- **Manifest**: JSON index of generated files and metadata.
 
 ## Current structure
 
@@ -55,13 +64,17 @@ questionnaire-engine/
 ├── responses/
 ├── analysis/
 ├── synthesis/
+├── deliverables/
 └── tools/
     ├── validate-cmdl.mjs
     ├── import-response-csv.mjs
     ├── generate-sample-response-csvs.mjs
     ├── import-response-session.mjs
     ├── analyze-response-session.mjs
-    └── generate-synthesis-draft.mjs
+    ├── generate-synthesis-draft.mjs
+    ├── generate-final-synthesis.mjs
+    ├── generate-action-plan.mjs
+    └── generate-deliverables.mjs
 ```
 
 ## Current status
@@ -78,11 +91,36 @@ questionnaire-engine/
 | Full ResponseSession import | ✅ Operational |
 | AnalysisSnapshot generation | ✅ Operational |
 | SynthesisDraft Markdown generation | ✅ Operational |
+| FinalSynthesis Markdown generation | ✅ Operational |
+| ActionPlan Markdown generation | ✅ Operational |
+| End-to-end deliverable generation | ✅ Operational |
 | CI end-to-end validation | ✅ Operational |
-| Final synthesis generator | ⏳ Next |
-| Action plan generator | ⏳ Next |
+| DOCX/PDF export | ⏳ Next |
+| Versioned deliverable package | ⏳ Next |
 
-## Main commands
+## Recommended command
+
+Generate the full consultant deliverable pack:
+
+```bash
+node questionnaire-engine/tools/generate-deliverables.mjs \
+  questionnaire-engine/cmdl/examples \
+  questionnaire-engine/responses/generated/samples \
+  questionnaire-engine/deliverables/generated/sample-session
+```
+
+Generated files:
+
+```text
+response-session.json
+analysis-snapshot.json
+synthesis-draft.md
+final-synthesis.md
+action-plan.md
+manifest.json
+```
+
+## Unit commands
 
 Validate CMDL examples:
 
@@ -136,6 +174,24 @@ node questionnaire-engine/tools/generate-synthesis-draft.mjs \
   questionnaire-engine/synthesis/generated/sample.synthesis-draft.md
 ```
 
+Generate a final synthesis:
+
+```bash
+node questionnaire-engine/tools/generate-final-synthesis.mjs \
+  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
+  questionnaire-engine/synthesis/generated/sample.synthesis-draft.md \
+  questionnaire-engine/synthesis/generated/sample.final-synthesis.md
+```
+
+Generate an action plan:
+
+```bash
+node questionnaire-engine/tools/generate-action-plan.mjs \
+  questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
+  questionnaire-engine/synthesis/generated/sample.final-synthesis.md \
+  questionnaire-engine/synthesis/generated/sample.action-plan.md
+```
+
 ## CI validation
 
 The GitHub Actions workflow validates the full chain:
@@ -152,6 +208,12 @@ Full ResponseSession import
 AnalysisSnapshot generation
   ↓
 SynthesisDraft Markdown generation
+  ↓
+FinalSynthesis Markdown generation
+  ↓
+ActionPlan Markdown generation
+  ↓
+End-to-end deliverable generation
 ```
 
 Workflow:
@@ -166,13 +228,14 @@ Workflow:
 - Google Forms and Google Sheets are collection channels, not the source of truth.
 - Google Sheets column labels are used only as an import mapping mechanism.
 - `questionId` and `formId` must come from CMDL.
-- `SynthesisDraft` is a consultant working document, not a final automatic bilan.
+- Generated Markdown files are working deliverables, not automatically approved final documents.
 - Final synthesis and action plan must remain human-reviewed.
+- DOCX/PDF export must happen after Markdown validation.
 
 ## Next steps
 
-1. Create the final synthesis structure.
-2. Generate a final synthesis draft from the current `SynthesisDraft`.
-3. Create an action plan template.
-4. Generate the first action plan draft.
-5. Add DOCX/PDF export later, once the Markdown deliverables are stable.
+1. Define the export strategy for DOCX/PDF.
+2. Create an export-ready package structure.
+3. Add a versioned deliverable manifest.
+4. Add optional ZIP generation.
+5. Prepare future Google Sheets API import to replace manual CSV export.
