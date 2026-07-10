@@ -34,9 +34,9 @@
 - [x] Relire `MILESTONE.md`
 - [x] Relire `RELEASE_NOTES.md`
 - [x] Relire `README.md`
-- [ ] Créer le tag GitHub `v1.0-pro`
-- [ ] Créer la release GitHub `CAP Method v1.0-pro`
-- [ ] Coller le contenu de `RELEASE_NOTES.md` dans la release GitHub
+- [x] Créer le tag GitHub `v1.0-pro`
+- [x] Créer la release GitHub `CAP Method v1.0-pro`
+- [x] Coller le contenu de `RELEASE_NOTES.md` dans la release GitHub
 
 ## Après publication
 
@@ -47,6 +47,8 @@
 
 ## Décision
 
-Le jalon `v1.0-pro` est validé et prêt à publier.
+Le jalon `v1.0-pro` est publié.
+
+La version est gelée fonctionnellement.
 
 Toute nouvelle fonctionnalité doit être rattachée à une version ultérieure.
