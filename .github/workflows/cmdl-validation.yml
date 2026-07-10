@@ -111,3 +111,13 @@ jobs:
           test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/review/beneficiary-validation.md
           test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json
           node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (data.reviewStatus !== 'generated') throw new Error('Invalid review status'); if (data.packageVersion !== '0.1.0') throw new Error('Invalid package version'); if (!data.checks.markdownGenerated) throw new Error('Markdown check should be true'); if (data.checks.readyForDelivery) throw new Error('Package should not be ready for delivery yet');"
+
+      - name: Generate DOCX exports
+        run: node questionnaire-engine/tools/export-docx.mjs /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session
+
+      - name: Check DOCX exports
+        run: |
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (!data.checks.exportsGenerated) throw new Error('Exports should be marked as generated'); if (!data.files.exports.finalSynthesisDocx) throw new Error('Missing final synthesis DOCX reference'); if (!data.files.exports.actionPlanDocx) throw new Error('Missing action plan DOCX reference');"
+          node -e "const fs = require('fs'); for (const file of ['/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx', '/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx']) { const buffer = fs.readFileSync(file); if (buffer.readUInt32LE(0) !== 0x04034b50) throw new Error('Invalid DOCX zip header: ' + file); }"
