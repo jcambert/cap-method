@@ -59,3 +59,14 @@ jobs:
           grep -q "## Indicateurs principaux" /tmp/sample.synthesis-draft.md
           grep -q "## Questions de préparation pour le consultant" /tmp/sample.synthesis-draft.md
           grep -q "## Décision de suite" /tmp/sample.synthesis-draft.md
+
+      - name: Generate final synthesis
+        run: node questionnaire-engine/tools/generate-final-synthesis.mjs /tmp/sample.analysis-snapshot.json /tmp/sample.synthesis-draft.md /tmp/sample.final-synthesis.md
+
+      - name: Check final synthesis
+        run: |
+          grep -q "# Synthèse finale structurée" /tmp/sample.final-synthesis.md
+          grep -q "## 1. Rappel du contexte" /tmp/sample.final-synthesis.md
+          grep -q "## 4. Compétences identifiées" /tmp/sample.final-synthesis.md
+          grep -q "## 8. Projet retenu" /tmp/sample.final-synthesis.md
+          grep -q "## 11. Points à valider avant remise" /tmp/sample.final-synthesis.md
