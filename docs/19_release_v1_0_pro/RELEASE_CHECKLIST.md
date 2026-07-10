@@ -26,13 +26,14 @@
 - [x] Documentation package présente
 - [x] Documentation jalon présente
 - [x] Release notes présentes
+- [x] Statut de release présent
 
 ## Validation avant publication
 
-- [ ] Vérifier que la dernière CI GitHub Actions est verte
-- [ ] Relire `MILESTONE.md`
-- [ ] Relire `RELEASE_NOTES.md`
-- [ ] Relire `README.md`
+- [x] Vérifier que la dernière CI GitHub Actions est verte
+- [x] Relire `MILESTONE.md`
+- [x] Relire `RELEASE_NOTES.md`
+- [x] Relire `README.md`
 - [ ] Créer le tag GitHub `v1.0-pro`
 - [ ] Créer la release GitHub `CAP Method v1.0-pro`
 - [ ] Coller le contenu de `RELEASE_NOTES.md` dans la release GitHub
@@ -46,6 +47,6 @@
 
 ## Décision
 
-Le jalon `v1.0-pro` doit être gelé après publication.
+Le jalon `v1.0-pro` est validé et prêt à publier.
 
 Toute nouvelle fonctionnalité doit être rattachée à une version ultérieure.
