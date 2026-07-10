@@ -94,3 +94,20 @@ jobs:
           test -f /tmp/cap-method-deliverables/action-plan.md
           test -f /tmp/cap-method-deliverables/manifest.json
           node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-deliverables/manifest.json', 'utf8')); if (data.status !== 'generated') throw new Error('Deliverables were not generated'); if (!data.files.finalSynthesis || !data.files.actionPlan) throw new Error('Missing deliverable file references'); if (data.coverage.formsImported !== 10) throw new Error('Invalid deliverable coverage');"
+
+      - name: Prepare deliverable package
+        run: node questionnaire-engine/tools/prepare-deliverable-package.mjs /tmp/cap-method-deliverables /tmp/cap-method-packages 0.1.0
+
+      - name: Check prepared deliverable package
+        run: |
+          test -d /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/source
+          test -d /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports
+          test -d /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/review
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/source/response-session.json
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/source/analysis-snapshot.json
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/source/final-synthesis.md
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/source/action-plan.md
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/review/consultant-review.md
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/review/beneficiary-validation.md
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (data.reviewStatus !== 'generated') throw new Error('Invalid review status'); if (data.packageVersion !== '0.1.0') throw new Error('Invalid package version'); if (!data.checks.markdownGenerated) throw new Error('Markdown check should be true'); if (data.checks.readyForDelivery) throw new Error('Package should not be ready for delivery yet');"
