@@ -26,8 +26,11 @@ jobs:
       - name: Validate CMDL examples
         run: node questionnaire-engine/tools/validate-cmdl.mjs
 
+      - name: Generate sample response CSV suite
+        run: node questionnaire-engine/tools/generate-sample-response-csvs.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples
+
       - name: Import sample FORM-001 response
-        run: node questionnaire-engine/tools/import-response-csv.mjs questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml questionnaire-engine/responses/samples/FORM-001.responses.sample.csv /tmp/FORM-001.response.normalized.json
+        run: node questionnaire-engine/tools/import-response-csv.mjs questionnaire-engine/cmdl/examples/FORM-001.cmdl.yaml /tmp/cap-method-response-samples/FORM-001.responses.sample.csv /tmp/FORM-001.response.normalized.json
 
       - name: Check normalized FORM-001 response
         run: |
@@ -35,9 +38,6 @@ jobs:
           grep -q '"questionId": "Q001"' /tmp/FORM-001.response.normalized.json
           grep -q '"questionId": "Q023"' /tmp/FORM-001.response.normalized.json
           grep -q '"status": "success"' /tmp/FORM-001.response.normalized.json
-
-      - name: Generate sample response CSV suite
-        run: node questionnaire-engine/tools/generate-sample-response-csvs.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples
 
       - name: Import sample response session
         run: node questionnaire-engine/tools/import-response-session.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples /tmp/session.response.normalized.json
