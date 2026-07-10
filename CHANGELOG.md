@@ -2,6 +2,31 @@
 
 Toutes les modifications notables de CAP seront documentées ici.
 
+## [v1.0-pro] - 2026-07-10
+
+### Statut
+
+- Première version d'exploitation professionnelle validée.
+- Dernière CI GitHub Actions vérifiée comme verte.
+- Release prête à publier sous le tag `v1.0-pro`.
+
+### Ajouté
+
+- Jalon professionnel `CAP Method v1.0-pro`.
+- Dossier `docs/19_release_v1_0_pro/`.
+- Définition du jalon d'exploitation professionnelle.
+- Notes de release prêtes à publier.
+- Checklist de release.
+- Statut de release `READY FOR RELEASE`.
+- Chaîne complète Questionnaire Engine : CMDL, import CSV, analyse, synthèse, plan d'action, package, DOCX, PDF et ZIP.
+- Exports DOCX stylés avec `word/styles.xml`.
+- Validation CI complète de la chaîne.
+
+### Décision
+
+- Le jalon `v1.0-pro` est gelé fonctionnellement.
+- Toute amélioration non bloquante est déplacée vers une version ultérieure.
+
 ## [1.5.0] - 2026-07-05
 
 ### Ajouté
