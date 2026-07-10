@@ -1,5 +1,15 @@
 # CAP Method v1.0-pro - Jalon d'exploitation professionnelle
 
+## Statut
+
+```text
+VALIDATED - READY FOR RELEASE
+```
+
+La dernière CI GitHub Actions a été vérifiée comme verte.
+
+Le jalon `v1.0-pro` est validé et prêt à être publié comme première version d'exploitation professionnelle.
+
 ## Objectif du jalon
 
 Le jalon `v1.0-pro` marque la fin de la phase de construction initiale de CAP Method.
@@ -21,6 +31,8 @@ Le jalon est considéré terminé lorsque :
 - la chaîne est validée par GitHub Actions ;
 - la documentation d'exploitation existe ;
 - les limites professionnelles sont explicites.
+
+Tous ces critères sont validés pour `v1.0-pro`.
 
 ## Périmètre inclus
 
