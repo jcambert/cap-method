@@ -24,6 +24,7 @@ writeDocx(actionPlanDocx, 'Plan d action CAP', fs.readFileSync(actionPlanSource,
 manifest.files.exports.finalSynthesisDocx = finalSynthesisDocx;
 manifest.files.exports.actionPlanDocx = actionPlanDocx;
 manifest.checks.exportsGenerated = true;
+manifest.checks.docxStyled = true;
 manifest.generatedAt = manifest.generatedAt ?? new Date().toISOString();
 manifest.lastExportedAt = new Date().toISOString();
 
@@ -43,6 +44,7 @@ function writeDocx(outputPath, title, markdown) {
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
   <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
   <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
 </Types>`)
@@ -59,6 +61,10 @@ function writeDocx(outputPath, title, markdown) {
     {
       path: 'word/document.xml',
       content: xml(documentXml)
+    },
+    {
+      path: 'word/styles.xml',
+      content: xml(renderStylesXml())
     },
     {
       path: 'docProps/core.xml',
@@ -78,7 +84,10 @@ function writeDocx(outputPath, title, markdown) {
 
 function renderDocumentXml(title, markdown) {
   const body = [
-    paragraph(title, 'Title'),
+    titleBlock(title),
+    paragraph('Document de travail généré par CAP Method - validation consultant obligatoire.', 'CapSubtitle'),
+    paragraph(`Généré le ${new Date().toISOString().slice(0, 10)}`, 'CapMeta'),
+    pageBreak(),
     ...markdownToParagraphs(markdown),
     sectionProperties()
   ].join('');
@@ -106,22 +115,30 @@ function markdownToParagraphs(markdown) {
         return paragraph(line.slice(4), 'Heading3');
       }
       if (line.startsWith('- [ ] ')) {
-        return paragraph(`☐ ${line.slice(6)}`, null);
+        return paragraph(`☐ ${line.slice(6)}`, 'CapChecklist');
       }
       if (line.startsWith('- ')) {
-        return paragraph(`• ${line.slice(2)}`, null);
+        return paragraph(`• ${line.slice(2)}`, 'CapBullet');
       }
       if (line.startsWith('|')) {
-        return paragraph(line, null);
+        return paragraph(line, 'CapTableText');
       }
       if (line.startsWith('```')) {
-        return paragraph(line, null);
+        return paragraph(line, 'CapCode');
       }
       if (line.startsWith('> ')) {
-        return paragraph(line.slice(2), null);
+        return paragraph(line.slice(2), 'CapQuote');
       }
-      return paragraph(line, null);
+      return paragraph(line, 'Normal');
     });
+}
+
+function titleBlock(text) {
+  return paragraph(text, 'Title');
+}
+
+function pageBreak() {
+  return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
 }
 
 function paragraph(text, style) {
@@ -131,6 +148,85 @@ function paragraph(text, style) {
 
 function sectionProperties() {
   return `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>`;
+}
+
+function renderStylesXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:after="160" w:line="276" w:lineRule="auto"/></w:pPr>
+    <w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:color w:val="222222"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Title">
+    <w:name w:val="CAP Title"/>
+    <w:qFormat/>
+    <w:pPr><w:jc w:val="center"/><w:spacing w:before="240" w:after="420"/></w:pPr>
+    <w:rPr><w:b/><w:rFonts w:ascii="Calibri Light" w:hAnsi="Calibri Light"/><w:sz w:val="40"/><w:color w:val="1F4E79"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapSubtitle">
+    <w:name w:val="CAP Subtitle"/>
+    <w:pPr><w:jc w:val="center"/><w:spacing w:after="240"/></w:pPr>
+    <w:rPr><w:i/><w:sz w:val="22"/><w:color w:val="666666"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapMeta">
+    <w:name w:val="CAP Metadata"/>
+    <w:pPr><w:jc w:val="center"/><w:spacing w:after="480"/></w:pPr>
+    <w:rPr><w:sz w:val="18"/><w:color w:val="777777"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:keepNext/><w:spacing w:before="360" w:after="200"/><w:outlineLvl w:val="0"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="32"/><w:color w:val="1F4E79"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:keepNext/><w:spacing w:before="280" w:after="160"/><w:outlineLvl w:val="1"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="26"/><w:color w:val="2F75B5"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading3">
+    <w:name w:val="heading 3"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:keepNext/><w:spacing w:before="220" w:after="120"/><w:outlineLvl w:val="2"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="23"/><w:color w:val="3B6EA5"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapBullet">
+    <w:name w:val="CAP Bullet"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr><w:ind w:left="360" w:hanging="180"/><w:spacing w:after="80"/></w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapChecklist">
+    <w:name w:val="CAP Checklist"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr><w:ind w:left="360" w:hanging="180"/><w:spacing w:after="80"/></w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapTableText">
+    <w:name w:val="CAP Table Text"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr><w:spacing w:before="40" w:after="40"/></w:pPr>
+    <w:rPr><w:rFonts w:ascii="Consolas" w:hAnsi="Consolas"/><w:sz w:val="18"/><w:color w:val="333333"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapCode">
+    <w:name w:val="CAP Code"/>
+    <w:basedOn w:val="Normal"/>
+    <w:rPr><w:rFonts w:ascii="Consolas" w:hAnsi="Consolas"/><w:sz w:val="18"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="CapQuote">
+    <w:name w:val="CAP Quote"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr><w:ind w:left="360"/><w:spacing w:before="120" w:after="120"/></w:pPr>
+    <w:rPr><w:i/><w:color w:val="666666"/></w:rPr>
+  </w:style>
+</w:styles>`;
 }
 
 function renderCoreXml(title) {
