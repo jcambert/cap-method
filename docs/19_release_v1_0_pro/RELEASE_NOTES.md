@@ -1,5 +1,15 @@
 # Release notes - CAP Method v1.0-pro
 
+## Statut
+
+```text
+VALIDATED - READY FOR GITHUB RELEASE
+```
+
+La dernière CI GitHub Actions a été vérifiée comme verte.
+
+Ces notes peuvent être utilisées pour publier la release GitHub `CAP Method v1.0-pro`.
+
 ## Résumé
 
 `CAP Method v1.0-pro` est la première version exploitable professionnellement de CAP Method.
@@ -164,6 +174,8 @@ ZIP
 
 ## Décision de release
 
-Cette version est publiable comme première version professionnelle de travail.
+Cette version est validée comme première version professionnelle de travail.
 
 Elle doit être utilisée comme socle stable avant les améliorations futures.
+
+Aucune nouvelle fonctionnalité ne doit être ajoutée à ce jalon après publication.
