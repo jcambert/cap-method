@@ -34,18 +34,11 @@ jobs:
 
       - name: Check normalized FORM-001 response
         run: |
-          grep -q '"formId": "FORM-001"' /tmp/FORM-001.response.normalized.json
-          grep -q '"questionId": "Q001"' /tmp/FORM-001.response.normalized.json
-          grep -q '"questionId": "Q023"' /tmp/FORM-001.response.normalized.json
-          grep -q '"status": "success"' /tmp/FORM-001.response.normalized.json
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/FORM-001.response.normalized.json', 'utf8')); if (data.formId !== 'FORM-001') throw new Error('Invalid formId'); if (data.import.status !== 'success') throw new Error('Import status is not success'); if (!Array.isArray(data.answers) || data.answers.length === 0) throw new Error('No normalized answers'); if (!data.answers.some(answer => answer.questionId === 'Q001')) throw new Error('Q001 was not imported');"
 
       - name: Import sample response session
         run: node questionnaire-engine/tools/import-response-session.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples /tmp/session.response.normalized.json
 
       - name: Check normalized response session
         run: |
-          grep -q '"formsExpected": 10' /tmp/session.response.normalized.json
-          grep -q '"formsImported": 10' /tmp/session.response.normalized.json
-          grep -q '"complete": true' /tmp/session.response.normalized.json
-          grep -q '"ready": true' /tmp/session.response.normalized.json
-          grep -q '"status": "success"' /tmp/session.response.normalized.json
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/session.response.normalized.json', 'utf8')); if (data.import.formsExpected !== 10) throw new Error('Expected 10 forms'); if (data.import.formsImported !== 10) throw new Error('Expected 10 imported forms'); if (data.completeness.complete !== true) throw new Error('Session is not complete'); if (data.analysisReadiness.ready !== true) throw new Error('Session is not analysis-ready'); if (data.import.status !== 'success') throw new Error('Session import status is not success');"
