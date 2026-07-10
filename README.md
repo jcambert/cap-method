@@ -2,7 +2,7 @@
 
 CAP est une méthode d'accompagnement personnel et professionnel visant à aider une personne à mieux se connaître, clarifier ses ressources, ses valeurs, ses besoins, ses compétences et construire des pistes d'évolution cohérentes.
 
-Ce dépôt contient la documentation source de la méthode CAP.
+Ce dépôt contient la documentation source de la méthode CAP ainsi que les premières briques techniques permettant d'automatiser les questionnaires, l'import des réponses, l'analyse et la préparation des livrables consultant.
 
 ## Organisation
 
@@ -30,6 +30,13 @@ cap-method/
 │   ├── 16_google_sheets_pack/
 │   ├── 17_publication/
 │   └── 18_release_v1_5_0/
+├── questionnaire-engine/
+│   ├── cmdl/
+│   ├── generators/
+│   ├── responses/
+│   ├── analysis/
+│   ├── synthesis/
+│   └── tools/
 └── templates/
     ├── google_forms/
     ├── google_sheets/
@@ -42,6 +49,7 @@ cap-method/
 |---|---|
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
+| Questionnaire Engine | ✅ Chaîne opérationnelle jusqu'au brouillon de synthèse consultant |
 
 ## Modules opérationnels
 
@@ -56,12 +64,112 @@ cap-method/
 | Pack publication | ✅ Complet |
 | Préparation release GitHub v1.5.0 | ✅ Complet |
 
+## Chaîne technique actuelle
+
+Le dossier `questionnaire-engine/` contient maintenant une chaîne automatisée de bout en bout :
+
+```text
+CMDL FORM-001 à FORM-010
+  ↓
+Génération Google Forms / Google Sheets
+  ↓
+Import CSV des réponses
+  ↓
+ResponseSession JSON
+  ↓
+AnalysisSnapshot JSON
+  ↓
+SynthesisDraft Markdown
+```
+
+### Statut de la chaîne
+
+| Étape | Statut |
+|---|---|
+| Définitions CMDL FORM-001 à FORM-010 | ✅ OK |
+| Validation CMDL | ✅ OK |
+| Génération Google Forms | ✅ OK |
+| Test manuel Apps Script | ✅ OK |
+| Modèle de données réponses | ✅ OK |
+| Règles de normalisation | ✅ OK |
+| Import CSV FORM-001 | ✅ OK |
+| Import ResponseSession complète | ✅ OK |
+| Génération AnalysisSnapshot | ✅ OK |
+| Génération SynthesisDraft Markdown | ✅ OK |
+| Validation CI de bout en bout | ✅ OK |
+
+## Commandes principales
+
+Valider les questionnaires CMDL :
+
+```bash
+node questionnaire-engine/tools/validate-cmdl.mjs
+```
+
+Générer les Google Forms depuis CMDL :
+
+```bash
+node questionnaire-engine/generators/google-forms/generate-google-forms.mjs questionnaire-engine/cmdl/examples
+```
+
+Générer des CSV de réponses de test :
+
+```bash
+node questionnaire-engine/tools/generate-sample-response-csvs.mjs
+```
+
+Importer une session complète :
+
+```bash
+node questionnaire-engine/tools/import-response-session.mjs
+```
+
+Générer une analyse :
+
+```bash
+node questionnaire-engine/tools/analyze-response-session.mjs
+```
+
+Générer un brouillon de synthèse consultant :
+
+```bash
+node questionnaire-engine/tools/generate-synthesis-draft.mjs
+```
+
 ## Convention de nommage
 
 Les livrables sont stockés en Markdown afin de faciliter le versionnement et les revues.
 
-Les exports DOCX/PDF pourront être générés à partir de ces fichiers sources.
+Les exports DOCX/PDF pourront être générés à partir de ces fichiers sources lorsque les modèles Markdown seront stabilisés.
 
 ## Philosophie de travail
 
 Le dépôt GitHub devient la source officielle du projet. Le chat sert à produire, améliorer et valider les contenus avant commit.
+
+La logique retenue est progressive :
+
+```text
+contenu stable
+  ↓
+questionnaires structurés
+  ↓
+réponses normalisées
+  ↓
+analyse assistée
+  ↓
+livrables consultant
+  ↓
+exports finaux
+```
+
+## Prochaine étape
+
+Le prochain jalon est de passer du brouillon consultant vers les vrais livrables de fin de bilan :
+
+```text
+SynthesisDraft Markdown
+  ↓
+Synthèse finale structurée
+  ↓
+Plan d'action
+```
