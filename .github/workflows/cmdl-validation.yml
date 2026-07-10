@@ -42,3 +42,10 @@ jobs:
       - name: Check normalized response session
         run: |
           node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/session.response.normalized.json', 'utf8')); if (data.import.formsExpected !== 10) throw new Error('Expected 10 forms'); if (data.import.formsImported !== 10) throw new Error('Expected 10 imported forms'); if (data.completeness.complete !== true) throw new Error('Session is not complete'); if (data.analysisReadiness.ready !== true) throw new Error('Session is not analysis-ready'); if (data.import.status !== 'success') throw new Error('Session import status is not success');"
+
+      - name: Generate analysis snapshot
+        run: node questionnaire-engine/tools/analyze-response-session.mjs /tmp/session.response.normalized.json /tmp/sample.analysis-snapshot.json
+
+      - name: Check analysis snapshot
+        run: |
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/sample.analysis-snapshot.json', 'utf8')); if (data.status !== 'ready_for_consultant_review') throw new Error('Analysis snapshot is not ready'); if (!Array.isArray(data.indicators) || data.indicators.length === 0) throw new Error('Missing indicators'); if (!Array.isArray(data.consultantPrompts) || data.consultantPrompts.length === 0) throw new Error('Missing consultant prompts'); if (data.coverage.formsImported !== 10) throw new Error('Invalid coverage');"
