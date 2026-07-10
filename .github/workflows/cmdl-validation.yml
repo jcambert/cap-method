@@ -121,3 +121,13 @@ jobs:
           test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx
           node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (!data.checks.exportsGenerated) throw new Error('Exports should be marked as generated'); if (!data.files.exports.finalSynthesisDocx) throw new Error('Missing final synthesis DOCX reference'); if (!data.files.exports.actionPlanDocx) throw new Error('Missing action plan DOCX reference');"
           node -e "const fs = require('fs'); for (const file of ['/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx', '/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx']) { const buffer = fs.readFileSync(file); if (buffer.readUInt32LE(0) !== 0x04034b50) throw new Error('Invalid DOCX zip header: ' + file); }"
+
+      - name: Generate PDF exports
+        run: node questionnaire-engine/tools/export-pdf.mjs /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session
+
+      - name: Check PDF exports
+        run: |
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.pdf
+          test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.pdf
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (!data.checks.pdfGenerated) throw new Error('PDF exports should be marked as generated'); if (!data.files.exports.finalSynthesisPdf) throw new Error('Missing final synthesis PDF reference'); if (!data.files.exports.actionPlanPdf) throw new Error('Missing action plan PDF reference');"
+          node -e "const fs = require('fs'); for (const file of ['/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.pdf', '/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.pdf']) { const buffer = fs.readFileSync(file); if (buffer.subarray(0, 5).toString('utf8') !== '%PDF-') throw new Error('Invalid PDF header: ' + file); }"
