@@ -119,8 +119,10 @@ jobs:
         run: |
           test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx
           test -f /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx
-          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (!data.checks.exportsGenerated) throw new Error('Exports should be marked as generated'); if (!data.files.exports.finalSynthesisDocx) throw new Error('Missing final synthesis DOCX reference'); if (!data.files.exports.actionPlanDocx) throw new Error('Missing action plan DOCX reference');"
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/manifest.json', 'utf8')); if (!data.checks.exportsGenerated) throw new Error('Exports should be marked as generated'); if (!data.checks.docxStyled) throw new Error('DOCX styling should be marked as enabled'); if (!data.files.exports.finalSynthesisDocx) throw new Error('Missing final synthesis DOCX reference'); if (!data.files.exports.actionPlanDocx) throw new Error('Missing action plan DOCX reference');"
           node -e "const fs = require('fs'); for (const file of ['/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx', '/tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-PLAN-ACTION.docx']) { const buffer = fs.readFileSync(file); if (buffer.readUInt32LE(0) !== 0x04034b50) throw new Error('Invalid DOCX zip header: ' + file); }"
+          unzip -p /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx word/styles.xml | grep -q "CapSubtitle"
+          unzip -p /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session/exports/CAP-SYNTHESE-FINALE.docx word/styles.xml | grep -q "CapChecklist"
 
       - name: Generate PDF exports
         run: node questionnaire-engine/tools/export-pdf.mjs /tmp/cap-method-packages/CAP-DELIVERABLES-sample-session
