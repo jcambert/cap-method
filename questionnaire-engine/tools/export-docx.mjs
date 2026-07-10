@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 
+const crcTable = buildCrcTable();
+
 const defaultPackageFolder = 'questionnaire-engine/deliverables/packages/CAP-DELIVERABLES-sample-session';
 const packageFolder = process.argv[2] ?? defaultPackageFolder;
 const manifestPath = path.join(packageFolder, 'manifest.json');
@@ -214,13 +216,15 @@ function crc32(buffer) {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
-const crcTable = Array.from({ length: 256 }, (_, index) => {
-  let value = index;
-  for (let bit = 0; bit < 8; bit += 1) {
-    value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
-  }
-  return value >>> 0;
-});
+function buildCrcTable() {
+  return Array.from({ length: 256 }, (_, index) => {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) {
+      value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+    }
+    return value >>> 0;
+  });
+}
 
 function xml(value) {
   return Buffer.from(value, 'utf8');
