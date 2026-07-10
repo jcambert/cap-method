@@ -35,3 +35,17 @@ jobs:
           grep -q '"questionId": "Q001"' /tmp/FORM-001.response.normalized.json
           grep -q '"questionId": "Q023"' /tmp/FORM-001.response.normalized.json
           grep -q '"status": "success"' /tmp/FORM-001.response.normalized.json
+
+      - name: Generate sample response CSV suite
+        run: node questionnaire-engine/tools/generate-sample-response-csvs.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples
+
+      - name: Import sample response session
+        run: node questionnaire-engine/tools/import-response-session.mjs questionnaire-engine/cmdl/examples /tmp/cap-method-response-samples /tmp/session.response.normalized.json
+
+      - name: Check normalized response session
+        run: |
+          grep -q '"formsExpected": 10' /tmp/session.response.normalized.json
+          grep -q '"formsImported": 10' /tmp/session.response.normalized.json
+          grep -q '"complete": true' /tmp/session.response.normalized.json
+          grep -q '"ready": true' /tmp/session.response.normalized.json
+          grep -q '"status": "success"' /tmp/session.response.normalized.json
