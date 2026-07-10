@@ -51,6 +51,8 @@ cap-method/
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Release v1.5.0 – Notes, manifeste et procédure | ✅ Préparée |
 | Questionnaire Engine | ✅ Chaîne end-to-end opérationnelle jusqu'au pack livrables consultant |
+| Export DOCX/PDF | 🧭 Plan défini |
+| Pack versionné de livrables | 🧭 Structure cible définie |
 
 ## Modules opérationnels
 
@@ -107,6 +109,8 @@ Manifest JSON
 | Génération ActionPlan Markdown | ✅ OK |
 | Commande end-to-end `generate-deliverables.mjs` | ✅ OK |
 | Validation CI de bout en bout | ✅ OK |
+| Plan d'export DOCX/PDF | 🧭 Défini |
+| Structure de pack versionné | 🧭 Définie |
 
 ## Commande principale recommandée
 
@@ -128,6 +132,29 @@ synthesis-draft.md
 final-synthesis.md
 action-plan.md
 manifest.json
+```
+
+## Documentation export
+
+Le plan d'export et la structure de package sont documentés ici :
+
+```text
+questionnaire-engine/deliverables/EXPORT_PLAN.md
+questionnaire-engine/deliverables/VERSIONED_PACKAGE.md
+```
+
+Objectif export cible :
+
+```text
+Markdown livrables
+  ↓
+structure source / exports / review
+  ↓
+DOCX
+  ↓
+PDF
+  ↓
+ZIP versionné
 ```
 
 ## Commandes unitaires
@@ -208,12 +235,12 @@ exports finaux
 
 ## Prochaine étape
 
-Le prochain jalon est de préparer les livrables pour l'export :
+Le prochain jalon est de créer la première commande de préparation du package :
 
 ```text
-Markdown livrables
+generate-deliverables.mjs output
   ↓
-plan d'export DOCX/PDF
+prepare-deliverable-package.mjs
   ↓
-pack versionné de livrables
+source/ + exports/ + review/ + manifest.json
 ```
