@@ -59,7 +59,7 @@ Statut :
 IN_PROGRESS
 ```
 
-Les formulations interdites sont déclarées dans les validateurs et dans le manifest IA.
+Les formulations interdites sont déclarées dans les validateurs, dans le manifest IA et dans la documentation des limites professionnelles.
 
 Exemples contrôlés :
 
@@ -135,20 +135,36 @@ L'étape IA est ajoutée sans rendre l'IA obligatoire pour les livrables classiq
 Statut :
 
 ```text
-TODO
+DONE
 ```
 
-La prochaine étape est de documenter explicitement les limites professionnelles de l'IA pour éviter tout usage abusif.
+Fichier concerné :
+
+```text
+questionnaire-engine/ai/PROFESSIONAL_LIMITS.md
+```
+
+La documentation précise :
+
+- ce que l'IA peut faire ;
+- ce que l'IA ne doit pas faire ;
+- les formulations autorisées ;
+- les formulations interdites ;
+- la validation consultant obligatoire ;
+- l'interdiction de remise directe au bénéficiaire ;
+- la traçabilité obligatoire ;
+- les précautions liées aux données sensibles ;
+- la responsabilité professionnelle du consultant.
 
 ## Statut détaillé
 
 | User story | Statut | Commentaire |
 |---|---|---|
 | US-AI-008 | IN_PROGRESS | Les formulations prudentes sont utilisées et contrôlées. |
-| US-AI-009 | IN_PROGRESS | Les formulations interdites sont contrôlées par validation automatique. |
+| US-AI-009 | IN_PROGRESS | Les formulations interdites sont contrôlées par validation automatique et documentées. |
 | US-AI-011 | DONE | Le manifest IA est généré, documenté et validé en CI. |
 | US-AI-012 | IN_PROGRESS | La chaîne v1.0-pro reste exécutée en CI. |
-| US-AI-019 | TODO | Les limites professionnelles de l'IA doivent être documentées. |
+| US-AI-019 | DONE | Les limites professionnelles de l'IA sont documentées. |
 
 ## Commandes de référence
 
@@ -176,10 +192,10 @@ node questionnaire-engine/tools/validate-ai-analysis-manifest.mjs \
 
 ## Prochaine étape recommandée
 
-Créer la documentation des limites professionnelles :
+Finaliser le Lot 2 en passant à `DONE` les garde-fous déjà couverts par la génération, la validation automatique, le manifest et la documentation :
 
 ```text
-questionnaire-engine/ai/PROFESSIONAL_LIMITS.md
+US-AI-008
+US-AI-009
+US-AI-012
 ```
-
-Objectif : terminer `US-AI-019`.
