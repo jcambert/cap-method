@@ -9,7 +9,7 @@ feature/v2-ai
 ## Statut global
 
 ```text
-STARTED
+IN_PROGRESS
 ```
 
 ## Objectif du Lot 3
@@ -38,7 +38,7 @@ US-AI-007 - Générer des questions d'entretien
 US-AI-017 - Préparer une étape ConsultantReview
 ```
 
-## Démarrage réalisé
+## Réalisations
 
 ### ConsultantReview
 
@@ -64,16 +64,45 @@ Ce document définit :
 - des questions d'entretien génériques ;
 - le critère de passage vers `FinalSynthesis`.
 
+### Préparation consultant dans le brouillon IA
+
+Statut :
+
+```text
+DONE
+```
+
+Fichiers modifiés :
+
+```text
+questionnaire-engine/tools/generate-ai-analysis-draft.mjs
+questionnaire-engine/tools/validate-ai-analysis-draft.mjs
+```
+
+Le brouillon IA contient maintenant une section dédiée :
+
+```text
+## Préparation consultant
+```
+
+Cette section structure :
+
+- les priorités d'entretien ;
+- les hypothèses à valider ;
+- les hypothèses à écarter ou nuancer ;
+- les questions ciblées ;
+- les points de vigilance consultant.
+
 ## Statut détaillé
 
 | User story | Statut | Commentaire |
 |---|---|---|
-| US-AI-003 | IN_PROGRESS | La synthèse neutre existe mais doit être enrichie. |
-| US-AI-004 | IN_PROGRESS | Les thèmes récurrents existent mais doivent être mieux préparés pour l'entretien. |
-| US-AI-005 | IN_PROGRESS | Les hypothèses professionnelles existent mais doivent être mieux structurées. |
-| US-AI-006 | IN_PROGRESS | Les points à clarifier existent mais doivent être reliés aux décisions consultant. |
-| US-AI-007 | IN_PROGRESS | Les questions d'entretien existent mais doivent être enrichies. |
-| US-AI-017 | DONE | L'étape `ConsultantReview` est documentée. |
+| US-AI-003 | IN_PROGRESS | La synthèse neutre existe et reste à enrichir si besoin. |
+| US-AI-004 | IN_PROGRESS | Les thèmes récurrents existent et alimentent la préparation consultant. |
+| US-AI-005 | IN_PROGRESS | Les hypothèses professionnelles existent et sont reprises dans les hypothèses à valider. |
+| US-AI-006 | IN_PROGRESS | Les points à clarifier existent et alimentent les priorités d'entretien. |
+| US-AI-007 | IN_PROGRESS | Les questions d'entretien sont enrichies par des questions ciblées. |
+| US-AI-017 | DONE | L'étape `ConsultantReview` est documentée et préparée dans le brouillon. |
 
 ## Chaîne cible enrichie
 
@@ -81,6 +110,8 @@ Ce document définit :
 AnalysisSnapshot
   ↓
 AIAnalysisDraft
+  ↓
+Préparation consultant
   ↓
 ConsultantReview
   ↓
@@ -91,12 +122,9 @@ ActionPlan
 
 ## Prochaine étape recommandée
 
-Enrichir la génération du brouillon IA pour ajouter une section de préparation consultant plus exploitable :
+Renforcer la synthèse neutre et les thèmes récurrents pour terminer :
 
 ```text
-priorités d'entretien
-hypothèses à valider
-hypothèses à écarter
-questions ciblées
-points de vigilance consultant
+US-AI-003
+US-AI-004
 ```
