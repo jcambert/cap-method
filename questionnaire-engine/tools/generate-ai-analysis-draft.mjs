@@ -33,6 +33,8 @@ const requiredGuardrailPhrases = [
   'validation consultant obligatoire',
   'Les réponses suggèrent',
   'Ce point mérite validation',
+  'Lecture factuelle',
+  'Utilisation en entretien',
   'Priorités d entretien',
   'Hypothèses à valider',
   'Hypothèses à écarter ou nuancer'
@@ -101,7 +103,7 @@ function renderAiAnalysisDraft(snapshot, generatedAt) {
     '',
     '## Synthèse neutre des réponses',
     '',
-    renderNeutralSummary([completion, readiness, longTextCount, rating5, rating10]),
+    renderNeutralSummary([completion, readiness, longTextCount, rating5, rating10], highlights, risks),
     '',
     '## Thèmes récurrents',
     '',
@@ -207,34 +209,84 @@ function renderTraceability(snapshot, generatedAt) {
   ].join('\n');
 }
 
-function renderNeutralSummary(indicators) {
+function renderNeutralSummary(indicators, highlights, risks) {
   const available = indicators.filter(Boolean);
+
   if (available.length === 0) {
-    return 'Les données disponibles ne permettent pas encore de produire une synthèse neutre exploitable. Ce point mérite validation avec le consultant.';
+    return [
+      '### Lecture factuelle',
+      '',
+      'Les données disponibles ne permettent pas encore de produire une synthèse neutre exploitable. Ce point mérite validation avec le consultant.',
+      '',
+      '### Éléments observables',
+      '',
+      '- Aucun indicateur exploitable n est disponible dans le snapshot.',
+      '',
+      '### Points à ne pas surinterpréter',
+      '',
+      '- Ne pas déduire une orientation professionnelle à partir d une matière insuffisante.'
+    ].join('\n');
   }
 
   return [
+    '### Lecture factuelle',
+    '',
     'Les réponses suggèrent une première matière de travail pour préparer la lecture consultant.',
+    '',
+    'Cette synthèse reste descriptive : elle regroupe des signaux observables sans produire de conclusion définitive.',
+    '',
+    '### Éléments observables',
     '',
     ...available.map(item => `- ${item.label} : ${formatValue(item.value, item.unit)}. ${item.interpretation ?? ''}`.trim()),
     '',
-    'Cette lecture reste descriptive et doit être complétée par une analyse qualitative humaine.'
+    `- Nombre de thèmes détectés : ${highlights.length}.`,
+    `- Nombre de points de vigilance détectés : ${risks.length}.`,
+    '',
+    '### Points à ne pas surinterpréter',
+    '',
+    '- Un score ou un indicateur ne suffit pas à conclure sur un projet professionnel.',
+    '- Un thème récurrent doit être confirmé par le bénéficiaire avant d être repris dans la synthèse finale.',
+    '- Une contrainte exprimée doit être distinguée d une contrainte réellement non négociable.',
+    '',
+    'Cette lecture doit être complétée par une analyse qualitative humaine.'
   ].join('\n');
 }
 
 function renderRecurringThemes(highlights) {
   if (highlights.length === 0) {
-    return 'Aucun thème récurrent automatique n a été identifié. Le consultant pourra explorer les réponses longues pour repérer les thèmes réellement structurants.';
+    return [
+      'Aucun thème récurrent automatique n a été identifié.',
+      '',
+      '### Utilisation en entretien',
+      '',
+      '- Le consultant pourra explorer les réponses longues pour repérer les thèmes réellement structurants.',
+      '- Le consultant pourra demander au bénéficiaire quels sujets reviennent spontanément dans son récit.'
+    ].join('\n');
   }
 
   return highlights.map(highlight => [
     `### ${highlight.label}`,
     '',
+    '#### Signal observé',
+    '',
+    `- Occurrences détectées : ${highlight.count ?? 0}`,
+    `- Code source : ${highlight.code ?? 'n/a'}`,
+    '',
+    '#### Lecture prudente',
+    '',
     `Les réponses suggèrent un thème récurrent autour de : ${highlight.label}.`,
     '',
-    `Occurrences détectées : ${highlight.count ?? 0}`,
+    'Ce thème doit être confirmé en entretien avant toute reprise dans une synthèse finale.',
     '',
-    renderExamples(highlight.examples ?? [])
+    '#### Exemples sources',
+    '',
+    renderExamples(highlight.examples ?? []),
+    '',
+    '#### Utilisation en entretien',
+    '',
+    `- Vérifier si le thème "${highlight.label}" est réellement important pour le bénéficiaire.`,
+    '- Identifier si ce thème correspond à un besoin, une contrainte, une motivation ou une compétence.',
+    '- Demander au bénéficiaire de nuancer ou prioriser ce thème.'
   ].join('\n')).join('\n\n');
 }
 
