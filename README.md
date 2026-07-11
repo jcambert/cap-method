@@ -38,10 +38,10 @@ v1.0-pro
   = version publiée et exploitable professionnellement
 
 v2.0-ai
-  = analyse IA assistée avec validation consultant obligatoire
+  = backlog validé, prochain chantier de développement
 
 v3.0-saas
-  = plateforme SaaS professionnelle construite sur le moteur CAP
+  = backlog validé, trajectoire produit future après v2
 ```
 
 Documentation associée :
@@ -50,10 +50,14 @@ Documentation associée :
 docs/20_release_v2_0_ai/MILESTONE.md
 docs/20_release_v2_0_ai/ARCHITECTURE.md
 docs/20_release_v2_0_ai/GUARDRAILS.md
+docs/20_release_v2_0_ai/USER_STORIES.md
+docs/20_release_v2_0_ai/VALIDATION.md
 
 docs/30_release_v3_0_saas/MILESTONE.md
 docs/30_release_v3_0_saas/PRODUCT_ARCHITECTURE.md
 docs/30_release_v3_0_saas/ROADMAP.md
+docs/30_release_v3_0_saas/USER_STORIES.md
+docs/30_release_v3_0_saas/VALIDATION.md
 ```
 
 ## Organisation
@@ -105,9 +109,9 @@ cap-method/
 | Bloc | Statut |
 |---|---|
 | CAP Method v1.0-pro | ✅ Publié |
-| Roadmap produit | ✅ Figée |
-| v2.0-ai | 🧊 Périmètre figé |
-| v3.0-saas | 🧊 Périmètre figé |
+| Roadmap produit | ✅ Mise à jour |
+| v2.0-ai | ✅ Backlog validé |
+| v3.0-saas | ✅ Backlog validé |
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Questionnaire Engine | ✅ Chaîne complète jusqu'au ZIP final |
 | Export DOCX/PDF | ✅ Généré et validé en CI |
@@ -252,20 +256,24 @@ questionnaire-engine/deliverables/DOCX_STYLING.md
 - Toute correction doit être faite dans les sources Markdown, puis les exports doivent être régénérés.
 - Les livrables restent à relire et valider humainement avant remise réelle à un bénéficiaire.
 - Les améliorations non bloquantes passent en versions ultérieures.
+- `v2.0-ai` est le prochain chantier de développement.
+- `v3.0-saas` reste une trajectoire validée, mais démarre après `v2.0-ai`.
 - Les branches IA/SaaS doivent rester compatibles avec `v1.0-pro`.
 
 ## Prochaine étape
 
-Démarrer l'exploitation terrain, puis ouvrir les branches futures :
+Démarrer le chantier IA :
 
 ```text
 release v1.0-pro publiée
   ↓
-test terrain avec un vrai bénéficiaire
+backlogs v2/v3 validés
   ↓
-retours d'usage
+création feature/v2-ai
   ↓
-feature/v2-ai
+Lot 1 IA
   ↓
-product/v3-saas-foundation
+ai-analysis-draft.md
+  ↓
+préparation v3.0-saas plus tard
 ```
