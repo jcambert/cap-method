@@ -8,13 +8,27 @@ It is a consultant-only draft generated from an `AnalysisSnapshot`.
 
 It does not replace the consultant review and must not be delivered directly to the beneficiary.
 
-## Command
+## Generate command
 
 ```bash
 node questionnaire-engine/tools/generate-ai-analysis-draft.mjs \
   questionnaire-engine/analysis/generated/sample.analysis-snapshot.json \
   questionnaire-engine/ai/generated/sample.ai-analysis-draft.md
 ```
+
+## Validation command
+
+```bash
+node questionnaire-engine/tools/validate-ai-analysis-draft.mjs \
+  questionnaire-engine/ai/generated/sample.ai-analysis-draft.md
+```
+
+The validation command checks:
+
+- required sections;
+- section order;
+- mandatory guardrail phrases;
+- forbidden definitive formulations.
 
 ## Current provider
 
@@ -48,6 +62,31 @@ The generated Markdown must contain:
 ## Validation consultant obligatoire
 ```
 
+## Required guardrail phrases
+
+The generated Markdown must contain:
+
+```text
+brouillon
+validation consultant obligatoire
+Les réponses suggèrent
+Ce point mérite validation
+```
+
+## Forbidden formulations
+
+The generated Markdown must not contain:
+
+```text
+Cette personne est
+Cette personne doit
+Le bon métier est
+Il faut absolument
+Son problème principal est
+Le diagnostic est
+Le profil psychologique est
+```
+
 ## Methodological rule
 
 ```text
@@ -65,4 +104,4 @@ Le consultant valide l'interprétation.
 
 ## Next step
 
-Add validation checks to ensure the generated draft contains all mandatory sections and avoids forbidden definitive formulations.
+Integrate the generation and validation commands into the CI workflow for `feature/v2-ai`.
