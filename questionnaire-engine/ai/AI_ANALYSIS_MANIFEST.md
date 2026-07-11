@@ -34,6 +34,26 @@ node questionnaire-engine/tools/generate-ai-analysis-draft.mjs \
   output.ai-analysis-manifest.json
 ```
 
+## Validation command
+
+```bash
+node questionnaire-engine/tools/validate-ai-analysis-manifest.mjs \
+  questionnaire-engine/ai/generated/sample.ai-analysis-manifest.json
+```
+
+The validation command checks:
+
+- mandatory manifest fields;
+- source traceability;
+- output paths;
+- provider and model values;
+- draft status;
+- consultant validation requirement;
+- guardrails status;
+- delivery blocking flags;
+- compatibility with an optional AI step;
+- guardrail lists.
+
 ## Manifest contract
 
 The manifest contains:
@@ -87,6 +107,21 @@ The manifest must state that:
 - the draft is not ready for beneficiary delivery;
 - the AI step remains optional.
 
+## CI validation
+
+The GitHub Actions workflow validates both files:
+
+```text
+/tmp/sample.ai-analysis-draft.md
+/tmp/sample.ai-analysis-manifest.json
+```
+
+The manifest validation is performed by:
+
+```text
+questionnaire-engine/tools/validate-ai-analysis-manifest.mjs
+```
+
 ## Methodological rule
 
 ```text
@@ -94,6 +129,8 @@ L'IA assiste l'analyse.
 Le consultant valide l'interprétation.
 ```
 
-## Next step
+## Status
 
-Add automatic manifest validation in CI.
+```text
+IMPLEMENTED - CI VALIDATED
+```
