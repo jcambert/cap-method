@@ -25,6 +25,7 @@ const requiredSections = [
   '## Points à clarifier',
   '## Questions d entretien',
   '## Risques d interprétation',
+  '## Préparation consultant',
   '## Validation consultant obligatoire'
 ];
 
@@ -42,7 +43,10 @@ const requiredPhrases = [
   'brouillon',
   'validation consultant obligatoire',
   'Les réponses suggèrent',
-  'Ce point mérite validation'
+  'Ce point mérite validation',
+  'Priorités d entretien',
+  'Hypothèses à valider',
+  'Hypothèses à écarter ou nuancer'
 ];
 
 for (const section of requiredSections) {
