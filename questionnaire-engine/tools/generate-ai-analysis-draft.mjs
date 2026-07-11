@@ -1,0 +1,300 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const defaultInputPath = 'questionnaire-engine/analysis/generated/sample.analysis-snapshot.json';
+const defaultOutputPath = 'questionnaire-engine/ai/generated/sample.ai-analysis-draft.md';
+
+const inputPath = process.argv[2] ?? defaultInputPath;
+const outputPath = process.argv[3] ?? defaultOutputPath;
+
+if (!fs.existsSync(inputPath)) {
+  console.error(`Input analysis snapshot not found: ${inputPath}`);
+  process.exit(1);
+}
+
+const snapshot = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
+const markdown = renderAiAnalysisDraft(snapshot);
+
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+fs.writeFileSync(outputPath, markdown, 'utf8');
+
+console.log(`AI analysis draft: ${outputPath}`);
+console.log(`Snapshot: ${snapshot.id ?? 'n/a'}`);
+console.log('Provider: deterministic-local-draft');
+console.log('Status: draft');
+console.log('Requires consultant validation: true');
+
+function renderAiAnalysisDraft(snapshot) {
+  const completion = indicator(snapshot, 'forms_completion_rate');
+  const rating5 = indicator(snapshot, 'rating5_average');
+  const rating10 = indicator(snapshot, 'rating10_average');
+  const longTextCount = indicator(snapshot, 'long_text_answer_count');
+  const readiness = indicator(snapshot, 'analysis_readiness');
+  const highlights = snapshot.highlights ?? [];
+  const risks = snapshot.risks ?? [];
+  const prompts = snapshot.consultantPrompts ?? [];
+
+  return [
+    '# Analyse IA assistée',
+    '',
+    '## Avertissement méthodologique',
+    '',
+    'Ce document est un brouillon IA assisté généré en mode local déterministe à partir de l analyse structurée CAP.',
+    '',
+    'Il ne constitue pas une synthèse finale, un diagnostic, une décision d orientation ou une recommandation professionnelle définitive.',
+    '',
+    'Les réponses suggèrent des pistes de lecture qui doivent être relues, nuancées et validées par le consultant avec le bénéficiaire.',
+    '',
+    '## Traçabilité',
+    '',
+    renderTraceability(snapshot),
+    '',
+    '## Synthèse neutre des réponses',
+    '',
+    renderNeutralSummary([completion, readiness, longTextCount, rating5, rating10]),
+    '',
+    '## Thèmes récurrents',
+    '',
+    renderRecurringThemes(highlights),
+    '',
+    '## Valeurs exprimées',
+    '',
+    renderValueHypotheses(highlights),
+    '',
+    '## Motivations apparentes',
+    '',
+    renderMotivationHypotheses(highlights),
+    '',
+    '## Compétences évoquées',
+    '',
+    renderSkills(highlights),
+    '',
+    '## Contraintes et freins',
+    '',
+    renderConstraints(highlights, risks),
+    '',
+    '## Hypothèses professionnelles',
+    '',
+    renderProfessionalHypotheses(highlights, risks),
+    '',
+    '## Points à clarifier',
+    '',
+    renderClarificationPoints(risks, completion, readiness),
+    '',
+    '## Questions d entretien',
+    '',
+    renderInterviewQuestions(prompts, risks),
+    '',
+    '## Risques d interprétation',
+    '',
+    renderInterpretationRisks(risks),
+    '',
+    '## Validation consultant obligatoire',
+    '',
+    renderConsultantValidation()
+  ].join('\n');
+}
+
+function renderTraceability(snapshot) {
+  return [
+    `- Session : ${snapshot.sessionId ?? 'n/a'}`,
+    `- Bénéficiaire : ${snapshot.beneficiaryId ?? 'n/a'}`,
+    `- Consultant : ${snapshot.consultantId ?? 'n/a'}`,
+    `- Source : ${snapshot.id ?? 'analysis-snapshot'}`,
+    `- Statut source : ${snapshot.status ?? 'n/a'}`,
+    `- Génération IA : ${new Date().toISOString()}`,
+    '- Provider : deterministic-local-draft',
+    '- Modèle : aucun fournisseur externe',
+    '- Statut : draft',
+    '- Validation consultant obligatoire : oui'
+  ].join('\n');
+}
+
+function renderNeutralSummary(indicators) {
+  const available = indicators.filter(Boolean);
+  if (available.length === 0) {
+    return 'Les données disponibles ne permettent pas encore de produire une synthèse neutre exploitable. Ce point mérite validation avec le consultant.';
+  }
+
+  return [
+    'Les réponses suggèrent une première matière de travail pour préparer la lecture consultant.',
+    '',
+    ...available.map(item => `- ${item.label} : ${formatValue(item.value, item.unit)}. ${item.interpretation ?? ''}`.trim()),
+    '',
+    'Cette lecture reste descriptive et doit être complétée par une analyse qualitative humaine.'
+  ].join('\n');
+}
+
+function renderRecurringThemes(highlights) {
+  if (highlights.length === 0) {
+    return 'Aucun thème récurrent automatique n a été identifié. Le consultant pourra explorer les réponses longues pour repérer les thèmes réellement structurants.';
+  }
+
+  return highlights.map(highlight => [
+    `### ${highlight.label}`,
+    '',
+    `Les réponses suggèrent un thème récurrent autour de : ${highlight.label}.`,
+    '',
+    `Occurrences détectées : ${highlight.count ?? 0}`,
+    '',
+    renderExamples(highlight.examples ?? [])
+  ].join('\n')).join('\n\n');
+}
+
+function renderValueHypotheses(highlights) {
+  const valuesRelated = highlights.filter(highlight => ['confidence', 'career_evolution'].includes(highlight.code));
+  if (valuesRelated.length === 0) {
+    return 'Aucune valeur dominante ne peut être isolée automatiquement à ce stade. Une hypothèse possible est de clarifier en entretien ce qui compte réellement pour le bénéficiaire.';
+  }
+
+  return valuesRelated.map(highlight => `- Une hypothèse possible est que le thème "${highlight.label}" porte une valeur ou une attente importante à valider en entretien.`).join('\n');
+}
+
+function renderMotivationHypotheses(highlights) {
+  const motivationRelated = highlights.filter(highlight => ['career_evolution', 'confidence'].includes(highlight.code));
+  if (motivationRelated.length === 0) {
+    return 'Les motivations apparentes ne ressortent pas suffisamment du signal automatique. Le consultant pourra explorer les envies, les priorités et les critères de choix du bénéficiaire.';
+  }
+
+  return motivationRelated.map(highlight => `- Les réponses suggèrent une motivation possible liée à "${highlight.label}". Ce point mérite validation avec le bénéficiaire.`).join('\n');
+}
+
+function renderSkills(highlights) {
+  const skills = highlights.filter(highlight => highlight.code === 'skills');
+  if (skills.length === 0) {
+    return 'Aucune compétence forte n est détectée automatiquement. Le consultant pourra compléter cette section à partir des réponses détaillées et de l entretien.';
+  }
+
+  return skills.map(highlight => [
+    `- Les réponses suggèrent des compétences ou savoir-faire liés à "${highlight.label}".`,
+    renderExamples(highlight.examples ?? [])
+  ].join('\n')).join('\n\n');
+}
+
+function renderConstraints(highlights, risks) {
+  const constraints = highlights.filter(highlight => highlight.code === 'constraints');
+  const riskLines = risks.map(risk => `- Point de vigilance : ${risk.label}. ${risk.recommendation ?? ''}`.trim());
+
+  if (constraints.length === 0 && riskLines.length === 0) {
+    return 'Aucune contrainte majeure n est détectée automatiquement. Ce point doit rester ouvert en entretien.';
+  }
+
+  return [
+    ...constraints.map(highlight => `- Les réponses suggèrent une contrainte possible autour de "${highlight.label}".`),
+    ...riskLines
+  ].join('\n');
+}
+
+function renderProfessionalHypotheses(highlights, risks) {
+  const lines = [];
+
+  if (highlights.some(highlight => highlight.code === 'skills')) {
+    lines.push('- Une hypothèse possible est de construire des pistes professionnelles à partir des compétences déjà exprimées.');
+  }
+
+  if (highlights.some(highlight => highlight.code === 'career_evolution')) {
+    lines.push('- Une hypothèse possible est d explorer une évolution professionnelle progressive plutôt qu une rupture immédiate.');
+  }
+
+  if (highlights.some(highlight => highlight.code === 'constraints') || risks.length > 0) {
+    lines.push('- Une hypothèse possible est de filtrer les pistes professionnelles avec les contraintes identifiées avant de les approfondir.');
+  }
+
+  if (lines.length === 0) {
+    lines.push('- Les hypothèses professionnelles ne sont pas suffisamment établies automatiquement. Le consultant pourra les construire après clarification des objectifs et des motivations.');
+  }
+
+  return lines.map(line => `${line} Ce point mérite validation.`).join('\n');
+}
+
+function renderClarificationPoints(risks, completion, readiness) {
+  const points = [];
+
+  if (completion && completion.value < 100) {
+    points.push('- Clarifier les formulaires ou réponses manquantes avant de produire une synthèse finale.');
+  }
+
+  if (readiness && readiness.value === false) {
+    points.push('- Vérifier les prérequis d analyse avant d utiliser les résultats comme base de restitution.');
+  }
+
+  for (const risk of risks) {
+    points.push(`- Clarifier : ${risk.label}. ${risk.recommendation ?? ''}`.trim());
+  }
+
+  if (points.length === 0) {
+    points.push('- Clarifier avec le bénéficiaire les priorités, les contraintes réelles et les critères de choix avant toute conclusion.');
+  }
+
+  return points.join('\n');
+}
+
+function renderInterviewQuestions(prompts, risks) {
+  const questions = prompts.map(prompt => `- ${prompt.question}`);
+
+  if (risks.length > 0) {
+    questions.push('- Quels points de vigilance doivent être confirmés, nuancés ou écartés avec le bénéficiaire ?');
+  }
+
+  questions.push('- Quelles pistes le bénéficiaire reconnaît-il comme réalistes, motivantes et cohérentes avec ses contraintes ?');
+
+  return questions.join('\n');
+}
+
+function renderInterpretationRisks(risks) {
+  const base = [
+    '- Ne pas transformer un thème récurrent en certitude.',
+    '- Ne pas confondre hypothèse professionnelle et recommandation définitive.',
+    '- Ne pas interpréter une réponse isolée comme un trait stable.',
+    '- Toujours valider les points sensibles avec le bénéficiaire.'
+  ];
+
+  const detected = risks.map(risk => `- Risque détecté : ${risk.label}. À traiter comme un point de vigilance, pas comme une conclusion.`);
+
+  return [...base, ...detected].join('\n');
+}
+
+function renderConsultantValidation() {
+  return [
+    '- [ ] Relire le brouillon IA.',
+    '- [ ] Supprimer ou reformuler les éléments trop affirmatifs.',
+    '- [ ] Valider les hypothèses avec les réponses sources.',
+    '- [ ] Préparer les questions d entretien.',
+    '- [ ] Confirmer les éléments retenus avec le bénéficiaire.',
+    '- [ ] Ne reprendre dans la synthèse finale que les éléments validés humainement.',
+    '',
+    'Ce brouillon ne doit pas être remis tel quel au bénéficiaire.'
+  ].join('\n');
+}
+
+function renderExamples(examples) {
+  if (examples.length === 0) {
+    return 'Aucun exemple source disponible dans le snapshot.';
+  }
+
+  return examples.slice(0, 3).map(example => `- ${example.formId} / ${example.questionId} : ${sanitizeInline(example.value)}`).join('\n');
+}
+
+function indicator(snapshot, code) {
+  return (snapshot.indicators ?? []).find(item => item.code === code) ?? null;
+}
+
+function formatValue(value, unit) {
+  if (value === null || value === undefined) {
+    return 'n/a';
+  }
+
+  if (unit === 'percent') {
+    return `${value} %`;
+  }
+
+  if (unit === 'boolean') {
+    return value ? 'oui' : 'non';
+  }
+
+  return String(value);
+}
+
+function sanitizeInline(value) {
+  return String(value ?? '').replaceAll('\n', ' ').trim();
+}
