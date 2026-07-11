@@ -24,6 +24,7 @@ const requiredSections = [
   '## Points à clarifier',
   '## Questions d entretien',
   '## Risques d interprétation',
+  '## Préparation consultant',
   '## Validation consultant obligatoire'
 ];
 
@@ -31,7 +32,10 @@ const requiredGuardrailPhrases = [
   'brouillon',
   'validation consultant obligatoire',
   'Les réponses suggèrent',
-  'Ce point mérite validation'
+  'Ce point mérite validation',
+  'Priorités d entretien',
+  'Hypothèses à valider',
+  'Hypothèses à écarter ou nuancer'
 ];
 
 const forbiddenPhrases = [
@@ -134,6 +138,10 @@ function renderAiAnalysisDraft(snapshot, generatedAt) {
     '## Risques d interprétation',
     '',
     renderInterpretationRisks(risks),
+    '',
+    '## Préparation consultant',
+    '',
+    renderConsultantPreparation(highlights, risks, prompts, completion, readiness),
     '',
     '## Validation consultant obligatoire',
     '',
@@ -341,6 +349,132 @@ function renderInterpretationRisks(risks) {
   const detected = risks.map(risk => `- Risque détecté : ${risk.label}. À traiter comme un point de vigilance, pas comme une conclusion.`);
 
   return [...base, ...detected].join('\n');
+}
+
+function renderConsultantPreparation(highlights, risks, prompts, completion, readiness) {
+  return [
+    '### Priorités d entretien',
+    '',
+    renderInterviewPriorities(highlights, risks, completion, readiness),
+    '',
+    '### Hypothèses à valider',
+    '',
+    renderHypothesesToValidate(highlights, risks),
+    '',
+    '### Hypothèses à écarter ou nuancer',
+    '',
+    renderHypothesesToChallenge(risks, completion, readiness),
+    '',
+    '### Questions ciblées',
+    '',
+    renderTargetedQuestions(prompts, highlights, risks),
+    '',
+    '### Points de vigilance consultant',
+    '',
+    renderConsultantWatchPoints(risks)
+  ].join('\n');
+}
+
+function renderInterviewPriorities(highlights, risks, completion, readiness) {
+  const priorities = [];
+
+  if (completion && completion.value < 100) {
+    priorities.push('- Prioriser la vérification des réponses ou formulaires manquants.');
+  }
+
+  if (readiness && readiness.value === false) {
+    priorities.push('- Confirmer que la matière disponible est suffisante avant toute synthèse.');
+  }
+
+  if (highlights.some(highlight => highlight.code === 'skills')) {
+    priorities.push('- Prioriser la validation des compétences réellement mobilisées et transférables.');
+  }
+
+  if (highlights.some(highlight => highlight.code === 'career_evolution')) {
+    priorities.push('- Explorer les attentes d évolution, le rythme souhaité et le niveau de rupture acceptable.');
+  }
+
+  if (highlights.some(highlight => highlight.code === 'constraints') || risks.length > 0) {
+    priorities.push('- Clarifier les contraintes non négociables avant de retenir des pistes professionnelles.');
+  }
+
+  if (priorities.length === 0) {
+    priorities.push('- Prioriser la compréhension des motivations, des critères de choix et des éléments à confirmer avec le bénéficiaire.');
+  }
+
+  return priorities.join('\n');
+}
+
+function renderHypothesesToValidate(highlights, risks) {
+  const hypotheses = [];
+
+  for (const highlight of highlights) {
+    hypotheses.push(`- Valider si le thème "${highlight.label}" est réellement structurant pour le bénéficiaire.`);
+  }
+
+  if (risks.length > 0) {
+    hypotheses.push('- Valider si les points de vigilance détectés sont confirmés, secondaires ou à écarter.');
+  }
+
+  if (hypotheses.length === 0) {
+    hypotheses.push('- Valider les priorités professionnelles avant de formuler des hypothèses de projet.');
+  }
+
+  return hypotheses.join('\n');
+}
+
+function renderHypothesesToChallenge(risks, completion, readiness) {
+  const hypotheses = [];
+
+  if (risks.length > 0) {
+    hypotheses.push('- Écarter toute conclusion fondée uniquement sur un risque ou un signal faible.');
+  }
+
+  if (completion && completion.value < 100) {
+    hypotheses.push('- Nuancer les hypothèses tant que toutes les réponses attendues ne sont pas disponibles.');
+  }
+
+  if (readiness && readiness.value === false) {
+    hypotheses.push('- Écarter les conclusions de synthèse tant que le snapshot n est pas prêt pour revue.');
+  }
+
+  hypotheses.push('- Nuancer toute piste qui ne serait pas reconnue par le bénéficiaire comme réaliste ou motivante.');
+
+  return hypotheses.join('\n');
+}
+
+function renderTargetedQuestions(prompts, highlights, risks) {
+  const questions = [];
+
+  for (const prompt of prompts.slice(0, 5)) {
+    questions.push(`- ${prompt.question}`);
+  }
+
+  for (const highlight of highlights.slice(0, 3)) {
+    questions.push(`- En quoi le thème "${highlight.label}" est-il important dans votre réflexion actuelle ?`);
+  }
+
+  if (risks.length > 0) {
+    questions.push('- Quels points de vigilance souhaitez-vous confirmer, corriger ou relativiser ?');
+  }
+
+  questions.push('- Quelle première action concrète permettrait de tester une piste sans engagement irréversible ?');
+
+  return questions.join('\n');
+}
+
+function renderConsultantWatchPoints(risks) {
+  const points = [
+    '- Ne pas reprendre une hypothèse sans validation humaine.',
+    '- Ne pas transformer une préférence exprimée en recommandation définitive.',
+    '- Distinguer les faits, les interprétations et les questions ouvertes.'
+  ];
+
+  for (const risk of risks) {
+    points.push(`- Vigilance spécifique : ${risk.label}. ${risk.recommendation ?? ''}`.trim());
+  }
+
+  return points.join('\n');
 }
 
 function renderConsultantValidation() {
