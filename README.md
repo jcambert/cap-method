@@ -23,6 +23,39 @@ docs/19_release_v1_0_pro/RELEASE_CHECKLIST.md
 docs/19_release_v1_0_pro/RELEASE_STATUS.md
 ```
 
+## Roadmap produit
+
+La trajectoire produit est figée dans :
+
+```text
+docs/ROADMAP.md
+```
+
+Synthèse :
+
+```text
+v1.0-pro
+  = version publiée et exploitable professionnellement
+
+v2.0-ai
+  = analyse IA assistée avec validation consultant obligatoire
+
+v3.0-saas
+  = plateforme SaaS professionnelle construite sur le moteur CAP
+```
+
+Documentation associée :
+
+```text
+docs/20_release_v2_0_ai/MILESTONE.md
+docs/20_release_v2_0_ai/ARCHITECTURE.md
+docs/20_release_v2_0_ai/GUARDRAILS.md
+
+docs/30_release_v3_0_saas/MILESTONE.md
+docs/30_release_v3_0_saas/PRODUCT_ARCHITECTURE.md
+docs/30_release_v3_0_saas/ROADMAP.md
+```
+
 ## Organisation
 
 ```text
@@ -30,6 +63,7 @@ cap-method/
 ├── README.md
 ├── CHANGELOG.md
 ├── docs/
+│   ├── ROADMAP.md
 │   ├── 00_bienvenue/
 │   ├── 01_mon_histoire/
 │   ├── 02_mes_valeurs/
@@ -49,7 +83,9 @@ cap-method/
 │   ├── 16_google_sheets_pack/
 │   ├── 17_publication/
 │   ├── 18_release_v1_5_0/
-│   └── 19_release_v1_0_pro/
+│   ├── 19_release_v1_0_pro/
+│   ├── 20_release_v2_0_ai/
+│   └── 30_release_v3_0_saas/
 ├── questionnaire-engine/
 │   ├── cmdl/
 │   ├── generators/
@@ -69,6 +105,9 @@ cap-method/
 | Bloc | Statut |
 |---|---|
 | CAP Method v1.0-pro | ✅ Publié |
+| Roadmap produit | ✅ Figée |
+| v2.0-ai | 🧊 Périmètre figé |
+| v3.0-saas | 🧊 Périmètre figé |
 | LIVRABLE-001 à LIVRABLE-099 | ✅ Terminés |
 | Questionnaire Engine | ✅ Chaîne complète jusqu'au ZIP final |
 | Export DOCX/PDF | ✅ Généré et validé en CI |
@@ -213,10 +252,11 @@ questionnaire-engine/deliverables/DOCX_STYLING.md
 - Toute correction doit être faite dans les sources Markdown, puis les exports doivent être régénérés.
 - Les livrables restent à relire et valider humainement avant remise réelle à un bénéficiaire.
 - Les améliorations non bloquantes passent en versions ultérieures.
+- Les branches IA/SaaS doivent rester compatibles avec `v1.0-pro`.
 
 ## Prochaine étape
 
-Démarrer l'exploitation terrain :
+Démarrer l'exploitation terrain, puis ouvrir les branches futures :
 
 ```text
 release v1.0-pro publiée
@@ -225,5 +265,7 @@ test terrain avec un vrai bénéficiaire
   ↓
 retours d'usage
   ↓
-jalon v1.1-docx-quality
+feature/v2-ai
+  ↓
+product/v3-saas-foundation
 ```
