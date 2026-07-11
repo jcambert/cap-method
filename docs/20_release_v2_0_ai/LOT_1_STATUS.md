@@ -9,10 +9,10 @@ feature/v2-ai
 ## Statut global
 
 ```text
-IMPLEMENTED - PENDING CI CONFIRMATION
+VALIDATED
 ```
 
-Le Lot 1 de `v2.0-ai` dispose maintenant d'un socle fonctionnel complet :
+Le Lot 1 de `v2.0-ai` dispose d'un socle fonctionnel complet et validé par la CI GitHub Actions.
 
 ```text
 AnalysisSnapshot
@@ -72,6 +72,12 @@ La documentation décrit :
 
 La CI génère et valide le brouillon IA à partir du snapshot d'analyse produit pendant le workflow.
 
+Statut :
+
+```text
+CI OK
+```
+
 ## User stories du Lot 1
 
 | User story | Statut | Commentaire |
@@ -120,20 +126,25 @@ node questionnaire-engine/tools/validate-ai-analysis-draft.mjs \
 [x] détection des formulations interdites
 [x] intégration CI
 [x] compatibilité avec la chaîne existante
+[x] CI GitHub Actions confirmée OK
 ```
 
 ## Décision
 
-Le Lot 1 est fonctionnellement implémenté.
+Le Lot 1 est validé.
 
-Il reste à vérifier le résultat de la CI GitHub Actions avant de le considérer comme définitivement validé.
+Il constitue le socle minimal de `v2.0-ai`.
 
 ## Prochaine étape recommandée
 
-Une fois la CI confirmée verte :
+Démarrer le Lot 2 - Garde-fous :
 
 ```text
-1. marquer le Lot 1 comme VALIDATED ;
-2. démarrer le Lot 2 - Garde-fous ;
-3. renforcer la traçabilité avec un manifest IA dédié.
+US-AI-008
+US-AI-009
+US-AI-011
+US-AI-012
+US-AI-019
 ```
+
+Premier objectif du Lot 2 : renforcer la traçabilité avec un manifest IA dédié.
