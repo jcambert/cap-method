@@ -9,7 +9,7 @@ feature/v2-ai
 ## Statut global
 
 ```text
-IN_PROGRESS
+VALIDATED
 ```
 
 Le Lot 2 renforce les garde-fous méthodologiques, la traçabilité et la compatibilité de la chaîne IA.
@@ -30,17 +30,17 @@ US-AI-012 - Conserver la compatibilité avec v1.0-pro
 US-AI-019 - Documenter les limites professionnelles de l'IA
 ```
 
-## Réalisations actuelles
+## Réalisations validées
 
 ### Formulations prudentes
 
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
-Les formulations prudentes sont intégrées dans le brouillon IA généré.
+Les formulations prudentes sont intégrées dans le brouillon IA généré, documentées et contrôlées par validation automatique.
 
 Exemples contrôlés :
 
@@ -56,7 +56,7 @@ Le consultant pourra explorer...
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 Les formulations interdites sont déclarées dans les validateurs, dans le manifest IA et dans la documentation des limites professionnelles.
@@ -109,7 +109,7 @@ Le manifest trace :
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 La CI continue d'exécuter la chaîne complète existante :
@@ -160,10 +160,10 @@ La documentation précise :
 
 | User story | Statut | Commentaire |
 |---|---|---|
-| US-AI-008 | IN_PROGRESS | Les formulations prudentes sont utilisées et contrôlées. |
-| US-AI-009 | IN_PROGRESS | Les formulations interdites sont contrôlées par validation automatique et documentées. |
+| US-AI-008 | DONE | Les formulations prudentes sont utilisées, documentées et contrôlées. |
+| US-AI-009 | DONE | Les formulations interdites sont contrôlées par validation automatique et documentées. |
 | US-AI-011 | DONE | Le manifest IA est généré, documenté et validé en CI. |
-| US-AI-012 | IN_PROGRESS | La chaîne v1.0-pro reste exécutée en CI. |
+| US-AI-012 | DONE | La chaîne v1.0-pro reste exécutée en CI et l'IA reste optionnelle. |
 | US-AI-019 | DONE | Les limites professionnelles de l'IA sont documentées. |
 
 ## Commandes de référence
@@ -190,12 +190,23 @@ node questionnaire-engine/tools/validate-ai-analysis-manifest.mjs \
   questionnaire-engine/ai/generated/sample.ai-analysis-manifest.json
 ```
 
+## Décision
+
+Le Lot 2 est validé.
+
+Les garde-fous IA sont suffisamment posés pour poursuivre vers le Lot 3.
+
 ## Prochaine étape recommandée
 
-Finaliser le Lot 2 en passant à `DONE` les garde-fous déjà couverts par la génération, la validation automatique, le manifest et la documentation :
+Démarrer le Lot 3 - Analyse utile consultant :
 
 ```text
-US-AI-008
-US-AI-009
-US-AI-012
+US-AI-003
+US-AI-004
+US-AI-005
+US-AI-006
+US-AI-007
+US-AI-017
 ```
+
+Objectif : enrichir le contenu du brouillon IA pour le rendre plus utile en préparation d'entretien consultant.
