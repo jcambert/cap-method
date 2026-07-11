@@ -7,8 +7,8 @@ Ce document fige la trajectoire produit de CAP Method après la publication de `
 Il sépare clairement :
 
 - la version stable exploitable ;
-- la future couche IA assistée ;
-- la future plateforme SaaS ;
+- la couche IA assistée validée comme prochain chantier ;
+- la future plateforme SaaS validée comme trajectoire produit ;
 - la stratégie de branches Git.
 
 ## Synthèse
@@ -18,16 +18,17 @@ v1.0-pro
   = version publiée, stable, exploitable professionnellement
 
 v2.0-ai
-  = analyse IA assistée, cadrée et validée par le consultant
+  = backlog validé, prochain chantier de développement
 
 v3.0-saas
-  = plateforme SaaS professionnelle basée sur le moteur CAP
+  = backlog validé, trajectoire produit future après v2
 ```
 
 ## Règle principale
 
 ```text
 v1.0-pro reste stable.
+v2.0-ai démarre avant v3.0-saas.
 Les évolutions IA et SaaS ne doivent pas casser la chaîne publiée.
 ```
 
@@ -80,7 +81,13 @@ branch stable éventuelle: release/v1.0-pro
 ## Statut
 
 ```text
-FROZEN SCOPE - FUTURE MILESTONE
+BACKLOG VALIDATED - NEXT DEVELOPMENT MILESTONE
+```
+
+## Document de validation
+
+```text
+docs/20_release_v2_0_ai/VALIDATION.md
 ```
 
 ## Vision
@@ -178,7 +185,13 @@ product/v2-ai-analysis
 ## Statut
 
 ```text
-FROZEN SCOPE - FUTURE PRODUCT MILESTONE
+BACKLOG VALIDATED - FUTURE PRODUCT MILESTONE
+```
+
+## Document de validation
+
+```text
+docs/30_release_v3_0_saas/VALIDATION.md
 ```
 
 ## Vision
@@ -270,16 +283,16 @@ Le MVP doit rester limité à :
 - automatisation juridique ;
 - multi-langue complète.
 
-## Branche recommandée
-
-```text
-feature/v3-saas
-```
-
-ou, pour un socle long :
+## Branche recommandée future
 
 ```text
 product/v3-saas-foundation
+```
+
+ou :
+
+```text
+feature/v3-saas
 ```
 
 ---
@@ -328,7 +341,7 @@ Rôle :
 ## SaaS
 
 ```text
-feature/v3-saas
+product/v3-saas-foundation
 ```
 
 Rôle :
@@ -336,6 +349,8 @@ Rôle :
 - concevoir puis développer la plateforme SaaS ;
 - extraire ou réutiliser le moteur CAP ;
 - poser l'architecture produit.
+
+Cette branche ne doit être ouverte qu'après avancement suffisant de `v2.0-ai`.
 
 ## Règle de fusion
 
@@ -362,18 +377,19 @@ Aucune branche future ne doit être fusionnée dans `main` sans :
 ## Moyen terme
 
 ```text
-4. Démarrer feature/v2-ai
-5. Produire ai-analysis-draft.md
-6. Tester l'intérêt réel de l'IA dans la préparation consultant
+4. Créer feature/v2-ai
+5. Démarrer le Lot 1 IA
+6. Produire ai-analysis-draft.md
+7. Tester l'intérêt réel de l'IA dans la préparation consultant
 ```
 
 ## Long terme
 
 ```text
-7. Cadrer le MVP SaaS
-8. Démarrer product/v3-saas-foundation
-9. Construire le parcours consultant / bénéficiaire
-10. Intégrer progressivement le moteur CAP
+8. Cadrer le MVP SaaS
+9. Démarrer product/v3-saas-foundation
+10. Construire le parcours consultant / bénéficiaire
+11. Intégrer progressivement le moteur CAP
 ```
 
 ---
@@ -390,6 +406,6 @@ Moteur d'analyse assistée
 Plateforme SaaS
 ```
 
-La priorité immédiate reste l'exploitation terrain de `v1.0-pro`.
+La priorité immédiate reste l'exploitation terrain de `v1.0-pro`, puis le démarrage de `v2.0-ai`.
 
-L'IA et le SaaS sont figés comme trajectoire, mais ne doivent pas retarder les premiers usages réels.
+`v3.0-saas` est validé comme trajectoire produit, mais ne doit pas être développé avant `v2.0-ai`.
