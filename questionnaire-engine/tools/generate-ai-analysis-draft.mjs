@@ -4,8 +4,50 @@ import path from 'node:path';
 const defaultInputPath = 'questionnaire-engine/analysis/generated/sample.analysis-snapshot.json';
 const defaultOutputPath = 'questionnaire-engine/ai/generated/sample.ai-analysis-draft.md';
 
+const provider = 'deterministic-local-draft';
+const model = 'none-local-deterministic';
+const status = 'draft';
+const requiresConsultantValidation = true;
+const guardrailsApplied = true;
+
+const requiredSections = [
+  '# Analyse IA assistée',
+  '## Avertissement méthodologique',
+  '## Traçabilité',
+  '## Synthèse neutre des réponses',
+  '## Thèmes récurrents',
+  '## Valeurs exprimées',
+  '## Motivations apparentes',
+  '## Compétences évoquées',
+  '## Contraintes et freins',
+  '## Hypothèses professionnelles',
+  '## Points à clarifier',
+  '## Questions d entretien',
+  '## Risques d interprétation',
+  '## Validation consultant obligatoire'
+];
+
+const requiredGuardrailPhrases = [
+  'brouillon',
+  'validation consultant obligatoire',
+  'Les réponses suggèrent',
+  'Ce point mérite validation'
+];
+
+const forbiddenPhrases = [
+  'Cette personne est',
+  'Cette personne doit',
+  'Le bon métier est',
+  'Il faut absolument',
+  'Son problème principal est',
+  'Le diagnostic est',
+  'Le profil psychologique est'
+];
+
 const inputPath = process.argv[2] ?? defaultInputPath;
 const outputPath = process.argv[3] ?? defaultOutputPath;
+const manifestPath = process.argv[4] ?? defaultManifestPathFrom(outputPath);
+const generatedAt = new Date().toISOString();
 
 if (!fs.existsSync(inputPath)) {
   console.error(`Input analysis snapshot not found: ${inputPath}`);
@@ -13,18 +55,22 @@ if (!fs.existsSync(inputPath)) {
 }
 
 const snapshot = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
-const markdown = renderAiAnalysisDraft(snapshot);
+const markdown = renderAiAnalysisDraft(snapshot, generatedAt);
+const manifest = buildManifest(snapshot, inputPath, outputPath, manifestPath, generatedAt);
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, markdown, 'utf8');
+fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
 
 console.log(`AI analysis draft: ${outputPath}`);
+console.log(`AI analysis manifest: ${manifestPath}`);
 console.log(`Snapshot: ${snapshot.id ?? 'n/a'}`);
-console.log('Provider: deterministic-local-draft');
-console.log('Status: draft');
-console.log('Requires consultant validation: true');
+console.log(`Provider: ${provider}`);
+console.log(`Status: ${status}`);
+console.log(`Requires consultant validation: ${requiresConsultantValidation}`);
 
-function renderAiAnalysisDraft(snapshot) {
+function renderAiAnalysisDraft(snapshot, generatedAt) {
   const completion = indicator(snapshot, 'forms_completion_rate');
   const rating5 = indicator(snapshot, 'rating5_average');
   const rating10 = indicator(snapshot, 'rating10_average');
@@ -47,7 +93,7 @@ function renderAiAnalysisDraft(snapshot) {
     '',
     '## Traçabilité',
     '',
-    renderTraceability(snapshot),
+    renderTraceability(snapshot, generatedAt),
     '',
     '## Synthèse neutre des réponses',
     '',
@@ -95,17 +141,60 @@ function renderAiAnalysisDraft(snapshot) {
   ].join('\n');
 }
 
-function renderTraceability(snapshot) {
+function buildManifest(snapshot, inputPath, outputPath, manifestPath, generatedAt) {
+  return {
+    id: `${snapshot.sessionId ?? 'unknown-session'}.ai-analysis-manifest`,
+    draftId: `${snapshot.sessionId ?? 'unknown-session'}.ai-analysis-draft`,
+    sessionId: snapshot.sessionId ?? null,
+    beneficiaryId: snapshot.beneficiaryId ?? null,
+    consultantId: snapshot.consultantId ?? null,
+    generatedAt,
+    source: {
+      type: 'analysis-snapshot',
+      id: snapshot.id ?? null,
+      path: inputPath,
+      status: snapshot.status ?? null
+    },
+    output: {
+      draftPath: outputPath,
+      manifestPath
+    },
+    provider,
+    model,
+    status,
+    requiresConsultantValidation,
+    guardrailsApplied,
+    guardrails: {
+      requiredSections,
+      requiredGuardrailPhrases,
+      forbiddenPhrases
+    },
+    checks: {
+      draftGenerated: true,
+      manifestGenerated: true,
+      externalProviderRequired: false,
+      consultantOnlyDraft: true,
+      readyForBeneficiaryDelivery: false
+    },
+    compatibility: {
+      v1ChainRequired: false,
+      aiOptional: true,
+      canRunWithoutApiKey: true
+    }
+  };
+}
+
+function renderTraceability(snapshot, generatedAt) {
   return [
     `- Session : ${snapshot.sessionId ?? 'n/a'}`,
     `- Bénéficiaire : ${snapshot.beneficiaryId ?? 'n/a'}`,
     `- Consultant : ${snapshot.consultantId ?? 'n/a'}`,
     `- Source : ${snapshot.id ?? 'analysis-snapshot'}`,
     `- Statut source : ${snapshot.status ?? 'n/a'}`,
-    `- Génération IA : ${new Date().toISOString()}`,
-    '- Provider : deterministic-local-draft',
+    `- Génération IA : ${generatedAt}`,
+    `- Provider : ${provider}`,
     '- Modèle : aucun fournisseur externe',
-    '- Statut : draft',
+    `- Statut : ${status}`,
     '- Validation consultant obligatoire : oui'
   ].join('\n');
 }
@@ -265,6 +354,18 @@ function renderConsultantValidation() {
     '',
     'Ce brouillon ne doit pas être remis tel quel au bénéficiaire.'
   ].join('\n');
+}
+
+function defaultManifestPathFrom(outputPath) {
+  if (outputPath.endsWith('ai-analysis-draft.md')) {
+    return outputPath.replace('ai-analysis-draft.md', 'ai-analysis-manifest.json');
+  }
+
+  if (outputPath.endsWith('.md')) {
+    return outputPath.replace(/\.md$/, '.manifest.json');
+  }
+
+  return `${outputPath}.manifest.json`;
 }
 
 function renderExamples(examples) {
