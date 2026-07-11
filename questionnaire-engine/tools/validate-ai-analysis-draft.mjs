@@ -44,6 +44,10 @@ const requiredPhrases = [
   'validation consultant obligatoire',
   'Les réponses suggèrent',
   'Ce point mérite validation',
+  'Lecture factuelle',
+  'Éléments observables',
+  'Points à ne pas surinterpréter',
+  'Utilisation en entretien',
   'Priorités d entretien',
   'Hypothèses à valider',
   'Hypothèses à écarter ou nuancer'
