@@ -93,12 +93,49 @@ Cette section structure :
 - les questions ciblées ;
 - les points de vigilance consultant.
 
+### Synthèse neutre renforcée
+
+Statut :
+
+```text
+DONE
+```
+
+La section `Synthèse neutre des réponses` est désormais structurée en :
+
+```text
+Lecture factuelle
+Éléments observables
+Points à ne pas surinterpréter
+```
+
+Objectif : séparer les signaux observables des interprétations, sans produire de conclusion automatique.
+
+### Thèmes récurrents renforcés
+
+Statut :
+
+```text
+DONE
+```
+
+Chaque thème récurrent est désormais structuré avec :
+
+```text
+Signal observé
+Lecture prudente
+Exemples sources
+Utilisation en entretien
+```
+
+Objectif : rendre chaque thème exploitable en entretien sans le transformer en certitude.
+
 ## Statut détaillé
 
 | User story | Statut | Commentaire |
 |---|---|---|
-| US-AI-003 | IN_PROGRESS | La synthèse neutre existe et reste à enrichir si besoin. |
-| US-AI-004 | IN_PROGRESS | Les thèmes récurrents existent et alimentent la préparation consultant. |
+| US-AI-003 | DONE | La synthèse neutre distingue lecture factuelle, éléments observables et points à ne pas surinterpréter. |
+| US-AI-004 | DONE | Les thèmes récurrents sont structurés avec signal, lecture prudente, exemples et usage en entretien. |
 | US-AI-005 | IN_PROGRESS | Les hypothèses professionnelles existent et sont reprises dans les hypothèses à valider. |
 | US-AI-006 | IN_PROGRESS | Les points à clarifier existent et alimentent les priorités d'entretien. |
 | US-AI-007 | IN_PROGRESS | Les questions d'entretien sont enrichies par des questions ciblées. |
@@ -122,9 +159,10 @@ ActionPlan
 
 ## Prochaine étape recommandée
 
-Renforcer la synthèse neutre et les thèmes récurrents pour terminer :
+Renforcer les hypothèses professionnelles, les points à clarifier et les questions d'entretien pour terminer :
 
 ```text
-US-AI-003
-US-AI-004
+US-AI-005
+US-AI-006
+US-AI-007
 ```
