@@ -9,7 +9,7 @@ feature/v2-ai
 ## Statut global
 
 ```text
-STARTED
+VALIDATED
 ```
 
 ## Objectif du Lot 4
@@ -29,7 +29,7 @@ US-AI-018 - Documenter la procédure d'utilisation IA
 US-AI-020 - Suivre l'avancement des user stories
 ```
 
-## Réalisations
+## Réalisations validées
 
 ### Contrat provider IA
 
@@ -80,13 +80,36 @@ Ce document explique :
 - quels fichiers ne doivent pas être remis au bénéficiaire ;
 - quels livrables peuvent être transmis après validation.
 
+### Suivi consolidé v2.0-ai
+
+Statut :
+
+```text
+DONE
+```
+
+Fichier ajouté :
+
+```text
+docs/20_release_v2_0_ai/V2_AI_PROGRESS.md
+```
+
+Ce document consolide :
+
+- l'état des lots ;
+- l'état des user stories ;
+- les livrables techniques ;
+- les livrables documentaires ;
+- la chaîne CI ;
+- les garanties méthodologiques.
+
 ## Statut détaillé
 
 | User story | Statut | Commentaire |
 |---|---|---|
 | US-AI-015 | DONE | Le contrat provider IA futur est documenté. |
 | US-AI-018 | DONE | La procédure d'utilisation IA est documentée. |
-| US-AI-020 | IN_PROGRESS | Le suivi d'avancement existe par lots mais doit être consolidé. |
+| US-AI-020 | DONE | Le suivi consolidé `v2.0-ai` est disponible. |
 
 ## Décision technique
 
@@ -98,6 +121,12 @@ deterministic-local-draft
 
 Aucun fournisseur externe ne doit être requis pour valider le dépôt.
 
+## Décision
+
+Le Lot 4 est validé.
+
+Le backlog `v2.0-ai` est désormais fonctionnellement couvert.
+
 ## Prochaine étape recommandée
 
-Créer une synthèse consolidée d'avancement `v2.0-ai` pour terminer `US-AI-020`.
+Vérifier la CI finale sur `feature/v2-ai`, puis préparer la validation de branche avant intégration vers `main`.
