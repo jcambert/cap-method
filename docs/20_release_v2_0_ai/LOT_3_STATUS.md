@@ -9,7 +9,7 @@ feature/v2-ai
 ## Statut global
 
 ```text
-IN_PROGRESS
+VALIDATED
 ```
 
 ## Objectif du Lot 3
@@ -18,7 +18,7 @@ Rendre le brouillon IA plus utile pour le consultant en préparation d'entretien
 
 Le Lot 3 ne cherche pas à produire une conclusion automatique.
 
-Il vise à mieux structurer :
+Il structure :
 
 - la synthèse neutre ;
 - les thèmes récurrents ;
@@ -38,7 +38,7 @@ US-AI-007 - Générer des questions d'entretien
 US-AI-017 - Préparer une étape ConsultantReview
 ```
 
-## Réalisations
+## Réalisations validées
 
 ### ConsultantReview
 
@@ -130,15 +130,71 @@ Utilisation en entretien
 
 Objectif : rendre chaque thème exploitable en entretien sans le transformer en certitude.
 
+### Hypothèses professionnelles renforcées
+
+Statut :
+
+```text
+DONE
+```
+
+Chaque hypothèse professionnelle est désormais structurée avec :
+
+```text
+Signal utilisé
+Lecture prudente
+Condition de validation
+Question de validation
+```
+
+Objectif : rendre les hypothèses discutables, vérifiables et non définitives.
+
+### Points à clarifier renforcés
+
+Statut :
+
+```text
+DONE
+```
+
+Les points à clarifier sont désormais structurés en :
+
+```text
+Clarifications prioritaires
+Informations à compléter
+Décision consultant suggérée
+```
+
+Objectif : aider le consultant à décider quoi vérifier avant la synthèse finale.
+
+### Questions d'entretien renforcées
+
+Statut :
+
+```text
+DONE
+```
+
+Les questions sont désormais groupées en :
+
+```text
+Questions issues du snapshot
+Questions sur les thèmes récurrents
+Questions sur les hypothèses professionnelles
+Questions sur les points de vigilance
+```
+
+Objectif : préparer un entretien ouvert, non orienté et directement relié aux signaux disponibles.
+
 ## Statut détaillé
 
 | User story | Statut | Commentaire |
 |---|---|---|
 | US-AI-003 | DONE | La synthèse neutre distingue lecture factuelle, éléments observables et points à ne pas surinterpréter. |
 | US-AI-004 | DONE | Les thèmes récurrents sont structurés avec signal, lecture prudente, exemples et usage en entretien. |
-| US-AI-005 | IN_PROGRESS | Les hypothèses professionnelles existent et sont reprises dans les hypothèses à valider. |
-| US-AI-006 | IN_PROGRESS | Les points à clarifier existent et alimentent les priorités d'entretien. |
-| US-AI-007 | IN_PROGRESS | Les questions d'entretien sont enrichies par des questions ciblées. |
+| US-AI-005 | DONE | Les hypothèses professionnelles sont structurées avec signal, lecture prudente, condition et question de validation. |
+| US-AI-006 | DONE | Les points à clarifier distinguent priorités, informations manquantes et décision consultant suggérée. |
+| US-AI-007 | DONE | Les questions d'entretien sont structurées par source, thèmes, hypothèses et vigilances. |
 | US-AI-017 | DONE | L'étape `ConsultantReview` est documentée et préparée dans le brouillon. |
 
 ## Chaîne cible enrichie
@@ -157,12 +213,20 @@ FinalSynthesis
 ActionPlan
 ```
 
+## Décision
+
+Le Lot 3 est validé.
+
+Le brouillon IA est désormais exploitable comme support de préparation d'entretien consultant, sans produire de conclusion automatique.
+
 ## Prochaine étape recommandée
 
-Renforcer les hypothèses professionnelles, les points à clarifier et les questions d'entretien pour terminer :
+Démarrer le Lot 4 - Préparation provider IA réel :
 
 ```text
-US-AI-005
-US-AI-006
-US-AI-007
+US-AI-015
+US-AI-018
+US-AI-020
 ```
+
+Objectif : préparer l'intégration future d'un provider IA configurable tout en conservant le mode local déterministe pour la CI.
