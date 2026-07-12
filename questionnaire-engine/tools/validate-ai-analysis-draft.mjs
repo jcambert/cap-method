@@ -48,9 +48,14 @@ const requiredPhrases = [
   'Éléments observables',
   'Points à ne pas surinterpréter',
   'Utilisation en entretien',
+  'Condition de validation',
+  'Question de validation',
+  'Décision consultant suggérée',
   'Priorités d entretien',
   'Hypothèses à valider',
-  'Hypothèses à écarter ou nuancer'
+  'Hypothèses à écarter ou nuancer',
+  'Questions sur les hypothèses professionnelles',
+  'Questions sur les points de vigilance'
 ];
 
 for (const section of requiredSections) {
