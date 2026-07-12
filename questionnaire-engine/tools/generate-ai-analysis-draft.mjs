@@ -35,6 +35,9 @@ const requiredGuardrailPhrases = [
   'Ce point mérite validation',
   'Lecture factuelle',
   'Utilisation en entretien',
+  'Condition de validation',
+  'Question de validation',
+  'Décision consultant suggérée',
   'Priorités d entretien',
   'Hypothèses à valider',
   'Hypothèses à écarter ou nuancer'
@@ -135,7 +138,7 @@ function renderAiAnalysisDraft(snapshot, generatedAt) {
     '',
     '## Questions d entretien',
     '',
-    renderInterviewQuestions(prompts, risks),
+    renderInterviewQuestions(prompts, highlights, risks),
     '',
     '## Risques d interprétation',
     '',
@@ -335,59 +338,156 @@ function renderConstraints(highlights, risks) {
 }
 
 function renderProfessionalHypotheses(highlights, risks) {
-  const lines = [];
+  const blocks = [];
 
   if (highlights.some(highlight => highlight.code === 'skills')) {
-    lines.push('- Une hypothèse possible est de construire des pistes professionnelles à partir des compétences déjà exprimées.');
+    blocks.push(renderHypothesisBlock(
+      'Hypothèse basée sur les compétences évoquées',
+      'Des compétences ou savoir-faire sont présents dans les réponses structurées.',
+      'Une hypothèse possible est de construire des pistes professionnelles à partir des compétences déjà exprimées.',
+      'Confirmer avec le bénéficiaire les compétences réellement mobilisées, appréciées et transférables.',
+      'Quelles compétences souhaitez-vous continuer à utiliser dans un futur projet professionnel ?'
+    ));
   }
 
   if (highlights.some(highlight => highlight.code === 'career_evolution')) {
-    lines.push('- Une hypothèse possible est d explorer une évolution professionnelle progressive plutôt qu une rupture immédiate.');
+    blocks.push(renderHypothesisBlock(
+      'Hypothèse liée à l évolution professionnelle',
+      'Des signaux liés à l évolution ou au changement apparaissent dans les réponses.',
+      'Une hypothèse possible est d explorer une évolution professionnelle progressive plutôt qu une rupture immédiate.',
+      'Vérifier le niveau d envie, d urgence, de sécurité attendu et de rupture acceptable.',
+      'Quel niveau de changement vous semble réaliste dans les prochains mois ?'
+    ));
   }
 
   if (highlights.some(highlight => highlight.code === 'constraints') || risks.length > 0) {
-    lines.push('- Une hypothèse possible est de filtrer les pistes professionnelles avec les contraintes identifiées avant de les approfondir.');
+    blocks.push(renderHypothesisBlock(
+      'Hypothèse filtrée par les contraintes',
+      'Des contraintes ou points de vigilance sont présents dans la matière analysée.',
+      'Une hypothèse possible est de filtrer les pistes professionnelles avec les contraintes identifiées avant de les approfondir.',
+      'Distinguer les contraintes confirmées, négociables et encore supposées.',
+      'Quelles contraintes doivent absolument être respectées pour qu une piste soit acceptable ?'
+    ));
   }
 
-  if (lines.length === 0) {
-    lines.push('- Les hypothèses professionnelles ne sont pas suffisamment établies automatiquement. Le consultant pourra les construire après clarification des objectifs et des motivations.');
+  if (blocks.length === 0) {
+    blocks.push(renderHypothesisBlock(
+      'Hypothèse à construire en entretien',
+      'Les signaux disponibles ne permettent pas encore de structurer une hypothèse professionnelle robuste.',
+      'Une hypothèse possible est de construire les pistes après clarification des objectifs, motivations et critères de choix.',
+      'Recueillir davantage d éléments qualitatifs avant toute formulation de piste.',
+      'Quels critères doivent guider la construction de vos futures pistes professionnelles ?'
+    ));
   }
 
-  return lines.map(line => `${line} Ce point mérite validation.`).join('\n');
+  return blocks.join('\n\n');
+}
+
+function renderHypothesisBlock(title, signal, cautiousReading, validationCondition, validationQuestion) {
+  return [
+    `### ${title}`,
+    '',
+    '#### Signal utilisé',
+    '',
+    `- ${signal}`,
+    '',
+    '#### Lecture prudente',
+    '',
+    `${cautiousReading} Ce point mérite validation.`,
+    '',
+    '#### Condition de validation',
+    '',
+    `- ${validationCondition}`,
+    '',
+    '#### Question de validation',
+    '',
+    `- ${validationQuestion}`
+  ].join('\n');
 }
 
 function renderClarificationPoints(risks, completion, readiness) {
-  const points = [];
+  const priorityPoints = [];
+  const missingInfo = [];
+  const suggestedDecisions = [];
 
   if (completion && completion.value < 100) {
-    points.push('- Clarifier les formulaires ou réponses manquantes avant de produire une synthèse finale.');
+    priorityPoints.push('- Clarifier les formulaires ou réponses manquantes avant de produire une synthèse finale.');
+    suggestedDecisions.push('- Reporter toute conclusion globale tant que la complétude n est pas confirmée.');
   }
 
   if (readiness && readiness.value === false) {
-    points.push('- Vérifier les prérequis d analyse avant d utiliser les résultats comme base de restitution.');
+    priorityPoints.push('- Vérifier les prérequis d analyse avant d utiliser les résultats comme base de restitution.');
+    suggestedDecisions.push('- Conserver le brouillon comme support de préparation uniquement.');
   }
 
   for (const risk of risks) {
-    points.push(`- Clarifier : ${risk.label}. ${risk.recommendation ?? ''}`.trim());
+    priorityPoints.push(`- Clarifier : ${risk.label}. ${risk.recommendation ?? ''}`.trim());
+    suggestedDecisions.push(`- Traiter "${risk.label}" comme un point de vigilance à confirmer, pas comme une conclusion.`);
   }
 
-  if (points.length === 0) {
-    points.push('- Clarifier avec le bénéficiaire les priorités, les contraintes réelles et les critères de choix avant toute conclusion.');
+  if (priorityPoints.length === 0) {
+    priorityPoints.push('- Clarifier avec le bénéficiaire les priorités, les contraintes réelles et les critères de choix avant toute conclusion.');
   }
 
-  return points.join('\n');
+  missingInfo.push('- Identifier les exemples concrets qui confirment les compétences évoquées.');
+  missingInfo.push('- Vérifier les motivations réellement prioritaires pour le bénéficiaire.');
+  missingInfo.push('- Distinguer les contraintes déclarées, négociables et non négociables.');
+
+  if (suggestedDecisions.length === 0) {
+    suggestedDecisions.push('- Utiliser ces points comme guide d entretien avant toute reprise dans la synthèse finale.');
+  }
+
+  return [
+    '### Clarifications prioritaires',
+    '',
+    priorityPoints.join('\n'),
+    '',
+    '### Informations à compléter',
+    '',
+    missingInfo.join('\n'),
+    '',
+    '### Décision consultant suggérée',
+    '',
+    suggestedDecisions.join('\n')
+  ].join('\n');
 }
 
-function renderInterviewQuestions(prompts, risks) {
-  const questions = prompts.map(prompt => `- ${prompt.question}`);
+function renderInterviewQuestions(prompts, highlights, risks) {
+  const sections = [];
 
-  if (risks.length > 0) {
-    questions.push('- Quels points de vigilance doivent être confirmés, nuancés ou écartés avec le bénéficiaire ?');
-  }
+  sections.push([
+    '### Questions issues du snapshot',
+    '',
+    prompts.length > 0
+      ? prompts.slice(0, 5).map(prompt => `- ${prompt.question}`).join('\n')
+      : '- Aucune question source disponible. Préparer des questions ouvertes à partir des thèmes et contraintes.'
+  ].join('\n'));
 
-  questions.push('- Quelles pistes le bénéficiaire reconnaît-il comme réalistes, motivantes et cohérentes avec ses contraintes ?');
+  sections.push([
+    '### Questions sur les thèmes récurrents',
+    '',
+    highlights.length > 0
+      ? highlights.slice(0, 5).map(highlight => `- En quoi le thème "${highlight.label}" est-il important dans votre réflexion actuelle ?`).join('\n')
+      : '- Quels sujets reviennent spontanément lorsque vous décrivez votre situation professionnelle actuelle ?'
+  ].join('\n'));
 
-  return questions.join('\n');
+  sections.push([
+    '### Questions sur les hypothèses professionnelles',
+    '',
+    '- Quelles pistes vous semblent réalistes, motivantes et cohérentes avec vos contraintes ?',
+    '- Quelle piste mérite d être explorée sans engagement irréversible ?',
+    '- Quel élément vous ferait écarter une piste pourtant attirante ?'
+  ].join('\n'));
+
+  sections.push([
+    '### Questions sur les points de vigilance',
+    '',
+    risks.length > 0
+      ? '- Quels points de vigilance souhaitez-vous confirmer, corriger ou relativiser ?'
+      : '- Quels risques ou freins pourraient limiter la mise en œuvre d une piste professionnelle ?'
+  ].join('\n'));
+
+  return sections.join('\n\n');
 }
 
 function renderInterpretationRisks(risks) {
