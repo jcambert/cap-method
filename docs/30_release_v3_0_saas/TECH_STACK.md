@@ -32,30 +32,53 @@ Le choix `WASM hosted` permet :
 - une interface riche côté navigateur ;
 - un backend ASP.NET Core pour la sécurité, les traitements CAP et les exports ;
 - une séparation claire entre UI, API et moteur CAP ;
-- un hébergement Azure simple ;
+- une compatibilité avec un environnement local, Azure ou tout autre hébergement .NET compatible ;
 - la compatibilité avec les traitements serveur nécessaires aux exports DOCX/PDF/ZIP.
 
-## Cible d'hébergement
+## Cible Azure
 
 ```text
-Azure
+Azure = environnement de développement / expérimentation uniquement
 ```
 
-Azure est retenu comme cible d'hébergement et d'exploitation.
+Azure n'est pas retenu comme cible d'hébergement obligatoire pour la production v3.
 
-Important : Azure est une plateforme cloud commerciale. Le choix Azure n'ajoute pas de bibliothèque applicative payante obligatoire, mais l'infrastructure Azure peut générer des coûts d'hébergement, base de données, stockage, supervision ou trafic.
+Azure pourra être utilisé pour :
 
-## Cible Azure recommandée
+- valider un déploiement de développement ;
+- tester la configuration cloud ;
+- expérimenter le stockage de fichiers ;
+- expérimenter la supervision ;
+- valider une chaîne CI/CD vers un environnement cloud.
 
-| Besoin | Service Azure cible | Décision |
+Important : Azure est une plateforme cloud commerciale. Son usage peut générer des coûts d'infrastructure, mais ne doit pas introduire de dépendance applicative propriétaire dans le coeur CAP.
+
+## Cible Azure de développement possible
+
+| Besoin | Service Azure possible | Décision |
 |---|---|---|
-| Hébergement backend/API | Azure App Service | Retenu |
-| Hébergement Blazor WASM | Azure App Service ou Static Web Apps selon packaging final | Retenu |
-| Base PostgreSQL | Azure Database for PostgreSQL | Retenu |
-| Stockage fichiers exports | Azure Blob Storage | Retenu |
-| Secrets | Azure Key Vault | Retenu |
-| Logs / supervision | Application Insights / Azure Monitor | Retenu |
-| CI/CD | GitHub Actions vers Azure | Retenu |
+| Hébergement backend/API dev | Azure App Service | Option dev |
+| Hébergement Blazor WASM dev | Azure App Service ou Static Web Apps selon packaging final | Option dev |
+| Base PostgreSQL dev | Azure Database for PostgreSQL | Option dev |
+| Stockage fichiers exports dev | Azure Blob Storage | Option dev |
+| Secrets dev | Azure Key Vault | Option dev |
+| Logs / supervision dev | Application Insights / Azure Monitor | Option dev |
+| CI/CD dev | GitHub Actions vers Azure | Option dev |
+
+## Cibles non Azure à conserver
+
+L'application doit rester exécutable sans Azure :
+
+```text
+Local development
+Docker / Docker Compose
+PostgreSQL local ou conteneurisé
+Stockage fichiers local
+Secrets locaux / variables d'environnement
+Logs console / fichiers
+```
+
+La logique métier CAP ne doit dépendre d'aucun service Azure.
 
 ## Règle de compatibilité CAP
 
@@ -151,6 +174,7 @@ composant UI soumis à licence commerciale
 | Paiement | Stripe SDK | Hors périmètre MVP v3 initial |
 | Email provider propriétaire | SDK fournisseur email spécifique | À éviter au profit d'un port SMTP / HTTP abstrait |
 | IA provider obligatoire | SDK propriétaire obligatoire | Non compatible avec l'exigence d'IA optionnelle |
+| Azure obligatoire en production | dépendance forte à Azure | Azure limité au développement / expérimentation |
 
 ## Architecture cible
 
@@ -169,7 +193,7 @@ CAP SaaS WebAssembly hosted
   │   ├── AI Adapter optionnel
   │   ├── Export Adapter
   │   ├── Background Jobs
-  │   └── intégration Azure
+  │   └── adapters infrastructure optionnels
   ├── Shared
   │   ├── DTO
   │   ├── contrats de transport
@@ -230,19 +254,19 @@ Tenant
   └── AuditLogs
 ```
 
-### 5. Déploiement Azure découplé de la logique métier
+### 5. Infrastructure découplée de la logique métier
 
-La logique CAP ne doit pas dépendre directement d'Azure.
+La logique CAP ne doit pas dépendre directement d'Azure ou d'un hébergeur donné.
 
 ```text
 Application CAP
   ↓
 Ports abstraits
   ↓
-Adapters Azure / Local / Tests
+Adapters Local / Azure Dev / Tests / autre hébergement
 ```
 
-Les services Azure doivent être appelés via des ports applicatifs :
+Les services d'infrastructure doivent être appelés via des ports applicatifs :
 
 - stockage de fichiers ;
 - secrets ;
@@ -262,6 +286,7 @@ Avant d'ajouter une dépendance NuGet ou npm :
 [x] documenter la dépendance dans ce fichier
 [x] éviter les dépendances non nécessaires au MVP
 [x] distinguer coût d'hébergement Azure et licence applicative
+[x] conserver un mode local sans Azure
 ```
 
 ## Décision
@@ -269,7 +294,9 @@ Avant d'ajouter une dépendance NuGet ou npm :
 La stack `v3.0-saas` est orientée :
 
 ```text
-Blazor WebAssembly hosted / ASP.NET Core / PostgreSQL / EF Core / MudBlazor / Azure
+Blazor WebAssembly hosted / ASP.NET Core / PostgreSQL / EF Core / MudBlazor
 ```
 
-Le développement doit démarrer par un socle SaaS minimal qui encapsule `v1.0-pro` et `v2.0-ai`, sans réécrire le moteur CAP.
+Azure est limité à l'environnement de développement / expérimentation.
+
+Le développement doit démarrer par un socle SaaS minimal qui encapsule `v1.0-pro` et `v2.0-ai`, sans réécrire le moteur CAP et sans dépendance forte à Azure.
