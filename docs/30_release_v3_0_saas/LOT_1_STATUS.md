@@ -46,7 +46,7 @@ Suppression de branche après merge = oui
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 Réalisé :
@@ -62,7 +62,7 @@ Réalisé :
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 Réalisé :
@@ -76,7 +76,7 @@ Réalisé :
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 Réalisé :
@@ -90,7 +90,7 @@ Réalisé :
 Statut :
 
 ```text
-IN_PROGRESS
+DONE
 ```
 
 Réalisé :
@@ -99,12 +99,20 @@ Réalisé :
 - tests du cas d'usage ajoutés ;
 - CI mise à jour pour inclure `Application.Tests`.
 
+## Validation CI
+
+```text
+CI OK
+```
+
+Validation confirmée sur `feature/v3-lot1-foundation`.
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Vérifier la CI de `feature/v3-lot1-foundation`, corriger si nécessaire, puis ouvrir la PR Lot 1 vers `main`.
+Ouvrir la PR Lot 1 vers `main`, puis faire un squash merge après validation de mergeabilité.
