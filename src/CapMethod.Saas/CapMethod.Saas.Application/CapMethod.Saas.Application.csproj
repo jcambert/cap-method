@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\CapMethod.Saas.Domain\CapMethod.Saas.Domain.csproj" />
+  </ItemGroup>
+</Project>
