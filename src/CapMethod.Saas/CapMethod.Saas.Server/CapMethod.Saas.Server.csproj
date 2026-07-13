@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\CapMethod.Saas.Application\CapMethod.Saas.Application.csproj" />
+    <ProjectReference Include="..\CapMethod.Saas.Infrastructure\CapMethod.Saas.Infrastructure.csproj" />
+    <ProjectReference Include="..\CapMethod.Saas.Shared\CapMethod.Saas.Shared.csproj" />
+  </ItemGroup>
+</Project>
