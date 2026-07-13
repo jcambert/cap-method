@@ -4,7 +4,7 @@
 
 ```text
 Blazor WebAssembly hosted
-Azure
+Azure pour développement / expérimentation uniquement
 ```
 
 ## Statut
@@ -21,7 +21,7 @@ CAP Method SaaS
   ├── Server  : ASP.NET Core API / traitements CAP
   ├── Shared  : DTO / contrats / validations partagées
   ├── Database: PostgreSQL
-  └── Hosting : Azure
+  └── Hosting : portable, Azure seulement pour développement / expérimentation
 ```
 
 ## Pourquoi Blazor WebAssembly hosted
@@ -34,13 +34,22 @@ Ce choix permet :
 - l'exécution serveur des traitements lourds CAP ;
 - l'exécution serveur des exports DOCX/PDF/ZIP ;
 - l'encapsulation des chaînes `v1.0-pro` et `v2.0-ai` ;
-- une cible Azure cohérente.
+- un déploiement possible en local, Docker, Azure dev ou autre hébergement .NET compatible.
 
-## Pourquoi Azure
+## Rôle réel d'Azure
 
-Azure est retenu comme cible d'hébergement professionnelle.
+Azure est retenu uniquement pour :
 
-La plateforme pourra porter :
+```text
+développement
+expérimentation
+validation cloud ponctuelle
+tests CI/CD vers environnement cloud
+```
+
+Azure n'est pas une dépendance obligatoire de production.
+
+La plateforme pourra être utilisée en développement pour tester :
 
 ```text
 Azure App Service
@@ -48,10 +57,10 @@ Azure Database for PostgreSQL
 Azure Blob Storage
 Azure Key Vault
 Azure Monitor / Application Insights
-GitHub Actions
+GitHub Actions vers Azure
 ```
 
-## Point important sur les licences
+## Point important sur les licences et coûts
 
 Le choix Azure ne change pas la règle sur les bibliothèques applicatives :
 
@@ -61,7 +70,20 @@ Pas de licence applicative payante obligatoire
 Pas de composant commercial obligatoire
 ```
 
-Azure peut générer des coûts d'infrastructure, mais ne doit pas imposer une dépendance applicative propriétaire dans le coeur CAP.
+Azure peut générer des coûts d'infrastructure pendant le développement, mais ne doit pas imposer une dépendance applicative propriétaire dans le coeur CAP.
+
+## Portabilité obligatoire
+
+Le SaaS doit pouvoir fonctionner sans Azure :
+
+```text
+local development
+Docker / Docker Compose
+PostgreSQL local ou conteneurisé
+stockage fichiers local
+secrets locaux / variables d'environnement
+logs console ou fichiers
+```
 
 ## Compatibilité obligatoire
 
@@ -104,14 +126,14 @@ ConsultantReview
 
 Le projet SaaS ne doit pas appeler directement Azure depuis le coeur métier.
 
-Les dépendances Azure doivent être isolées derrière des ports :
+Les dépendances d'infrastructure doivent être isolées derrière des ports :
 
 ```text
 Application CAP
   ↓
 Ports applicatifs
   ↓
-Adapters Azure
+Adapters Local / Azure Dev / Tests / autre hébergement
 ```
 
 Ports attendus :
@@ -131,16 +153,19 @@ Les premiers lots doivent donc couvrir :
 ```text
 Lot 0 - Cadrage technique et compatibilité
 Lot 1 - SaaS foundation minimal WASM hosted
-Lot 2 - Déploiement Azure minimal
-Lot 3 - Parcours bénéficiaire et questionnaires
-Lot 4 - Moteur CAP intégré sans IA obligatoire
-Lot 5 - IA optionnelle dans le SaaS
+Lot 2 - Portabilité locale et adapters infrastructure
+Lot 3 - Azure dev optionnel
+Lot 4 - Parcours bénéficiaire et questionnaires
+Lot 5 - Moteur CAP intégré sans IA obligatoire
+Lot 6 - IA optionnelle dans le SaaS
 ```
 
 ## Décision finale
 
 ```text
-v3.0-saas part sur Blazor WebAssembly hosted + Azure.
+v3.0-saas part sur Blazor WebAssembly hosted.
+Azure est limité au développement / expérimentation.
 La stack applicative reste open source.
 CAP v1 et CAP v2 restent utilisables.
+Le coeur CAP reste portable et indépendant d'Azure.
 ```
