@@ -1,5 +1,6 @@
 using CapMethod.Saas.Application.Ports;
 using CapMethod.Saas.Infrastructure.CapEngine;
+using Xunit;
 
 namespace CapMethod.Saas.Infrastructure.Tests.CapEngine;
 
