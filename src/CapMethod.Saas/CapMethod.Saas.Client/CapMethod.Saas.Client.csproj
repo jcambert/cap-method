@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <ItemGroup>
+    <ProjectReference Include="..\CapMethod.Saas.Shared\CapMethod.Saas.Shared.csproj" />
+  </ItemGroup>
+</Project>
