@@ -1,3 +1,4 @@
+using CapMethod.Saas.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
