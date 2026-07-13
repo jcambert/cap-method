@@ -7,4 +7,6 @@ public interface ICapSessionRepository
     Task AddAsync(CapSession session, CancellationToken cancellationToken);
 
     Task<CapSession?> GetByIdAsync(Guid tenantId, Guid capSessionId, CancellationToken cancellationToken);
+
+    Task<IReadOnlyCollection<CapSession>> ListByTenantAsync(Guid tenantId, CancellationToken cancellationToken);
 }
