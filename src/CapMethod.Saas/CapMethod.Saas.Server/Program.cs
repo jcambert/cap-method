@@ -43,7 +43,7 @@ app.MapPost("/api/cap-sessions", async (
 
     CreateCapSessionResult result = await useCase.ExecuteAsync(command, cancellationToken);
 
-    CapSessionResponse response = MapToResponse(result);
+    CapSessionResponse response = MapCreateResultToResponse(result);
 
     return Results.Created($"/api/cap-sessions/{response.CapSessionId}", response);
 });
@@ -62,14 +62,14 @@ app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
         return Results.NotFound();
     }
 
-    CapSessionResponse response = MapToResponse(result);
+    CapSessionResponse response = MapGetResultToResponse(result);
 
     return Results.Ok(response);
 });
 
 app.Run();
 
-static CapSessionResponse MapToResponse(CreateCapSessionResult result)
+static CapSessionResponse MapCreateResultToResponse(CreateCapSessionResult result)
 {
     return new CapSessionResponse(
         result.CapSessionId,
@@ -81,7 +81,7 @@ static CapSessionResponse MapToResponse(CreateCapSessionResult result)
         result.CreatedAtUtc);
 }
 
-static CapSessionResponse MapToResponse(GetCapSessionResult result)
+static CapSessionResponse MapGetResultToResponse(GetCapSessionResult result)
 {
     return new CapSessionResponse(
         result.CapSessionId,
