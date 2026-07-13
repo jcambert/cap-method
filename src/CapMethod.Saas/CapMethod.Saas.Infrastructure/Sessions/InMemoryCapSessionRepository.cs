@@ -22,6 +22,18 @@ public sealed class InMemoryCapSessionRepository : ICapSessionRepository
         return Task.FromResult(session);
     }
 
+    public Task<IReadOnlyCollection<CapSession>> ListByTenantAsync(Guid tenantId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        CapSession[] sessions = _sessions.Values
+            .Where(session => session.TenantId == tenantId)
+            .OrderByDescending(session => session.CreatedAtUtc)
+            .ToArray();
+
+        return Task.FromResult<IReadOnlyCollection<CapSession>>(sessions);
+    }
+
     private static string BuildKey(Guid tenantId, Guid capSessionId)
     {
         return $"{tenantId:N}:{capSessionId:N}";
