@@ -9,10 +9,12 @@ feature/v2-ai
 ## Statut global
 
 ```text
-IMPLEMENTED - READY FOR FINAL CI CONFIRMATION
+VALIDATED - CI OK
 ```
 
 `v2.0-ai` dispose désormais d'un socle complet pour produire un brouillon IA assisté, sécurisé, traçable et exploitable par le consultant.
+
+La CI/CD finale a été vérifiée et confirmée OK sur la branche `feature/v2-ai`.
 
 ## Principe directeur
 
@@ -52,7 +54,7 @@ Exports DOCX/PDF/ZIP
 | Lot 1 | VALIDATED | Générer un brouillon IA local déterministe. |
 | Lot 2 | VALIDATED | Poser les garde-fous, la traçabilité et les limites professionnelles. |
 | Lot 3 | VALIDATED | Rendre le brouillon utile pour la préparation consultant. |
-| Lot 4 | READY FOR VALIDATION | Préparer l'intégration future d'un provider IA réel et consolider le suivi. |
+| Lot 4 | VALIDATED | Préparer l'intégration future d'un provider IA réel et consolider le suivi. |
 
 ## User stories consolidées
 
@@ -107,7 +109,13 @@ docs/20_release_v2_0_ai/LOT_3_STATUS.md
 docs/20_release_v2_0_ai/LOT_4_STATUS.md
 ```
 
-## CI
+## CI/CD
+
+Statut :
+
+```text
+OK
+```
 
 La CI exécute la chaîne complète existante et ajoute la génération / validation IA :
 
@@ -144,10 +152,11 @@ Aucune clé API n'est requise.
 [x] Provider externe non obligatoire
 [x] Manifest de traçabilité
 [x] Mode local déterministe pour CI
+[x] CI/CD finale validée
 ```
 
 ## Décision
 
-`v2.0-ai` est fonctionnellement complet au niveau du backlog validé.
+`v2.0-ai` est validé sur la branche `feature/v2-ai`.
 
-La prochaine étape consiste à attendre la confirmation CI finale sur la branche `feature/v2-ai`, puis à préparer la validation de branche et la suite d'intégration vers `main`.
+Le backlog validé est couvert, la CI/CD est confirmée OK, et la branche est prête pour préparation d'intégration vers `main`.
