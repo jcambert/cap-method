@@ -100,12 +100,30 @@ Réalisé :
 - tests session absente ;
 - tests isolation tenant.
 
+## Correctif de build serveur
+
+Le build serveur a signalé un conflit de mapping local dans `Program.cs` :
+
+```text
+MapToResponse(CreateCapSessionResult)
+MapToResponse(GetCapSessionResult)
+```
+
+Le correctif a séparé explicitement les mappings :
+
+```text
+MapCreateResultToResponse
+MapGetResultToResponse
+```
+
+Objectif : conserver un code explicite et compatible .NET 10 / C# 14 sans ambiguïté de résolution.
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+IMPLEMENTED - CI RETRIGGERED AFTER BUILD FIX
 ```
 
 ## Prochaine étape
 
-Vérifier la CI de `feature/v3-lot2-session-read`, corriger si nécessaire, puis ouvrir la PR Lot 2 vers `main`.
+Attendre la CI automatique déclenchée par ce commit, corriger si nécessaire, puis ouvrir la PR Lot 2 vers `main`.
