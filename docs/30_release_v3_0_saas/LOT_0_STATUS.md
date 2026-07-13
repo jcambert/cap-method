@@ -9,7 +9,7 @@ feature/v3-saas
 ## Statut global
 
 ```text
-STARTED
+IN_PROGRESS
 ```
 
 ## Objectif du Lot 0
@@ -24,7 +24,9 @@ Le Lot 0 doit garantir :
 - un usage Azure limité au développement / expérimentation ;
 - la compatibilité avec `v1.0-pro` sans IA ;
 - la compatibilité avec `v2.0-ai` avec IA optionnelle ;
-- l'encapsulation du moteur CAP existant via adaptateurs.
+- l'encapsulation du moteur CAP existant via adaptateurs ;
+- des tests intégrés dès le squelette ;
+- une CI dédiée au socle v3.
 
 ## User stories du Lot 0
 
@@ -85,46 +87,89 @@ La stack est documentée, les licences acceptées sont listées et les modèles 
 Statut :
 
 ```text
-READY
+IN_PROGRESS
 ```
 
-Objectif de développement :
+Réalisations :
 
-- définir le flux CAP sans IA dans le SaaS ;
-- conserver les formats `ResponseSession`, `AnalysisSnapshot`, `SynthesisDraft`, `FinalSynthesis`, `ActionPlan` ;
-- conserver les exports DOCX/PDF/ZIP.
+- projet `CapMethod.Saas.Domain` créé ;
+- modèle `CapSession` créé ;
+- modèle `DeliverablePackage` créé ;
+- tests domaine ajoutés ;
+- contrats `ResponseSession` et `AnalysisSnapshot` protégés par tests de compatibilité.
 
 ### US-SAAS-033
 
 Statut :
 
 ```text
-READY
+IN_PROGRESS
 ```
 
-Objectif de développement :
+Réalisations :
 
-- définir le mode IA optionnel ;
-- conserver `AIAnalysisDraft` ;
-- conserver `AIAnalysisManifest` ;
-- conserver `ConsultantReview` obligatoire ;
-- empêcher toute remise automatique d'un brouillon IA.
+- port `IAiAnalysisPort` créé ;
+- adapter local IA créé ;
+- tests de blocage si IA désactivée ajoutés ;
+- tests de contrat `AIAnalysisDraft` et `AIAnalysisManifest` ajoutés ;
+- règle de non-livraison d'un brouillon IA testée.
 
 ### US-SAAS-034
 
 Statut :
 
 ```text
-READY
+IN_PROGRESS
 ```
 
-Objectif de développement :
+Réalisations :
 
-- définir le port applicatif du moteur CAP ;
-- définir les adaptateurs local / Azure dev / tests ;
-- isoler le moteur CAP du SaaS ;
-- isoler Azure de la logique métier.
+- port `ICapEnginePort` créé ;
+- `LocalCapEngineAdapter` créé ;
+- `LocalAiAnalysisAdapter` créé ;
+- tests d'adapter local ajoutés ;
+- mismatch tenant contrôlé ;
+- Azure reste absent du coeur métier.
+
+## Socle applicatif créé
+
+```text
+src/CapMethod.Saas/
+├── CapMethod.Saas.Client
+├── CapMethod.Saas.Server
+├── CapMethod.Saas.Shared
+├── CapMethod.Saas.Application
+├── CapMethod.Saas.Domain
+├── CapMethod.Saas.Infrastructure
+├── CapMethod.Saas.Domain.Tests
+├── CapMethod.Saas.Infrastructure.Tests
+└── CapMethod.Saas.Compatibility.Tests
+```
+
+## CI ajoutée
+
+```text
+.github/workflows/v3-saas-validation.yml
+```
+
+La CI exécute :
+
+```text
+dotnet restore
+dotnet build
+dotnet test
+```
+
+Sur :
+
+```text
+Server
+Client
+Domain.Tests
+Infrastructure.Tests
+Compatibility.Tests
+```
 
 ## Prochaine étape recommandée
 
-Créer le document d'architecture du socle applicatif `Client / Server / Shared` et le contrat du `CapEngineAdapter`.
+Vérifier la CI GitHub sur `feature/v3-saas`, corriger si nécessaire, puis ajouter les premiers cas d'usage Application autour de la création d'une session CAP.
