@@ -4,13 +4,16 @@
 
 Ce document sert de backlog fonctionnel pour le jalon `v3.0-saas`.
 
+Il est mis à jour après l'intégration de `v2.0-ai` dans `main`.
+
 Il permet :
 
 - de valider le périmètre SaaS avant développement ;
 - de conserver une vision produit cohérente ;
 - de suivre l'avancement futur du SaaS ;
 - de distinguer les besoins consultant, bénéficiaire, administrateur et système ;
-- de garder la cohérence avec `v1.0-pro` et `v2.0-ai`.
+- de garantir la compatibilité avec `v1.0-pro` et `v2.0-ai` ;
+- de verrouiller l'usage de bibliothèques open source sans licence payante obligatoire.
 
 ## Statuts de suivi
 
@@ -31,6 +34,25 @@ L'IA assiste si elle est activée.
 Le consultant reste responsable de la validation.
 ```
 
+## Règle technique principale
+
+```text
+v3.0-saas ne réécrit pas v1.0-pro et v2.0-ai.
+Il les encapsule dans une application web professionnelle.
+```
+
+## Règle licence
+
+```text
+Toute bibliothèque ajoutée doit être open source et utilisable à des fins professionnelles sans paiement de licence obligatoire.
+```
+
+Référence :
+
+```text
+docs/30_release_v3_0_saas/TECH_STACK.md
+```
+
 ## Dépendances produit
 
 ```text
@@ -38,13 +60,102 @@ v1.0-pro
   = socle moteur stable
 
 v2.0-ai
-  = analyse IA assistée optionnelle
+  = analyse IA assistée optionnelle intégrée dans main
 
 v3.0-saas
   = plateforme web autour du moteur CAP
 ```
 
-Le développement réel du SaaS ne doit pas démarrer avant validation suffisante de l'usage terrain et du périmètre IA.
+Le développement SaaS démarre après intégration de `v2.0-ai`, mais doit conserver l'utilisation CAP sans IA.
+
+---
+
+# Epic 0 - Cadrage technique, licences et compatibilité
+
+## US-SAAS-000 - Valider la stack open source professionnelle
+
+**En tant que** mainteneur,  
+**je veux** valider la stack technique avant le développement,  
+**afin de** éviter toute dépendance nécessitant une licence commerciale obligatoire.
+
+### Critères d'acceptation
+
+- La stack cible est documentée dans `TECH_STACK.md`.
+- Chaque dépendance retenue possède une licence compatible avec un usage professionnel.
+- Les licences acceptées sont listées.
+- Les licences ou modèles à éviter sont listés.
+- Aucune dépendance commerciale obligatoire n'est introduite dans le socle v3.
+
+### Statut
+
+```text
+DONE
+```
+
+---
+
+## US-SAAS-032 - Conserver le mode CAP v1 sans IA
+
+**En tant que** consultant,  
+**je veux** pouvoir utiliser CAP dans le SaaS sans activer l'IA,  
+**afin de** conserver le fonctionnement validé en `v1.0-pro`.
+
+### Critères d'acceptation
+
+- Une session CAP peut être menée sans génération IA.
+- Le SaaS peut produire `ResponseSession`.
+- Le SaaS peut produire `AnalysisSnapshot`.
+- Le SaaS peut produire `SynthesisDraft`, `FinalSynthesis`, `ActionPlan`.
+- Les exports DOCX/PDF/ZIP restent disponibles sans IA.
+
+### Statut
+
+```text
+TODO
+```
+
+---
+
+## US-SAAS-033 - Conserver le mode CAP v2 avec IA optionnelle
+
+**En tant que** consultant,  
+**je veux** pouvoir activer l'analyse IA assistée lorsque cela est utile,  
+**afin de** bénéficier de `v2.0-ai` sans perdre le contrôle méthodologique.
+
+### Critères d'acceptation
+
+- L'IA est désactivée par défaut ou configurable par tenant/session.
+- L'activation IA produit `AIAnalysisDraft`.
+- L'activation IA produit `AIAnalysisManifest`.
+- Le brouillon IA n'est jamais remis directement au bénéficiaire.
+- L'étape `ConsultantReview` reste obligatoire.
+
+### Statut
+
+```text
+TODO
+```
+
+---
+
+## US-SAAS-034 - Créer un adaptateur moteur CAP
+
+**En tant que** mainteneur,  
+**je veux** isoler l'appel au moteur CAP dans un adaptateur,  
+**afin de** éviter de réécrire ou casser la chaîne `v1.0-pro` / `v2.0-ai`.
+
+### Critères d'acceptation
+
+- Un port applicatif expose les opérations CAP nécessaires au SaaS.
+- L'adaptateur convertit les données SaaS vers les formats existants.
+- Les formats `ResponseSession`, `AnalysisSnapshot`, `FinalSynthesis`, `ActionPlan` restent compatibles.
+- Les erreurs du moteur CAP sont remontées explicitement.
+
+### Statut
+
+```text
+TODO
+```
 
 ---
 
@@ -62,6 +173,7 @@ Le développement réel du SaaS ne doit pas démarrer avant validation suffisant
 - Un consultant peut se connecter.
 - Les informations minimales sont collectées.
 - Le compte est rattaché à un tenant ou espace professionnel.
+- L'implémentation utilise la stack open source retenue.
 
 ### Statut
 
@@ -83,6 +195,7 @@ TODO
 - L'utilisateur peut se déconnecter.
 - Les routes sensibles nécessitent une authentification.
 - Une session expirée oblige à se reconnecter.
+- Aucune solution d'authentification propriétaire payante n'est obligatoire.
 
 ### Statut
 
@@ -156,6 +269,7 @@ TODO
 - Chaque session CAP appartient à un tenant.
 - Les requêtes filtrent par tenant.
 - Un test vérifie qu'un tenant ne voit pas les données d'un autre.
+- Les exports et brouillons IA sont aussi isolés par tenant.
 
 ### Statut
 
@@ -200,6 +314,7 @@ TODO
 - La fiche affiche les sessions CAP associées.
 - La fiche affiche le statut des questionnaires.
 - La fiche affiche les derniers livrables disponibles.
+- La fiche indique si l'IA a été activée ou non sur une session.
 
 ### Statut
 
@@ -244,6 +359,7 @@ TODO
 - La session possède un statut initial `Draft`.
 - La session est rattachée au consultant et au tenant.
 - La session possède un identifiant unique.
+- La session peut être configurée avec IA désactivée ou activable plus tard.
 
 ### Statut
 
@@ -267,6 +383,7 @@ QuestionnairesSent
 InProgress
 ResponsesCompleted
 AnalysisGenerated
+AIAnalysisDraftGenerated
 ConsultantReview
 BeneficiaryReview
 Validated
@@ -280,6 +397,7 @@ Archived
 - Les transitions principales sont documentées.
 - Le statut change automatiquement après certaines actions.
 - Les transitions sensibles sont auditables.
+- Le statut IA ne bloque pas le parcours sans IA.
 
 ### Statut
 
@@ -303,6 +421,7 @@ TODO
 - Les types de questions principaux sont supportés.
 - Les questions sont affichées dans l'ordre attendu.
 - Le rendu respecte les modules CAP.
+- Le rendu web ne modifie pas la signification des questions v1.
 
 ### Statut
 
@@ -324,6 +443,7 @@ TODO
 - Le bénéficiaire reçoit un lien sécurisé.
 - Le lien est rattaché à une session CAP.
 - L'envoi est journalisé.
+- Le contenu de notification ne contient pas inutilement de données sensibles.
 
 ### Statut
 
@@ -389,6 +509,7 @@ TODO
 - Le format reste aligné avec `v1.0-pro`.
 - La génération est reproductible.
 - Les erreurs de données sont explicites.
+- Un test compare une session web et une session importée au format v1.
 
 ### Statut
 
@@ -410,6 +531,7 @@ TODO
 - Le résultat est rattaché à la session CAP.
 - L'analyse est consultable par le consultant.
 - Le bénéficiaire ne reçoit pas automatiquement cette analyse brute.
+- Le format reste compatible avec `v1.0-pro` et `v2.0-ai`.
 
 ### Statut
 
@@ -429,8 +551,10 @@ TODO
 
 - L'analyse IA est optionnelle.
 - Elle produit un `AIAnalysisDraft`.
+- Elle produit un `AIAnalysisManifest`.
 - Elle respecte les garde-fous `v2.0-ai`.
 - Elle ne remplace pas la validation consultant.
+- Elle peut fonctionner en mode local déterministe sans provider externe.
 
 ### Statut
 
@@ -454,6 +578,7 @@ TODO
 - La synthèse est éditable dans l'interface.
 - Les modifications sont sauvegardées.
 - La synthèse est marquée comme non validée au départ.
+- Elle ne reprend pas automatiquement un brouillon IA sans revue consultant.
 
 ### Statut
 
@@ -475,6 +600,7 @@ TODO
 - La validation est horodatée.
 - Le consultant validateur est enregistré.
 - Une synthèse non validée ne doit pas être livrée comme finale.
+- La validation indique si une aide IA a été utilisée.
 
 ### Statut
 
@@ -519,6 +645,7 @@ TODO
 - Le DOCX est téléchargeable.
 - Le PDF est téléchargeable.
 - Les exports sont rattachés à une version de synthèse et de plan d'action.
+- Les exports utilisent la logique validée en `v1.0-pro`.
 
 ### Statut
 
@@ -591,6 +718,7 @@ TODO
 - Les messages sont traçables.
 - Les notifications peuvent être désactivées ou limitées.
 - Aucune donnée sensible inutile n'est exposée dans la notification.
+- Le mécanisme ne dépend pas d'un fournisseur commercial obligatoire.
 
 ### Statut
 
@@ -612,6 +740,7 @@ TODO
 - questionnaire terminé ;
 - réponses complètes ;
 - analyse prête ;
+- brouillon IA prêt si activé ;
 - synthèse à valider ;
 - livrables générés.
 
@@ -699,6 +828,7 @@ TODO
 - Une procédure d'anonymisation existe.
 - Les impacts sont documentés.
 - L'action est auditée.
+- Les artefacts IA sont inclus dans la politique de suppression/anonymisation.
 
 ### Statut
 
@@ -722,6 +852,7 @@ TODO
 - Le tableau de bord affiche les statuts principaux.
 - Les actions prioritaires sont visibles.
 - Les notifications récentes sont visibles.
+- L'état IA d'une session est visible sans exposer son contenu sensible.
 
 ### Statut
 
@@ -743,6 +874,7 @@ TODO
 - Les métriques minimales sont disponibles.
 - Une stratégie de sauvegarde est documentée.
 - Une procédure de restauration est documentée.
+- Les composants retenus sont open source et documentés dans `TECH_STACK.md`.
 
 ### Statut
 
@@ -766,6 +898,7 @@ TODO
 - Les statuts sont mis à jour à chaque étape.
 - Les user stories terminées passent à `DONE`.
 - Les éléments exclus passent à `OUT_OF_SCOPE`.
+- Les décisions de stack sont reflétées dans les user stories.
 
 ### Statut
 
@@ -777,7 +910,18 @@ TODO
 
 # Priorisation recommandée
 
-## Lot 1 - Cadrage SaaS foundation
+## Lot 0 - Cadrage technique et compatibilité
+
+```text
+US-SAAS-000
+US-SAAS-032
+US-SAAS-033
+US-SAAS-034
+```
+
+Objectif : verrouiller la stack, les licences et la compatibilité v1/v2 avant de coder le SaaS.
+
+## Lot 1 - SaaS foundation minimal
 
 ```text
 US-SAAS-001
@@ -800,19 +944,22 @@ US-SAAS-014
 US-SAAS-015
 ```
 
-## Lot 3 - Moteur CAP intégré
+## Lot 3 - Moteur CAP intégré sans IA obligatoire
 
 ```text
 US-SAAS-016
 US-SAAS-018
 US-SAAS-019
 US-SAAS-020
+US-SAAS-032
+US-SAAS-034
 ```
 
 ## Lot 4 - IA optionnelle dans le SaaS
 
 ```text
 US-SAAS-017
+US-SAAS-033
 ```
 
 Ce lot dépend directement de `v2.0-ai`.
@@ -840,10 +987,14 @@ US-SAAS-031
 
 ## Décision
 
-Ce document doit être validé avant le développement de `feature/v3-saas` ou `product/v3-saas-foundation`.
+Le développement `v3.0-saas` doit démarrer par le Lot 0.
 
-Le développement SaaS doit démarrer après :
+Aucun développement applicatif ne doit introduire une dépendance :
 
-1. validation terrain de `v1.0-pro` ;
-2. cadrage ou stabilisation de `v2.0-ai` ;
-3. validation du MVP SaaS minimal.
+```text
+commerciale obligatoire
+non open source
+incompatible avec un usage professionnel sans licence payante
+cassant la chaîne v1.0-pro
+cassant la chaîne v2.0-ai
+```
