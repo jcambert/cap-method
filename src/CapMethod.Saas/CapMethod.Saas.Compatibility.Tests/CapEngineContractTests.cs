@@ -1,4 +1,5 @@
 using CapMethod.Saas.Application.Ports;
+using Xunit;
 
 namespace CapMethod.Saas.Compatibility.Tests;
 
