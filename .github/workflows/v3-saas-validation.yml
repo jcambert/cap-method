@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/v3-saas
+      - feature/v3-lot1-foundation
   pull_request:
     branches:
       - main
@@ -35,6 +36,7 @@ jobs:
       - name: Restore tests
         run: |
           dotnet restore src/CapMethod.Saas/CapMethod.Saas.Domain.Tests/CapMethod.Saas.Domain.Tests.csproj
+          dotnet restore src/CapMethod.Saas/CapMethod.Saas.Application.Tests/CapMethod.Saas.Application.Tests.csproj
           dotnet restore src/CapMethod.Saas/CapMethod.Saas.Infrastructure.Tests/CapMethod.Saas.Infrastructure.Tests.csproj
           dotnet restore src/CapMethod.Saas/CapMethod.Saas.Compatibility.Tests/CapMethod.Saas.Compatibility.Tests.csproj
 
@@ -46,6 +48,9 @@ jobs:
 
       - name: Test domain
         run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Domain.Tests/CapMethod.Saas.Domain.Tests.csproj --no-restore --logger trx
+
+      - name: Test application
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Application.Tests/CapMethod.Saas.Application.Tests.csproj --no-restore --logger trx
 
       - name: Test infrastructure
         run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Infrastructure.Tests/CapMethod.Saas.Infrastructure.Tests.csproj --no-restore --logger trx
