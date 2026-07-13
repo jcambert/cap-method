@@ -8,6 +8,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCapMethodSaasInfrastructure();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
+builder.Services.AddScoped<ListCapSessionsUseCase>();
 
 builder.Services.AddCors(options =>
 {
@@ -48,6 +49,21 @@ app.MapPost("/api/cap-sessions", async (
     return Results.Created($"/api/cap-sessions/{response.CapSessionId}", response);
 });
 
+app.MapGet("/api/cap-sessions", async (
+    Guid tenantId,
+    ListCapSessionsUseCase useCase,
+    CancellationToken cancellationToken) =>
+{
+    ListCapSessionsQuery query = new(tenantId);
+    IReadOnlyCollection<ListCapSessionResult> results = await useCase.ExecuteAsync(query, cancellationToken);
+
+    CapSessionSummaryResponse[] response = results
+        .Select(MapListResultToSummaryResponse)
+        .ToArray();
+
+    return Results.Ok(response);
+});
+
 app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     Guid capSessionId,
     Guid tenantId,
@@ -84,6 +100,18 @@ static CapSessionResponse MapCreateResultToResponse(CreateCapSessionResult resul
 static CapSessionResponse MapGetResultToResponse(GetCapSessionResult result)
 {
     return new CapSessionResponse(
+        result.CapSessionId,
+        result.TenantId,
+        result.BeneficiaryId,
+        result.ConsultantId,
+        result.Status,
+        result.IsAiEnabled,
+        result.CreatedAtUtc);
+}
+
+static CapSessionSummaryResponse MapListResultToSummaryResponse(ListCapSessionResult result)
+{
+    return new CapSessionSummaryResponse(
         result.CapSessionId,
         result.TenantId,
         result.BeneficiaryId,
