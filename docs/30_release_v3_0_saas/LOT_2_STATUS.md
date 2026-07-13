@@ -40,14 +40,14 @@ Squash merge obligatoire = oui
 Suppression de branche après merge = oui
 ```
 
-## Implémentation actuelle
+## Implémentation validée
 
 ### US-SAAS-201 - Lire une session CAP existante
 
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -62,7 +62,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -77,7 +77,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -91,7 +91,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -118,12 +118,18 @@ MapGetResultToResponse
 
 Objectif : conserver un code explicite et compatible .NET 10 / C# 14 sans ambiguïté de résolution.
 
+## Validation CI
+
+```text
+CI = OK
+```
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI RETRIGGERED AFTER BUILD FIX
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique déclenchée par ce commit, corriger si nécessaire, puis ouvrir la PR Lot 2 vers `main`.
+Ouvrir la PR Lot 2 vers `main`, effectuer le squash merge, puis supprimer la branche obsolète.
