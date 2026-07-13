@@ -72,5 +72,14 @@ public sealed class GetCapSessionUseCaseTests
 
             return Task.FromResult(session);
         }
+
+        public Task<IReadOnlyCollection<CapSession>> ListByTenantAsync(Guid tenantId, CancellationToken cancellationToken)
+        {
+            CapSession[] sessions = _sessions.Values
+                .Where(session => session.TenantId == tenantId)
+                .ToArray();
+
+            return Task.FromResult<IReadOnlyCollection<CapSession>>(sessions);
+        }
     }
 }
