@@ -1,4 +1,5 @@
 using CapMethod.Saas.Domain.Sessions;
+using Xunit;
 
 namespace CapMethod.Saas.Domain.Tests.Sessions;
 
