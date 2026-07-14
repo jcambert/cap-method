@@ -2,6 +2,12 @@ namespace CapMethod.Saas.Domain.Beneficiaries;
 
 public sealed class Beneficiary
 {
+    private Beneficiary()
+    {
+        FirstName = string.Empty;
+        LastName = string.Empty;
+    }
+
     private Beneficiary(Guid tenantId, string firstName, string lastName, string? email)
     {
         Id = Guid.NewGuid();
@@ -12,17 +18,17 @@ public sealed class Beneficiary
         CreatedAtUtc = DateTimeOffset.UtcNow;
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid TenantId { get; }
+    public Guid TenantId { get; private set; }
 
-    public string FirstName { get; }
+    public string FirstName { get; private set; }
 
-    public string LastName { get; }
+    public string LastName { get; private set; }
 
-    public string? Email { get; }
+    public string? Email { get; private set; }
 
-    public DateTimeOffset CreatedAtUtc { get; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
 
     public static Beneficiary Create(Guid tenantId, string firstName, string lastName, string? email)
     {
