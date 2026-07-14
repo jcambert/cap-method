@@ -2,6 +2,11 @@ namespace CapMethod.Saas.Domain.Sessions;
 
 public sealed class CapSession
 {
+    private CapSession()
+    {
+        Status = CapSessionStatus.Draft;
+    }
+
     private CapSession(Guid tenantId, Guid beneficiaryId, Guid consultantId)
     {
         Id = Guid.NewGuid();
@@ -13,19 +18,19 @@ public sealed class CapSession
         CreatedAtUtc = DateTimeOffset.UtcNow;
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid TenantId { get; }
+    public Guid TenantId { get; private set; }
 
-    public Guid BeneficiaryId { get; }
+    public Guid BeneficiaryId { get; private set; }
 
-    public Guid ConsultantId { get; }
+    public Guid ConsultantId { get; private set; }
 
     public CapSessionStatus Status { get; private set; }
 
     public bool IsAiEnabled { get; private set; }
 
-    public DateTimeOffset CreatedAtUtc { get; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
 
     public static CapSession Create(Guid tenantId, Guid beneficiaryId, Guid consultantId)
     {
