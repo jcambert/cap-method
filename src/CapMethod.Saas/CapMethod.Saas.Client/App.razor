@@ -1,5 +1,6 @@
 @namespace CapMethod.Saas.Client
 @using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Shared.Beneficiaries
 @inject CapMethodApiClient ApiClient
 
 <main class="cap-shell">
@@ -11,7 +12,7 @@
 
     <section class="cap-card">
         <h2>Authentification</h2>
-        <p>Mode Lot 9 : génération d'un token JWT de développement, stockage navigateur et appel protégé vers <code>/api/me</code>.</p>
+        <p>Mode Lot 10 : connexion dev JWT, contexte serveur et premier flux métier authentifié avec création de bénéficiaire.</p>
 
         <div class="cap-actions">
             <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
@@ -58,6 +59,51 @@
             </dl>
         </section>
     }
+
+    <section class="cap-card">
+        <h2>Créer un bénéficiaire</h2>
+        <p>Le tenant n'est pas saisi côté client. Il est injecté côté serveur à partir du token JWT.</p>
+
+        <div class="cap-form-grid">
+            <label>
+                Prénom
+                <input @bind="_beneficiaryFirstName" placeholder="Camille" />
+            </label>
+            <label>
+                Nom
+                <input @bind="_beneficiaryLastName" placeholder="Dupont" />
+            </label>
+            <label>
+                Email
+                <input @bind="_beneficiaryEmail" placeholder="camille.dupont@example.com" />
+            </label>
+        </div>
+
+        <div class="cap-actions">
+            <button @onclick="CreateBeneficiaryAsync" disabled="@_isBusy">Créer le bénéficiaire</button>
+        </div>
+    </section>
+
+    @if (_createdBeneficiary is not null)
+    {
+        <section class="cap-card cap-success-card">
+            <h2>Bénéficiaire créé</h2>
+            <dl>
+                <dt>Identifiant</dt>
+                <dd>@_createdBeneficiary.BeneficiaryId</dd>
+                <dt>Tenant</dt>
+                <dd>@_createdBeneficiary.TenantId</dd>
+                <dt>Prénom</dt>
+                <dd>@_createdBeneficiary.FirstName</dd>
+                <dt>Nom</dt>
+                <dd>@_createdBeneficiary.LastName</dd>
+                <dt>Email</dt>
+                <dd>@(_createdBeneficiary.Email ?? "-")</dd>
+                <dt>Créé UTC</dt>
+                <dd>@_createdBeneficiary.CreatedAtUtc</dd>
+            </dl>
+        </section>
+    }
 </main>
 
 <style>
@@ -78,6 +124,10 @@
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     }
 
+    .cap-success-card {
+        border-color: #16a34a;
+    }
+
     .cap-kicker {
         margin: 0 0 8px;
         text-transform: uppercase;
@@ -91,6 +141,26 @@
         flex-wrap: wrap;
         gap: 12px;
         margin-top: 18px;
+    }
+
+    .cap-form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    label {
+        display: grid;
+        gap: 6px;
+        font-weight: 700;
+    }
+
+    input {
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 10px 12px;
+        font: inherit;
     }
 
     button {
@@ -132,6 +202,10 @@
     private string? _message;
     private DevelopmentTokenResponse? _token;
     private CurrentUserResponse? _currentUser;
+    private BeneficiaryResponse? _createdBeneficiary;
+    private string _beneficiaryFirstName = "Camille";
+    private string _beneficiaryLastName = "Dupont";
+    private string? _beneficiaryEmail = "camille.dupont@example.com";
 
     private async Task LoginDevelopmentAsync()
     {
@@ -152,6 +226,25 @@
         });
     }
 
+    private async Task CreateBeneficiaryAsync()
+    {
+        await RunAsync(async () =>
+        {
+            if (string.IsNullOrWhiteSpace(_beneficiaryFirstName) || string.IsNullOrWhiteSpace(_beneficiaryLastName))
+            {
+                throw new InvalidOperationException("Le prénom et le nom sont obligatoires.");
+            }
+
+            _createdBeneficiary = await ApiClient.CreateBeneficiaryAsync(
+                _beneficiaryFirstName,
+                _beneficiaryLastName,
+                _beneficiaryEmail,
+                CancellationToken.None);
+
+            _message = "Bénéficiaire créé avec succès.";
+        });
+    }
+
     private async Task LogoutAsync()
     {
         await RunAsync(async () =>
@@ -159,6 +252,7 @@
             await ApiClient.LogoutAsync();
             _token = null;
             _currentUser = null;
+            _createdBeneficiary = null;
             _message = "Déconnexion locale effectuée.";
         });
     }
