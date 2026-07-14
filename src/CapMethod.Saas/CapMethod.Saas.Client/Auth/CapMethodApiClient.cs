@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CapMethod.Saas.Shared.Beneficiaries;
+using CapMethod.Saas.Shared.CapSessions;
 
 namespace CapMethod.Saas.Client.Auth;
 
@@ -80,6 +81,42 @@ public sealed class CapMethodApiClient
         }
 
         return beneficiary;
+    }
+
+    public async Task<CapSessionResponse> CreateCapSessionAsync(
+        Guid beneficiaryId,
+        bool enableAi,
+        CancellationToken cancellationToken)
+    {
+        if (beneficiaryId == Guid.Empty)
+        {
+            throw new ArgumentException("BeneficiaryId is required.", nameof(beneficiaryId));
+        }
+
+        CreateCapSessionRequest payload = new(
+            TenantId: Guid.Empty,
+            BeneficiaryId: beneficiaryId,
+            ConsultantId: Guid.Empty,
+            EnableAi: enableAi);
+
+        using HttpRequestMessage request = new(HttpMethod.Post, "api/cap-sessions")
+        {
+            Content = JsonContent.Create(payload)
+        };
+
+        await AddAuthorizationHeaderAsync(request);
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        CapSessionResponse? session = await response.Content.ReadFromJsonAsync<CapSessionResponse>(cancellationToken);
+
+        if (session is null)
+        {
+            throw new InvalidOperationException("The created CAP session response is empty.");
+        }
+
+        return session;
     }
 
     public Task LogoutAsync()
