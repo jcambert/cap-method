@@ -49,7 +49,7 @@ Suppression de branche après merge = oui
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -64,7 +64,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -78,7 +78,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -92,7 +92,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -106,7 +106,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -117,9 +117,9 @@ Réalisé :
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique, corriger si nécessaire, valider la documentation, ouvrir la PR Lot 12 vers `main`, effectuer le squash merge, puis supprimer la branche obsolète.
+Squash merge dans `main`, puis suppression de la branche obsolète.
