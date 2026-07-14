@@ -42,14 +42,14 @@ Squash merge obligatoire = oui
 Suppression de branche après merge = oui
 ```
 
-## Implémentation actuelle
+## Implémentation validée
 
 ### US-SAAS-501 - Rendre les agrégats persistables
 
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -63,7 +63,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -78,7 +78,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -92,7 +92,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -106,7 +106,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -115,12 +115,26 @@ Réalisé :
 - tests `EfCapSessionRepository` ;
 - provider EF InMemory utilisé pour éviter une dépendance PostgreSQL en CI.
 
+## Validation CI
+
+```text
+CI = OK
+```
+
+## Warning GitHub Actions observé
+
+```text
+Node.js 20 is deprecated
+```
+
+Ce warning est non bloquant. Les actions `actions/checkout@v4` et `actions/setup-dotnet@v4` sont forcées par GitHub sur Node.js 24. Le build et les tests restent validés.
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique, corriger si nécessaire, valider la documentation, ouvrir la PR Lot 5 vers `main`, effectuer le squash merge, puis supprimer la branche obsolète.
+Effectuer le squash merge de la PR Lot 5 vers `main`, puis supprimer la branche obsolète.
