@@ -3,7 +3,7 @@ name: v3-saas-validation
 on:
   push:
     branches:
-      - feature/v3-lot7-auth-tenant-context
+      - feature/v3-lot8-jwt-authentication
   pull_request:
     branches:
       - main
