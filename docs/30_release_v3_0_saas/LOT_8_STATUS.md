@@ -44,14 +44,14 @@ Squash merge obligatoire = oui
 Suppression de branche après merge = oui
 ```
 
-## Implémentation actuelle
+## Implémentation validée
 
 ### US-SAAS-801 - Configurer l'authentification JWT Bearer
 
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -66,7 +66,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -82,7 +82,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -96,7 +96,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -110,7 +110,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -134,12 +134,18 @@ curl http://localhost:5000/api/me \
   -H "Authorization: Bearer {access_token}"
 ```
 
+## Validation CI
+
+```text
+CI = OK
+```
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique, corriger si nécessaire, valider la documentation, ouvrir la PR Lot 8 vers `main`, effectuer le squash merge, puis supprimer la branche obsolète.
+Effectuer le squash merge de la PR Lot 8 vers `main`, puis supprimer la branche obsolète.
