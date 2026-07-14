@@ -119,6 +119,19 @@ public sealed class CapMethodApiClient
         return session;
     }
 
+    public async Task<IReadOnlyCollection<CapSessionSummaryResponse>> ListCapSessionsAsync(CancellationToken cancellationToken)
+    {
+        using HttpRequestMessage request = new(HttpMethod.Get, "api/cap-sessions");
+        await AddAuthorizationHeaderAsync(request);
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        CapSessionSummaryResponse[]? sessions = await response.Content.ReadFromJsonAsync<CapSessionSummaryResponse[]>(cancellationToken);
+
+        return sessions ?? [];
+    }
+
     public Task LogoutAsync()
     {
         return _tokenStore.ClearAsync();
