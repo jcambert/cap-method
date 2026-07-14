@@ -13,11 +13,12 @@
 
     <section class="cap-card">
         <h2>Authentification</h2>
-        <p>Mode Lot 11 : connexion dev JWT, création de bénéficiaire puis création d'une session CAP authentifiée.</p>
+        <p>Mode Lot 12 : connexion dev JWT, création bénéficiaire, création session CAP et liste des sessions du tenant connecté.</p>
 
         <div class="cap-actions">
             <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
             <button @onclick="LoadCurrentUserAsync" disabled="@_isBusy">Lire /api/me</button>
+            <button @onclick="LoadCapSessionsAsync" disabled="@_isBusy">Rafraîchir les sessions</button>
             <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion</button>
         </div>
 
@@ -142,11 +143,53 @@
             </dl>
         </section>
     }
+
+    <section class="cap-card">
+        <h2>Sessions CAP du tenant</h2>
+        <p>La liste est chargée via <code>GET /api/cap-sessions</code> avec le token Bearer courant.</p>
+
+        <div class="cap-actions">
+            <button @onclick="LoadCapSessionsAsync" disabled="@_isBusy">Rafraîchir</button>
+        </div>
+
+        @if (_capSessions.Count == 0)
+        {
+            <p>Aucune session chargée.</p>
+        }
+        else
+        {
+            <div class="cap-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>Bénéficiaire</th>
+                            <th>Statut</th>
+                            <th>IA</th>
+                            <th>Créée UTC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (CapSessionSummaryResponse session in _capSessions)
+                        {
+                            <tr>
+                                <td>@session.CapSessionId</td>
+                                <td>@session.BeneficiaryId</td>
+                                <td>@session.Status</td>
+                                <td>@session.IsAiEnabled</td>
+                                <td>@session.CreatedAtUtc</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
 </main>
 
 <style>
     .cap-shell {
-        max-width: 920px;
+        max-width: 1040px;
         margin: 0 auto;
         padding: 32px;
         font-family: system-ui, sans-serif;
@@ -232,6 +275,30 @@
         font-weight: 700;
     }
 
+    .cap-table-wrap {
+        overflow-x: auto;
+        margin-top: 18px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+    }
+
+    th,
+    td {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        word-break: break-all;
+    }
+
+    th {
+        font-weight: 800;
+    }
+
     dl {
         display: grid;
         grid-template-columns: 160px 1fr;
@@ -255,6 +322,7 @@
     private CurrentUserResponse? _currentUser;
     private BeneficiaryResponse? _createdBeneficiary;
     private CapSessionResponse? _createdSession;
+    private IReadOnlyCollection<CapSessionSummaryResponse> _capSessions = [];
     private string _beneficiaryFirstName = "Camille";
     private string _beneficiaryLastName = "Dupont";
     private string? _beneficiaryEmail = "camille.dupont@example.com";
@@ -267,6 +335,7 @@
         {
             _token = await ApiClient.CreateDevelopmentTokenAsync(CancellationToken.None);
             _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
             _message = "Connexion développement réussie.";
         });
     }
@@ -277,6 +346,15 @@
         {
             _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
             _message = "Contexte serveur chargé.";
+        });
+    }
+
+    private async Task LoadCapSessionsAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
+            _message = $"Sessions chargées : {_capSessions.Count}.";
         });
     }
 
@@ -314,6 +392,7 @@
                 EnableAiForSession,
                 CancellationToken.None);
 
+            _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
             _message = "Session CAP créée avec succès.";
         });
     }
@@ -327,6 +406,7 @@
             _currentUser = null;
             _createdBeneficiary = null;
             _createdSession = null;
+            _capSessions = [];
             _message = "Déconnexion locale effectuée.";
         });
     }
