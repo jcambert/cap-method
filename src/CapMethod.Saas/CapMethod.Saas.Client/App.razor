@@ -1,6 +1,7 @@
 @namespace CapMethod.Saas.Client
 @using CapMethod.Saas.Client.Auth
 @using CapMethod.Saas.Shared.Beneficiaries
+@using CapMethod.Saas.Shared.CapSessions
 @inject CapMethodApiClient ApiClient
 
 <main class="cap-shell">
@@ -12,7 +13,7 @@
 
     <section class="cap-card">
         <h2>Authentification</h2>
-        <p>Mode Lot 10 : connexion dev JWT, contexte serveur et premier flux métier authentifié avec création de bénéficiaire.</p>
+        <p>Mode Lot 11 : connexion dev JWT, création de bénéficiaire puis création d'une session CAP authentifiée.</p>
 
         <div class="cap-actions">
             <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
@@ -103,6 +104,43 @@
                 <dd>@_createdBeneficiary.CreatedAtUtc</dd>
             </dl>
         </section>
+
+        <section class="cap-card">
+            <h2>Créer une session CAP</h2>
+            <p>La session est créée pour le bénéficiaire ci-dessus. Le consultant et le tenant sont résolus côté serveur depuis le token JWT.</p>
+
+            <label class="cap-checkbox">
+                <input type="checkbox" @bind="_enableAiForSession" />
+                Activer l'IA pour cette session
+            </label>
+
+            <div class="cap-actions">
+                <button @onclick="CreateCapSessionAsync" disabled="@_isBusy">Créer la session CAP</button>
+            </div>
+        </section>
+    }
+
+    @if (_createdSession is not null)
+    {
+        <section class="cap-card cap-success-card">
+            <h2>Session CAP créée</h2>
+            <dl>
+                <dt>Session</dt>
+                <dd>@_createdSession.CapSessionId</dd>
+                <dt>Tenant</dt>
+                <dd>@_createdSession.TenantId</dd>
+                <dt>Bénéficiaire</dt>
+                <dd>@_createdSession.BeneficiaryId</dd>
+                <dt>Consultant</dt>
+                <dd>@_createdSession.ConsultantId</dd>
+                <dt>Statut</dt>
+                <dd>@_createdSession.Status</dd>
+                <dt>IA activée</dt>
+                <dd>@_createdSession.IsAiEnabled</dd>
+                <dt>Créée UTC</dt>
+                <dd>@_createdSession.CreatedAtUtc</dd>
+            </dl>
+        </section>
     }
 </main>
 
@@ -156,11 +194,24 @@
         font-weight: 700;
     }
 
+    .cap-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
     input {
         border: 1px solid #cbd5e1;
         border-radius: 12px;
         padding: 10px 12px;
         font: inherit;
+    }
+
+    input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        padding: 0;
     }
 
     button {
@@ -199,10 +250,12 @@
 
 @code {
     private bool _isBusy;
+    private bool _enableAiForSession;
     private string? _message;
     private DevelopmentTokenResponse? _token;
     private CurrentUserResponse? _currentUser;
     private BeneficiaryResponse? _createdBeneficiary;
+    private CapSessionResponse? _createdSession;
     private string _beneficiaryFirstName = "Camille";
     private string _beneficiaryLastName = "Dupont";
     private string? _beneficiaryEmail = "camille.dupont@example.com";
@@ -241,7 +294,26 @@
                 _beneficiaryEmail,
                 CancellationToken.None);
 
+            _createdSession = null;
             _message = "Bénéficiaire créé avec succès.";
+        });
+    }
+
+    private async Task CreateCapSessionAsync()
+    {
+        await RunAsync(async () =>
+        {
+            if (_createdBeneficiary is null)
+            {
+                throw new InvalidOperationException("Un bénéficiaire doit être créé avant de créer une session CAP.");
+            }
+
+            _createdSession = await ApiClient.CreateCapSessionAsync(
+                _createdBeneficiary.BeneficiaryId,
+                _enableAiForSession,
+                CancellationToken.None);
+
+            _message = "Session CAP créée avec succès.";
         });
     }
 
@@ -253,6 +325,7 @@
             _token = null;
             _currentUser = null;
             _createdBeneficiary = null;
+            _createdSession = null;
             _message = "Déconnexion locale effectuée.";
         });
     }
