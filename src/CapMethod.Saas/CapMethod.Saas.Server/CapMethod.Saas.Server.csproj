@@ -4,4 +4,7 @@
     <ProjectReference Include="..\CapMethod.Saas.Infrastructure\CapMethod.Saas.Infrastructure.csproj" />
     <ProjectReference Include="..\CapMethod.Saas.Shared\CapMethod.Saas.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+  </ItemGroup>
 </Project>

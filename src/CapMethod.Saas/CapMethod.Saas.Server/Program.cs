@@ -1,3 +1,4 @@
+using System.Text;
 using CapMethod.Saas.Application.Beneficiaries;
 using CapMethod.Saas.Application.Sessions;
 using CapMethod.Saas.Infrastructure;
@@ -5,13 +6,17 @@ using CapMethod.Saas.Server.Security;
 using CapMethod.Saas.Shared.Api;
 using CapMethod.Saas.Shared.Beneficiaries;
 using CapMethod.Saas.Shared.CapSessions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ConfigurePersistence(builder);
+ConfigureAuthentication(builder);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICapUserContextAccessor, HttpCapUserContextAccessor>();
+builder.Services.AddScoped<DevelopmentJwtTokenService>();
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
@@ -30,6 +35,8 @@ builder.Services.AddCors(options =>
 WebApplication app = builder.Build();
 
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/api/info", () => new ApiInfo(
     "CAP Method SaaS",
@@ -37,6 +44,20 @@ app.MapGet("/api/info", () => new ApiInfo(
     "Blazor WebAssembly hosted",
     AzureRequired: false,
     AiRequired: false));
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapPost("/api/dev/token", (
+        IConfiguration configuration,
+        DevelopmentJwtTokenService tokenService) =>
+    {
+        Guid tenantId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentTenantId");
+        Guid userId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentUserId");
+        DevelopmentTokenResponse response = tokenService.CreateToken(tenantId, userId);
+
+        return Results.Ok(response);
+    });
+}
 
 app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
 {
@@ -49,7 +70,7 @@ app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
         userContext.IsAuthenticated,
         userContext.IsDevelopmentFallback
     });
-});
+}).RequireAuthorization();
 
 app.MapPost("/api/beneficiaries", async (
     CreateBeneficiaryRequest request,
@@ -68,7 +89,7 @@ app.MapPost("/api/beneficiaries", async (
     BeneficiaryResponse response = MapCreateBeneficiaryResultToResponse(result);
 
     return Results.Created($"/api/beneficiaries/{response.BeneficiaryId}", response);
-});
+}).RequireAuthorization();
 
 app.MapPost("/api/cap-sessions", async (
     CreateCapSessionRequest request,
@@ -93,7 +114,7 @@ app.MapPost("/api/cap-sessions", async (
     CapSessionResponse response = MapCreateSessionResultToResponse(result);
 
     return Results.Created($"/api/cap-sessions/{response.CapSessionId}", response);
-});
+}).RequireAuthorization();
 
 app.MapGet("/api/cap-sessions", async (
     ICapUserContextAccessor userContextAccessor,
@@ -109,7 +130,7 @@ app.MapGet("/api/cap-sessions", async (
         .ToArray();
 
     return Results.Ok(response);
-});
+}).RequireAuthorization();
 
 app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     Guid capSessionId,
@@ -129,7 +150,7 @@ app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     CapSessionResponse response = MapGetResultToResponse(result);
 
     return Results.Ok(response);
-});
+}).RequireAuthorization();
 
 app.Run();
 
@@ -157,6 +178,42 @@ static void ConfigurePersistence(WebApplicationBuilder builder)
     }
 
     throw new InvalidOperationException($"Unsupported persistence provider '{provider}'. Supported values are 'InMemory' and 'PostgreSql'.");
+}
+
+static void ConfigureAuthentication(WebApplicationBuilder builder)
+{
+    JwtOptions jwtOptions = builder.Configuration.GetSection("Authentication:Jwt").Get<JwtOptions>() ?? new JwtOptions();
+    jwtOptions.Validate();
+
+    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Authentication:Jwt"));
+    builder.Services.AddAuthorization();
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtOptions.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtOptions.Audience,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(1)
+            };
+        });
+}
+
+static Guid ReadRequiredConfigurationGuid(IConfiguration configuration, string key)
+{
+    string? value = configuration[key];
+
+    if (!Guid.TryParse(value, out Guid parsed) || parsed == Guid.Empty)
+    {
+        throw new InvalidOperationException($"Configuration '{key}' must be a non-empty GUID.");
+    }
+
+    return parsed;
 }
 
 static BeneficiaryResponse MapCreateBeneficiaryResultToResponse(CreateBeneficiaryResult result)
