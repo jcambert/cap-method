@@ -1,6 +1,7 @@
 using CapMethod.Saas.Application.Beneficiaries;
 using CapMethod.Saas.Application.Sessions;
 using CapMethod.Saas.Infrastructure;
+using CapMethod.Saas.Server.Security;
 using CapMethod.Saas.Shared.Api;
 using CapMethod.Saas.Shared.Beneficiaries;
 using CapMethod.Saas.Shared.CapSessions;
@@ -9,6 +10,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ConfigurePersistence(builder);
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICapUserContextAccessor, HttpCapUserContextAccessor>();
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
@@ -35,13 +38,28 @@ app.MapGet("/api/info", () => new ApiInfo(
     AzureRequired: false,
     AiRequired: false));
 
+app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
+{
+    CapUserContext userContext = userContextAccessor.GetRequiredContext();
+
+    return Results.Ok(new
+    {
+        userContext.TenantId,
+        userContext.UserId,
+        userContext.IsAuthenticated,
+        userContext.IsDevelopmentFallback
+    });
+});
+
 app.MapPost("/api/beneficiaries", async (
     CreateBeneficiaryRequest request,
+    ICapUserContextAccessor userContextAccessor,
     CreateBeneficiaryUseCase useCase,
     CancellationToken cancellationToken) =>
 {
+    CapUserContext userContext = userContextAccessor.GetRequiredContext();
     CreateBeneficiaryCommand command = new(
-        request.TenantId,
+        userContext.TenantId,
         request.FirstName,
         request.LastName,
         request.Email);
@@ -54,13 +72,15 @@ app.MapPost("/api/beneficiaries", async (
 
 app.MapPost("/api/cap-sessions", async (
     CreateCapSessionRequest request,
+    ICapUserContextAccessor userContextAccessor,
     CreateCapSessionUseCase useCase,
     CancellationToken cancellationToken) =>
 {
+    CapUserContext userContext = userContextAccessor.GetRequiredContext();
     CreateCapSessionCommand command = new(
-        request.TenantId,
+        userContext.TenantId,
         request.BeneficiaryId,
-        request.ConsultantId,
+        userContext.UserId,
         request.EnableAi);
 
     CreateCapSessionResult result = await useCase.ExecuteAsync(command, cancellationToken);
@@ -76,11 +96,12 @@ app.MapPost("/api/cap-sessions", async (
 });
 
 app.MapGet("/api/cap-sessions", async (
-    Guid tenantId,
+    ICapUserContextAccessor userContextAccessor,
     ListCapSessionsUseCase useCase,
     CancellationToken cancellationToken) =>
 {
-    ListCapSessionsQuery query = new(tenantId);
+    CapUserContext userContext = userContextAccessor.GetRequiredContext();
+    ListCapSessionsQuery query = new(userContext.TenantId);
     IReadOnlyCollection<ListCapSessionResult> results = await useCase.ExecuteAsync(query, cancellationToken);
 
     CapSessionSummaryResponse[] response = results
@@ -92,11 +113,12 @@ app.MapGet("/api/cap-sessions", async (
 
 app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     Guid capSessionId,
-    Guid tenantId,
+    ICapUserContextAccessor userContextAccessor,
     GetCapSessionUseCase useCase,
     CancellationToken cancellationToken) =>
 {
-    GetCapSessionQuery query = new(tenantId, capSessionId);
+    CapUserContext userContext = userContextAccessor.GetRequiredContext();
+    GetCapSessionQuery query = new(userContext.TenantId, capSessionId);
     GetCapSessionResult? result = await useCase.ExecuteAsync(query, cancellationToken);
 
     if (result is null)
