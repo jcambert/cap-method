@@ -132,6 +132,29 @@ public sealed class CapMethodApiClient
         return sessions ?? [];
     }
 
+    public async Task<CapSessionResponse> GetCapSessionAsync(Guid capSessionId, CancellationToken cancellationToken)
+    {
+        if (capSessionId == Guid.Empty)
+        {
+            throw new ArgumentException("CapSessionId is required.", nameof(capSessionId));
+        }
+
+        using HttpRequestMessage request = new(HttpMethod.Get, $"api/cap-sessions/{capSessionId}");
+        await AddAuthorizationHeaderAsync(request);
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        CapSessionResponse? session = await response.Content.ReadFromJsonAsync<CapSessionResponse>(cancellationToken);
+
+        if (session is null)
+        {
+            throw new InvalidOperationException("The CAP session detail response is empty.");
+        }
+
+        return session;
+    }
+
     public Task LogoutAsync()
     {
         return _tokenStore.ClearAsync();
