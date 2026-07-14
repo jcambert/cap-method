@@ -7,7 +7,8 @@ using CapMethod.Saas.Shared.CapSessions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCapMethodSaasInfrastructure();
+ConfigurePersistence(builder);
+
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
@@ -109,6 +110,32 @@ app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
 });
 
 app.Run();
+
+static void ConfigurePersistence(WebApplicationBuilder builder)
+{
+    string provider = builder.Configuration["Persistence:Provider"] ?? "InMemory";
+
+    if (string.Equals(provider, "PostgreSql", StringComparison.OrdinalIgnoreCase))
+    {
+        string? connectionString = builder.Configuration.GetConnectionString("CapMethodSaas");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException("ConnectionStrings:CapMethodSaas is required when Persistence:Provider is PostgreSql.");
+        }
+
+        builder.Services.AddCapMethodSaasPostgreSqlInfrastructure(connectionString);
+        return;
+    }
+
+    if (string.Equals(provider, "InMemory", StringComparison.OrdinalIgnoreCase))
+    {
+        builder.Services.AddCapMethodSaasInfrastructure();
+        return;
+    }
+
+    throw new InvalidOperationException($"Unsupported persistence provider '{provider}'. Supported values are 'InMemory' and 'PostgreSql'.");
+}
 
 static BeneficiaryResponse MapCreateBeneficiaryResultToResponse(CreateBeneficiaryResult result)
 {
