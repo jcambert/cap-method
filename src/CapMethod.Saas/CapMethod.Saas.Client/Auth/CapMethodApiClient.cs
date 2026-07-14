@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using CapMethod.Saas.Shared.Beneficiaries;
 
 namespace CapMethod.Saas.Client.Auth;
 
@@ -47,6 +48,38 @@ public sealed class CapMethodApiClient
         }
 
         return user;
+    }
+
+    public async Task<BeneficiaryResponse> CreateBeneficiaryAsync(
+        string firstName,
+        string lastName,
+        string? email,
+        CancellationToken cancellationToken)
+    {
+        CreateBeneficiaryRequest payload = new(
+            TenantId: Guid.Empty,
+            firstName,
+            lastName,
+            email);
+
+        using HttpRequestMessage request = new(HttpMethod.Post, "api/beneficiaries")
+        {
+            Content = JsonContent.Create(payload)
+        };
+
+        await AddAuthorizationHeaderAsync(request);
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        BeneficiaryResponse? beneficiary = await response.Content.ReadFromJsonAsync<BeneficiaryResponse>(cancellationToken);
+
+        if (beneficiary is null)
+        {
+            throw new InvalidOperationException("The created beneficiary response is empty.");
+        }
+
+        return beneficiary;
     }
 
     public Task LogoutAsync()
