@@ -110,7 +110,7 @@
             <p>La session est créée pour le bénéficiaire ci-dessus. Le consultant et le tenant sont résolus côté serveur depuis le token JWT.</p>
 
             <label class="cap-checkbox">
-                <input type="checkbox" @bind="_enableAiForSession" />
+                <input type="checkbox" @bind="EnableAiForSession" />
                 Activer l'IA pour cette session
             </label>
 
@@ -250,7 +250,6 @@
 
 @code {
     private bool _isBusy;
-    private bool _enableAiForSession;
     private string? _message;
     private DevelopmentTokenResponse? _token;
     private CurrentUserResponse? _currentUser;
@@ -259,6 +258,8 @@
     private string _beneficiaryFirstName = "Camille";
     private string _beneficiaryLastName = "Dupont";
     private string? _beneficiaryEmail = "camille.dupont@example.com";
+
+    private bool EnableAiForSession { get; set; } = false;
 
     private async Task LoginDevelopmentAsync()
     {
@@ -310,7 +311,7 @@
 
             _createdSession = await ApiClient.CreateCapSessionAsync(
                 _createdBeneficiary.BeneficiaryId,
-                _enableAiForSession,
+                EnableAiForSession,
                 CancellationToken.None);
 
             _message = "Session CAP créée avec succès.";
