@@ -1,8 +1,184 @@
 @namespace CapMethod.Saas.Client
+@using CapMethod.Saas.Client.Auth
+@inject CapMethodApiClient ApiClient
 
-<main>
-    <h1>CAP Method SaaS</h1>
-    <p>v3.0-saas - Blazor WebAssembly hosted</p>
-    <p>Azure requis : non</p>
-    <p>IA requise : non</p>
+<main class="cap-shell">
+    <section class="cap-hero">
+        <p class="cap-kicker">CAP Method SaaS</p>
+        <h1>v3.0-saas</h1>
+        <p>Blazor WebAssembly hosted · Azure requis : non · IA requise : non</p>
+    </section>
+
+    <section class="cap-card">
+        <h2>Authentification</h2>
+        <p>Mode Lot 9 : génération d'un token JWT de développement, stockage navigateur et appel protégé vers <code>/api/me</code>.</p>
+
+        <div class="cap-actions">
+            <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
+            <button @onclick="LoadCurrentUserAsync" disabled="@_isBusy">Lire /api/me</button>
+            <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion</button>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(_message))
+        {
+            <p class="cap-message">@_message</p>
+        }
+    </section>
+
+    @if (_token is not null)
+    {
+        <section class="cap-card">
+            <h2>Token courant</h2>
+            <dl>
+                <dt>Type</dt>
+                <dd>@_token.TokenType</dd>
+                <dt>Expiration UTC</dt>
+                <dd>@_token.ExpiresAtUtc</dd>
+                <dt>Tenant</dt>
+                <dd>@_token.TenantId</dd>
+                <dt>Utilisateur</dt>
+                <dd>@_token.UserId</dd>
+            </dl>
+        </section>
+    }
+
+    @if (_currentUser is not null)
+    {
+        <section class="cap-card">
+            <h2>Contexte serveur</h2>
+            <dl>
+                <dt>Tenant</dt>
+                <dd>@_currentUser.TenantId</dd>
+                <dt>Utilisateur</dt>
+                <dd>@_currentUser.UserId</dd>
+                <dt>Authentifié</dt>
+                <dd>@_currentUser.IsAuthenticated</dd>
+                <dt>Fallback dev</dt>
+                <dd>@_currentUser.IsDevelopmentFallback</dd>
+            </dl>
+        </section>
+    }
 </main>
+
+<style>
+    .cap-shell {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 32px;
+        font-family: system-ui, sans-serif;
+    }
+
+    .cap-hero,
+    .cap-card {
+        border: 1px solid #d6d9df;
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 18px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .cap-kicker {
+        margin: 0 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.78rem;
+        color: #475569;
+    }
+
+    .cap-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .cap-message {
+        margin-top: 16px;
+        font-weight: 700;
+    }
+
+    dl {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 8px 16px;
+    }
+
+    dt {
+        font-weight: 700;
+    }
+
+    dd {
+        margin: 0;
+        word-break: break-all;
+    }
+</style>
+
+@code {
+    private bool _isBusy;
+    private string? _message;
+    private DevelopmentTokenResponse? _token;
+    private CurrentUserResponse? _currentUser;
+
+    private async Task LoginDevelopmentAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _token = await ApiClient.CreateDevelopmentTokenAsync(CancellationToken.None);
+            _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _message = "Connexion développement réussie.";
+        });
+    }
+
+    private async Task LoadCurrentUserAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _message = "Contexte serveur chargé.";
+        });
+    }
+
+    private async Task LogoutAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await ApiClient.LogoutAsync();
+            _token = null;
+            _currentUser = null;
+            _message = "Déconnexion locale effectuée.";
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _isBusy = true;
+        _message = null;
+
+        try
+        {
+            await action();
+        }
+        catch (Exception exception)
+        {
+            _message = exception.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}
