@@ -41,14 +41,14 @@ Squash merge obligatoire = oui
 Suppression de branche après merge = oui
 ```
 
-## Implémentation actuelle
+## Implémentation validée
 
 ### US-SAAS-701 - Créer un contexte utilisateur SaaS
 
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -62,7 +62,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -76,7 +76,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -92,7 +92,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -107,7 +107,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+DONE
 ```
 
 Réalisé :
@@ -116,12 +116,18 @@ Réalisé :
 - règle d'isolation tenant serveur documentée ;
 - authentification réelle complète reportée à un lot ultérieur.
 
+## Validation CI
+
+```text
+CI = OK
+```
+
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique, corriger si nécessaire, valider la documentation, ouvrir la PR Lot 7 vers `main`, effectuer le squash merge, puis supprimer la branche obsolète.
+Effectuer le squash merge de la PR Lot 7 vers `main`, puis supprimer la branche obsolète.
