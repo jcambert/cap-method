@@ -1,5 +1,6 @@
 @namespace CapMethod.Saas.Client
 @using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Client.Components
 @using CapMethod.Saas.Shared.Beneficiaries
 @using CapMethod.Saas.Shared.CapSessions
 @inject CapMethodApiClient ApiClient
@@ -13,7 +14,7 @@
 
     <section class="cap-card">
         <h2>Authentification</h2>
-        <p>Mode Lot 13 : connexion dev JWT, création bénéficiaire, création session CAP, liste tenant et détail session.</p>
+        <p>Mode Lot 14 : UI durcie, composants séparés, flux métier conservé.</p>
 
         <div class="cap-actions">
             <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
@@ -28,39 +29,7 @@
         }
     </section>
 
-    @if (_token is not null)
-    {
-        <section class="cap-card">
-            <h2>Token courant</h2>
-            <dl>
-                <dt>Type</dt>
-                <dd>@_token.TokenType</dd>
-                <dt>Expiration UTC</dt>
-                <dd>@_token.ExpiresAtUtc</dd>
-                <dt>Tenant</dt>
-                <dd>@_token.TenantId</dd>
-                <dt>Utilisateur</dt>
-                <dd>@_token.UserId</dd>
-            </dl>
-        </section>
-    }
-
-    @if (_currentUser is not null)
-    {
-        <section class="cap-card">
-            <h2>Contexte serveur</h2>
-            <dl>
-                <dt>Tenant</dt>
-                <dd>@_currentUser.TenantId</dd>
-                <dt>Utilisateur</dt>
-                <dd>@_currentUser.UserId</dd>
-                <dt>Authentifié</dt>
-                <dd>@_currentUser.IsAuthenticated</dd>
-                <dt>Fallback dev</dt>
-                <dd>@_currentUser.IsDevelopmentFallback</dd>
-            </dl>
-        </section>
-    }
+    <AuthSummaryCard Token="_token" CurrentUser="_currentUser" />
 
     <section class="cap-card">
         <h2>Créer un bénéficiaire</h2>
@@ -144,75 +113,14 @@
         </section>
     }
 
-    <section class="cap-card">
-        <h2>Sessions CAP du tenant</h2>
-        <p>La liste est chargée via <code>GET /api/cap-sessions</code> avec le token Bearer courant.</p>
+    <CapSessionListCard
+        Sessions="_capSessions"
+        SelectedSessionId="_selectedSession?.CapSessionId"
+        IsBusy="_isBusy"
+        RefreshRequested="LoadCapSessionsAsync"
+        DetailRequested="LoadCapSessionDetailAsync" />
 
-        <div class="cap-actions">
-            <button @onclick="LoadCapSessionsAsync" disabled="@_isBusy">Rafraîchir</button>
-        </div>
-
-        @if (_capSessions.Count == 0)
-        {
-            <p>Aucune session chargée.</p>
-        }
-        else
-        {
-            <div class="cap-table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Session</th>
-                            <th>Bénéficiaire</th>
-                            <th>Statut</th>
-                            <th>IA</th>
-                            <th>Créée UTC</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (CapSessionSummaryResponse session in _capSessions)
-                        {
-                            <tr class="@(IsSelectedSession(session.CapSessionId) ? "cap-selected-row" : null)">
-                                <td>@session.CapSessionId</td>
-                                <td>@session.BeneficiaryId</td>
-                                <td>@session.Status</td>
-                                <td>@session.IsAiEnabled</td>
-                                <td>@session.CreatedAtUtc</td>
-                                <td>
-                                    <button @onclick="() => LoadCapSessionDetailAsync(session.CapSessionId)" disabled="@_isBusy">Voir détail</button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </section>
-
-    @if (_selectedSession is not null)
-    {
-        <section class="cap-card cap-detail-card">
-            <h2>Détail session CAP</h2>
-            <p>Le détail est chargé via <code>GET /api/cap-sessions/{capSessionId}</code> et reste isolé par le tenant du token JWT.</p>
-            <dl>
-                <dt>Session</dt>
-                <dd>@_selectedSession.CapSessionId</dd>
-                <dt>Tenant</dt>
-                <dd>@_selectedSession.TenantId</dd>
-                <dt>Bénéficiaire</dt>
-                <dd>@_selectedSession.BeneficiaryId</dd>
-                <dt>Consultant</dt>
-                <dd>@_selectedSession.ConsultantId</dd>
-                <dt>Statut</dt>
-                <dd>@_selectedSession.Status</dd>
-                <dt>IA activée</dt>
-                <dd>@_selectedSession.IsAiEnabled</dd>
-                <dt>Créée UTC</dt>
-                <dd>@_selectedSession.CreatedAtUtc</dd>
-            </dl>
-        </section>
-    }
+    <CapSessionDetailCard Session="_selectedSession" />
 </main>
 
 <style>
@@ -458,11 +366,6 @@
             _capSessions = [];
             _message = "Déconnexion locale effectuée.";
         });
-    }
-
-    private bool IsSelectedSession(Guid capSessionId)
-    {
-        return _selectedSession?.CapSessionId == capSessionId;
     }
 
     private async Task RunAsync(Func<Task> action)
