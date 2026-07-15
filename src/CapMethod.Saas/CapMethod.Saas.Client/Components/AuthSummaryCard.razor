@@ -1,0 +1,44 @@
+@namespace CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Client.Auth
+
+@if (Token is not null)
+{
+    <section class="cap-card">
+        <h2>Token courant</h2>
+        <dl>
+            <dt>Type</dt>
+            <dd>@Token.TokenType</dd>
+            <dt>Expiration UTC</dt>
+            <dd>@Token.ExpiresAtUtc</dd>
+            <dt>Tenant</dt>
+            <dd>@Token.TenantId</dd>
+            <dt>Utilisateur</dt>
+            <dd>@Token.UserId</dd>
+        </dl>
+    </section>
+}
+
+@if (CurrentUser is not null)
+{
+    <section class="cap-card">
+        <h2>Contexte serveur</h2>
+        <dl>
+            <dt>Tenant</dt>
+            <dd>@CurrentUser.TenantId</dd>
+            <dt>Utilisateur</dt>
+            <dd>@CurrentUser.UserId</dd>
+            <dt>Authentifié</dt>
+            <dd>@CurrentUser.IsAuthenticated</dd>
+            <dt>Fallback dev</dt>
+            <dd>@CurrentUser.IsDevelopmentFallback</dd>
+        </dl>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public DevelopmentTokenResponse? Token { get; set; }
+
+    [Parameter]
+    public CurrentUserResponse? CurrentUser { get; set; }
+}
