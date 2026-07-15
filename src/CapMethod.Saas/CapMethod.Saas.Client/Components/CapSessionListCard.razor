@@ -1,0 +1,70 @@
+@namespace CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Shared.CapSessions
+
+<section class="cap-card">
+    <h2>Sessions CAP du tenant</h2>
+    <p>La liste est chargée via <code>GET /api/cap-sessions</code> avec le token Bearer courant.</p>
+
+    <div class="cap-actions">
+        <button @onclick="RefreshRequested" disabled="@IsBusy">Rafraîchir</button>
+    </div>
+
+    @if (Sessions.Count == 0)
+    {
+        <p>Aucune session chargée.</p>
+    }
+    else
+    {
+        <div class="cap-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Bénéficiaire</th>
+                        <th>Statut</th>
+                        <th>IA</th>
+                        <th>Créée UTC</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (CapSessionSummaryResponse session in Sessions)
+                    {
+                        <tr class="@(IsSelectedSession(session.CapSessionId) ? "cap-selected-row" : null)">
+                            <td>@session.CapSessionId</td>
+                            <td>@session.BeneficiaryId</td>
+                            <td>@session.Status</td>
+                            <td>@session.IsAiEnabled</td>
+                            <td>@session.CreatedAtUtc</td>
+                            <td>
+                                <button @onclick="() => DetailRequested.InvokeAsync(session.CapSessionId)" disabled="@IsBusy">Voir détail</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public IReadOnlyCollection<CapSessionSummaryResponse> Sessions { get; set; } = [];
+
+    [Parameter]
+    public Guid? SelectedSessionId { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> DetailRequested { get; set; }
+
+    private bool IsSelectedSession(Guid capSessionId)
+    {
+        return SelectedSessionId == capSessionId;
+    }
+}
