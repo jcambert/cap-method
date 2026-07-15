@@ -49,7 +49,7 @@ Tag uniquement après CI main OK = oui
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -63,7 +63,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -79,7 +79,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -94,7 +94,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -108,7 +108,7 @@ Réalisé :
 Statut :
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 Réalisé :
@@ -119,9 +119,9 @@ Réalisé :
 ## Statut global
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Prochaine étape
 
-Attendre la CI automatique, corriger si nécessaire, valider la documentation, ouvrir la PR Lot 15 vers `main`, effectuer le squash merge, puis préparer le tag `v3.0-saas-rc1`.
+Lot 15 validé par CI, prêt à être conservé dans `main` après squash merge. Prochaine étape : vérifier la CI sur `main`, puis préparer le tag `v3.0-saas-rc1`.
