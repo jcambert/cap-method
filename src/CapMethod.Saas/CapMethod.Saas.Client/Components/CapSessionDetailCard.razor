@@ -1,0 +1,31 @@
+@namespace CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Shared.CapSessions
+
+@if (Session is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>Détail session CAP</h2>
+        <p>Le détail est chargé via <code>GET /api/cap-sessions/{capSessionId}</code> et reste isolé par le tenant du token JWT.</p>
+        <dl>
+            <dt>Session</dt>
+            <dd>@Session.CapSessionId</dd>
+            <dt>Tenant</dt>
+            <dd>@Session.TenantId</dd>
+            <dt>Bénéficiaire</dt>
+            <dd>@Session.BeneficiaryId</dd>
+            <dt>Consultant</dt>
+            <dd>@Session.ConsultantId</dd>
+            <dt>Statut</dt>
+            <dd>@Session.Status</dd>
+            <dt>IA activée</dt>
+            <dd>@Session.IsAiEnabled</dd>
+            <dt>Créée UTC</dt>
+            <dd>@Session.CreatedAtUtc</dd>
+        </dl>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public CapSessionResponse? Session { get; set; }
+}
