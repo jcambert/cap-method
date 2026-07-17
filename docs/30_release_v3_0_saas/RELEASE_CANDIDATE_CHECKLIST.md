@@ -3,7 +3,19 @@
 ## Statut global
 
 ```text
-RELEASE CANDIDATE - TO VERIFY
+PUBLISHED - RC1
+```
+
+## Release candidate
+
+```text
+v3.0-saas-rc1
+```
+
+## Commit taggé
+
+```text
+fd8563861ebbd74e474ff2904dd7ae38ff4048ec
 ```
 
 ## 1. Socle technique
@@ -71,7 +83,7 @@ RELEASE CANDIDATE - TO VERIFY
 ## 6. Documentation
 
 ```text
-[OK] Statuts Lots 0 à 14 présents
+[OK] Statuts Lots 0 à 15 présents
 [OK] Statut release candidate présent
 [OK] Checklist release candidate présente
 [OK] Notes release candidate présentes
@@ -81,10 +93,10 @@ RELEASE CANDIDATE - TO VERIFY
 ## 7. Validation avant tag
 
 ```text
-[TODO] CI Lot 15 OK
-[TODO] PR Lot 15 fusionnée dans main
-[TODO] Tag v3.0-saas-rc1 créé
-[TODO] Vérifier main après tag
+[OK] CI Lot 15 OK
+[OK] PR Lot 15 fusionnée dans main
+[OK] CI main OK
+[OK] Tag v3.0-saas-rc1 créé
 ```
 
 ## Commandes locales de validation recommandées
@@ -102,11 +114,13 @@ dotnet test src/CapMethod.Saas/CapMethod.Saas.Compatibility.Tests/CapMethod.Saas
 
 ## Décision RC
 
-La release candidate peut être taguée lorsque :
+```text
+v3.0-saas-rc1 publiée
+```
+
+La prochaine décision de release sera :
 
 ```text
-CI main OK après fusion Lot 15
-Aucun blocage fonctionnel identifié
-Documentation RC présente sur main
-Tag v3.0-saas-rc1 décidé explicitement
+v3.0-saas-rc2 si corrections nécessaires
+v3.0-saas si la RC1 est validée sans blocage
 ```
