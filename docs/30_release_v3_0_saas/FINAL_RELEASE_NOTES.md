@@ -9,14 +9,20 @@ v3.0-saas
 ## Statut
 
 ```text
-DRAFT - FINAL STABILIZATION
+PUBLISHED - STABLE RELEASE
 ```
 
-## Resume
+## Commit taggé
 
-`v3.0-saas` stabilise la premiere version SaaS de CAP Method apres la release candidate `v3.0-saas-rc1`.
+```text
+8786df65125debec2b45662851ecd310f167bec8
+```
 
-Cette version fournit un socle web minimal base sur Blazor WebAssembly hosted et ASP.NET Core.
+## Résumé
+
+`v3.0-saas` publie la première version stable du socle SaaS de CAP Method après la release candidate `v3.0-saas-rc1`.
+
+Cette version fournit un socle web minimal basé sur Blazor WebAssembly hosted et ASP.NET Core.
 
 ## Inclus
 
@@ -25,10 +31,10 @@ Blazor WebAssembly hosted
 API ASP.NET Core
 Client / Server / Shared
 Domain / Application / Infrastructure
-Creation beneficiaire
-Creation session CAP
+Création bénéficiaire
+Création session CAP
 Liste sessions CAP
-Detail session CAP
+Détail session CAP
 JWT dev authentication
 Contexte tenant serveur
 EF Core PostgreSQL
@@ -42,31 +48,31 @@ Documentation RC et stabilisation finale
 ## Garanties
 
 ```text
-CAP v1 sans IA obligatoire = conserve
-CAP v2 avec IA optionnelle = conserve
-IA automatique imposee = non
+CAP v1 sans IA obligatoire = conservé
+CAP v2 avec IA optionnelle = conservé
+IA automatique imposée = non
 Diagnostic automatique final = non
 Validation humaine des livrables = requise
-TenantId non saisi cote UI
-Tenant resolu cote serveur
-Endpoints metier proteges par JWT
+TenantId non saisi côté UI
+Tenant résolu côté serveur
+Endpoints métier protégés par JWT
 ```
 
-## Hors perimetre
+## Hors périmètre
 
 ```text
 Paiement SaaS
 Back-office admin complet
-Gestion complete des comptes utilisateurs
-Workflow complet de bilan par pages metier
-Generation finale de livrables depuis l'UI SaaS
-Deploiement Azure obligatoire
+Gestion complète des comptes utilisateurs
+Workflow complet de bilan par pages métier
+Génération finale de livrables depuis l'UI SaaS
+Déploiement Azure obligatoire
 ```
 
-## Suite prevue
+## Suite prévue
 
 ```text
-v3.1-saas - workflow metier CAP complet cote SaaS
-v3.2-saas - comptes utilisateurs et roles enrichis
-v3.3-saas - generation progressive des livrables depuis l'UI
+v3.1-saas - workflow métier CAP complet côté SaaS
+v3.2-saas - comptes utilisateurs et rôles enrichis
+v3.3-saas - génération progressive des livrables depuis l'UI
 ```
