@@ -1,6 +1,6 @@
 # Final Stabilization Status - v3.0-saas
 
-## Version cible
+## Version stable
 
 ```text
 v3.0-saas
@@ -12,59 +12,59 @@ v3.0-saas
 v3.0-saas-rc1
 ```
 
-## Branche
+## Commit taggé
 
 ```text
-feature/v3-final-stabilization
+8786df65125debec2b45662851ecd310f167bec8
 ```
 
 ## Statut
 
 ```text
-FINAL STABILIZATION - IN PROGRESS
+PUBLISHED - STABLE RELEASE
 ```
 
 ## Objectif
 
-Préparer le passage de `v3.0-saas-rc1` vers le tag stable `v3.0-saas`.
+Documenter la publication stable de `v3.0-saas` après validation de la release candidate `v3.0-saas-rc1` et de la stabilisation finale.
 
-Cette étape ne doit pas ajouter de nouvelle fonctionnalité métier. Elle sert à stabiliser, vérifier et documenter les conditions de sortie de release candidate.
+Cette étape clôture le cycle `v3.0-saas` et confirme que le socle SaaS minimal est publié comme version stable.
 
-## Périmètre autorisé
+## Périmètre publié
 
 ```text
-Documentation de stabilisation = oui
-Checklist finale = oui
-Clarification des critères de tag = oui
-Correction bloquante identifiée = oui, si nécessaire
+Documentation de stabilisation = publiée
+Checklist finale = validée
+Release notes finales = publiées
 Nouvelle fonctionnalité métier = non
-Changement de contrat API = non sauf bug critique
-Changement DTO = non sauf bug critique
+Changement de contrat API = non
+Changement DTO = non
 Changement architecture majeur = non
 ```
 
 ## Critères de sortie vers v3.0-saas
 
 ```text
-CI main OK après PR de stabilisation = requis
-Aucun bug bloquant identifié = requis
-Documentation finale présente = requis
-Release notes finales prêtes = requis
-Tag v3.0-saas décidé explicitement = requis
+CI main OK après PR de stabilisation = validé
+Aucun bug bloquant identifié = validé
+Documentation finale présente = validé
+Release notes finales prêtes = validé
+Tag v3.0-saas décidé explicitement = validé
+Tag v3.0-saas créé = validé
 ```
 
 ## Statut des axes de stabilisation
 
 ```text
-Socle API = à vérifier
-Auth JWT dev = à vérifier
-Isolation tenant = à vérifier
-Persistance InMemory / PostgreSQL = à vérifier
-UI Blazor minimale = à vérifier
+Socle API = validé
+Auth JWT dev = validé pour périmètre v3.0-saas
+Isolation tenant = validée
+Persistance InMemory / PostgreSQL = validée
+UI Blazor minimale = validée
 Documentation RC = publiée
-Documentation finale = en cours
+Documentation finale = publiée
 ```
 
 ## Prochaine étape
 
-Finaliser la checklist, valider la CI, fusionner la PR de stabilisation dans `main`, puis décider du tag stable `v3.0-saas`.
+Démarrer le cycle `v3.1-saas` avec un objectif fonctionnel clair : navigation SaaS par pages, workflow métier CAP complet ou authentification production.
