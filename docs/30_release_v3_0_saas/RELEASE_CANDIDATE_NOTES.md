@@ -6,6 +6,18 @@
 v3.0-saas-rc1
 ```
 
+## Statut
+
+```text
+PUBLISHED
+```
+
+## Commit taggé
+
+```text
+fd8563861ebbd74e474ff2904dd7ae38ff4048ec
+```
+
 ## Nature de la version
 
 Cette version est une release candidate technique et fonctionnelle pour la version SaaS de CAP Method.
@@ -83,18 +95,19 @@ Pas de génération finale de livrables métier dans l'UI SaaS
 ## Conditions de publication du tag RC
 
 ```text
-PR Lot 15 fusionnée dans main
-CI main OK
-Validation manuelle de la checklist RC
-Décision explicite de tag v3.0-saas-rc1
+PR Lot 15 fusionnée dans main = oui
+CI main OK = oui
+Validation manuelle de la checklist RC = oui
+Décision explicite de tag v3.0-saas-rc1 = oui
+Tag v3.0-saas-rc1 publié = oui
 ```
 
-## Commande de tag recommandée
+## Commande utilisée
 
 ```bash
 git checkout main
 git pull origin main
-git tag v3.0-saas-rc1
+git tag -a v3.0-saas-rc1 fd8563861ebbd74e474ff2904dd7ae38ff4048ec -m "Release candidate v3.0-saas-rc1"
 git push origin v3.0-saas-rc1
 ```
 
@@ -103,7 +116,7 @@ git push origin v3.0-saas-rc1
 Après `v3.0-saas-rc1`, les prochaines itérations logiques sont :
 
 ```text
-v3.0-saas-rc2 - navigation par pages et amélioration UX
+v3.0-saas-rc2 - corrections ou ajustements après validation RC1
 v3.0-saas - tag stable après validation terrain
 v3.1-saas - workflow métier CAP complet côté SaaS
 ```
