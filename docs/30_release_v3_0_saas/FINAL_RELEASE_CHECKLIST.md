@@ -3,7 +3,7 @@
 ## Statut global
 
 ```text
-FINAL STABILIZATION - TO VERIFY
+PUBLISHED - STABLE RELEASE
 ```
 
 ## 1. Préconditions
@@ -13,44 +13,45 @@ FINAL STABILIZATION - TO VERIFY
 [OK] Documentation RC publiée sur main
 [OK] Lots 0 à 15 intégrés
 [OK] CI v3-saas-validation existante
-[TODO] CI de stabilisation finale OK
-[TODO] PR de stabilisation fusionnée dans main
+[OK] CI de stabilisation finale OK
+[OK] PR de stabilisation fusionnée dans main
+[OK] Tag v3.0-saas créé
 ```
 
 ## 2. Vérifications techniques finales
 
 ```text
-[TODO] dotnet restore Server OK
-[TODO] dotnet restore Client OK
-[TODO] dotnet build Server OK
-[TODO] dotnet build Client OK
-[TODO] tests Domain OK
-[TODO] tests Application OK
-[TODO] tests Infrastructure OK
-[TODO] tests Compatibility OK
+[OK] dotnet restore Server OK
+[OK] dotnet restore Client OK
+[OK] dotnet build Server OK
+[OK] dotnet build Client OK
+[OK] tests Domain OK
+[OK] tests Application OK
+[OK] tests Infrastructure OK
+[OK] tests Compatibility OK
 ```
 
 ## 3. Vérifications fonctionnelles finales
 
 ```text
-[TODO] Connexion dev JWT possible
-[TODO] Lecture /api/me possible
-[TODO] Création bénéficiaire possible
-[TODO] Création session CAP possible
-[TODO] Liste sessions CAP possible
-[TODO] Détail session CAP possible
-[TODO] TenantId non saisi côté UI
-[TODO] TenantId non passé en query string métier
+[OK] Connexion dev JWT possible
+[OK] Lecture /api/me possible
+[OK] Création bénéficiaire possible
+[OK] Création session CAP possible
+[OK] Liste sessions CAP possible
+[OK] Détail session CAP possible
+[OK] TenantId non saisi côté UI
+[OK] TenantId non passé en query string métier
 ```
 
 ## 4. Vérifications sécurité / tenant
 
 ```text
-[TODO] Endpoints métier protégés par JWT
-[TODO] Tenant résolu côté serveur
-[TODO] Utilisateur résolu côté serveur
-[TODO] Fallback dev limité à Development
-[TODO] Session hors tenant non exposée
+[OK] Endpoints métier protégés par JWT
+[OK] Tenant résolu côté serveur
+[OK] Utilisateur résolu côté serveur
+[OK] Fallback dev limité à Development
+[OK] Session hors tenant non exposée
 ```
 
 ## 5. Vérifications documentation
@@ -58,31 +59,30 @@ FINAL STABILIZATION - TO VERIFY
 ```text
 [OK] Statut RC publié
 [OK] Notes RC publiées
-[TODO] Statut final présent
-[TODO] Checklist finale présente
-[TODO] Release notes finales prêtes
-[TODO] Commande de tag final documentée
+[OK] Statut final présent
+[OK] Checklist finale présente
+[OK] Release notes finales prêtes
+[OK] Commande de tag final documentée
+[OK] Version stable documentée comme publiée
 ```
 
 ## 6. Décision de tag final
 
-Le tag `v3.0-saas` peut être créé uniquement lorsque :
+Le tag `v3.0-saas` a été créé après validation explicite.
 
 ```text
-CI main OK après stabilisation
-Aucun bug bloquant ouvert
-Checklist finale validée
-Release notes finales validées
-Décision explicite de tag donnée
+Tag final = v3.0-saas
+Commit taggé = 8786df65125debec2b45662851ecd310f167bec8
+Statut = PUBLISHED - STABLE RELEASE
 ```
 
-## Commande de tag recommandée
+## Commande utilisée
 
 ```bash
 git checkout main
 git pull origin main
 
-git tag -a v3.0-saas <MAIN_SHA_VALIDATED> -m "Release v3.0-saas"
+git tag -a v3.0-saas 8786df65125debec2b45662851ecd310f167bec8 -m "Release v3.0-saas"
 
 git push origin v3.0-saas
 ```
