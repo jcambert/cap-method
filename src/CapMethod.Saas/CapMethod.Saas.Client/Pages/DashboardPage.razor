@@ -1,0 +1,93 @@
+@page "/"
+@namespace CapMethod.Saas.Client.Pages
+@using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Client.Components
+@inject CapMethodApiClient ApiClient
+
+<section class="cap-hero">
+    <p class="cap-kicker">CAP Method SaaS</p>
+    <h1>Tableau de bord</h1>
+    <p>Socle v3.0 publié. Le cycle v3.1 prépare la mise en production métier avec une navigation par pages.</p>
+</section>
+
+<section class="cap-card">
+    <h2>Authentification</h2>
+    <p>Ce lot conserve l'authentification développement existante et prépare la séparation des parcours avant l'authentification production.</p>
+
+    <div class="cap-actions">
+        <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
+        <button @onclick="LoadCurrentUserAsync" disabled="@_isBusy">Lire /api/me</button>
+        <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <p class="cap-message">@_message</p>
+    }
+</section>
+
+<AuthSummaryCard Token="_token" CurrentUser="_currentUser" />
+
+<section class="cap-card">
+    <h2>Accès rapides</h2>
+    <div class="cap-actions">
+        <a class="cap-link-button" href="/beneficiaries">Créer un bénéficiaire</a>
+        <a class="cap-link-button" href="/cap-sessions">Gérer les sessions CAP</a>
+    </div>
+</section>
+
+@code {
+    private bool _isBusy;
+    private string? _message;
+    private DevelopmentTokenResponse? _token;
+    private CurrentUserResponse? _currentUser;
+
+    private async Task LoginDevelopmentAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _token = await ApiClient.CreateDevelopmentTokenAsync(CancellationToken.None);
+            _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _message = "Connexion développement réussie.";
+        });
+    }
+
+    private async Task LoadCurrentUserAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _message = "Contexte serveur chargé.";
+        });
+    }
+
+    private async Task LogoutAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await ApiClient.LogoutAsync();
+            _token = null;
+            _currentUser = null;
+            _message = "Déconnexion locale effectuée.";
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _isBusy = true;
+        _message = null;
+
+        try
+        {
+            await action();
+        }
+        catch (Exception exception)
+        {
+            _message = exception.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}

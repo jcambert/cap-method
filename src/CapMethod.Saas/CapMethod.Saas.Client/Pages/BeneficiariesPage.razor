@@ -1,0 +1,111 @@
+@page "/beneficiaries"
+@namespace CapMethod.Saas.Client.Pages
+@using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Shared.Beneficiaries
+@inject CapMethodApiClient ApiClient
+
+<section class="cap-hero">
+    <p class="cap-kicker">Espace consultant</p>
+    <h1>Bénéficiaires</h1>
+    <p>Créer un bénéficiaire dans le tenant résolu côté serveur depuis le token JWT.</p>
+</section>
+
+<section class="cap-card">
+    <h2>Créer un bénéficiaire</h2>
+    <p>Le tenant n'est pas saisi côté client. Il est injecté côté serveur.</p>
+
+    <div class="cap-form-grid">
+        <label>
+            Prénom
+            <input @bind="_firstName" placeholder="Camille" />
+        </label>
+        <label>
+            Nom
+            <input @bind="_lastName" placeholder="Dupont" />
+        </label>
+        <label>
+            Email
+            <input @bind="_email" placeholder="camille.dupont@example.com" />
+        </label>
+    </div>
+
+    <div class="cap-actions">
+        <button @onclick="CreateBeneficiaryAsync" disabled="@_isBusy">Créer le bénéficiaire</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <p class="cap-message">@_message</p>
+    }
+</section>
+
+@if (_createdBeneficiary is not null)
+{
+    <section class="cap-card cap-success-card">
+        <h2>Bénéficiaire créé</h2>
+        <dl>
+            <dt>Identifiant</dt>
+            <dd>@_createdBeneficiary.BeneficiaryId</dd>
+            <dt>Tenant</dt>
+            <dd>@_createdBeneficiary.TenantId</dd>
+            <dt>Prénom</dt>
+            <dd>@_createdBeneficiary.FirstName</dd>
+            <dt>Nom</dt>
+            <dd>@_createdBeneficiary.LastName</dd>
+            <dt>Email</dt>
+            <dd>@(_createdBeneficiary.Email ?? "-")</dd>
+            <dt>Créé UTC</dt>
+            <dd>@_createdBeneficiary.CreatedAtUtc</dd>
+        </dl>
+        <div class="cap-actions">
+            <a class="cap-link-button" href="/cap-sessions">Créer une session CAP</a>
+        </div>
+    </section>
+}
+
+@code {
+    private bool _isBusy;
+    private string? _message;
+    private BeneficiaryResponse? _createdBeneficiary;
+    private string _firstName = "Camille";
+    private string _lastName = "Dupont";
+    private string? _email = "camille.dupont@example.com";
+
+    private async Task CreateBeneficiaryAsync()
+    {
+        await RunAsync(async () =>
+        {
+            if (string.IsNullOrWhiteSpace(_firstName) || string.IsNullOrWhiteSpace(_lastName))
+            {
+                throw new InvalidOperationException("Le prénom et le nom sont obligatoires.");
+            }
+
+            _createdBeneficiary = await ApiClient.CreateBeneficiaryAsync(
+                _firstName,
+                _lastName,
+                _email,
+                CancellationToken.None);
+
+            _message = "Bénéficiaire créé avec succès.";
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _isBusy = true;
+        _message = null;
+
+        try
+        {
+            await action();
+        }
+        catch (Exception exception)
+        {
+            _message = exception.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}
