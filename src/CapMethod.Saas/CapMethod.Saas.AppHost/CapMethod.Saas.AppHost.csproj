@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>cap-method-saas-aspire-dev</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CapMethod.Saas.Server\CapMethod.Saas.Server.csproj" />
+  </ItemGroup>
+</Project>
