@@ -73,7 +73,7 @@
 @code {
     private bool _isBusy;
     private string? _message;
-    private string? _beneficiaryIdText;
+    private string _beneficiaryIdText = string.Empty;
     private CapSessionResponse? _createdSession;
     private CapSessionResponse? _selectedSession;
     private IReadOnlyCollection<CapSessionSummaryResponse> _capSessions = [];
