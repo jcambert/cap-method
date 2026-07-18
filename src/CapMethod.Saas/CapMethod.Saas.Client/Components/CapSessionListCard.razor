@@ -1,5 +1,6 @@
 @namespace CapMethod.Saas.Client.Components
 @using CapMethod.Saas.Shared.CapSessions
+@using CapMethod.Saas.Shared.Workflow
 
 <section class="cap-card">
     <h2>Sessions CAP du tenant</h2>
@@ -22,6 +23,7 @@
                         <th>Session</th>
                         <th>Bénéficiaire</th>
                         <th>Statut</th>
+                        <th>Workflow</th>
                         <th>IA</th>
                         <th>Créée UTC</th>
                         <th>Action</th>
@@ -30,10 +32,16 @@
                 <tbody>
                     @foreach (CapSessionSummaryResponse session in Sessions)
                     {
+                        CapWorkflowProgressView workflow = CapWorkflowProgressProjector.Create(session.Status, session.IsAiEnabled);
                         <tr class="@(IsSelectedSession(session.CapSessionId) ? "cap-selected-row" : null)">
                             <td>@session.CapSessionId</td>
                             <td>@session.BeneficiaryId</td>
                             <td>@session.Status</td>
+                            <td>
+                                <strong>@workflow.CurrentStep.Label</strong>
+                                <br />
+                                <span>@workflow.CompletionPercent %</span>
+                            </td>
                             <td>@session.IsAiEnabled</td>
                             <td>@session.CreatedAtUtc</td>
                             <td>
