@@ -3,7 +3,7 @@ name: v3-saas-validation
 on:
   push:
     branches:
-      - feature/v3-1-tech-aspire-dev
+      - feature/v3-1-lot6-online-questionnaires
   pull_request:
     branches:
       - main
