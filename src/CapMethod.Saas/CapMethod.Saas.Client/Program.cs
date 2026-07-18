@@ -1,5 +1,6 @@
 using CapMethod.Saas.Client;
 using CapMethod.Saas.Client.Auth;
+using CapMethod.Saas.Client.Questionnaires;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -8,11 +9,12 @@ WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(_ => new HttpClient
+builder.Services.AddScoped(serviceProvider => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 builder.Services.AddScoped<BrowserTokenStore>();
 builder.Services.AddScoped<CapMethodApiClient>();
+builder.Services.AddScoped<BeneficiaryQuestionnaireApiClient>();
 
 await builder.Build().RunAsync();
