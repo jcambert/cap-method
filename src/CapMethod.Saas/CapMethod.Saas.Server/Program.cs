@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment())
     {
         Guid tenantId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentTenantId");
         Guid userId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentUserId");
-        AccessTokenResponse response = tokenService.CreateToken(tenantId, userId);
+        DevelopmentTokenResponse response = tokenService.CreateToken(tenantId, userId);
 
         return Results.Ok(response);
     });
