@@ -16,12 +16,31 @@ public sealed class CapMethodApiClient
         _tokenStore = tokenStore;
     }
 
-    public async Task<DevelopmentTokenResponse> CreateDevelopmentTokenAsync(CancellationToken cancellationToken)
+    public async Task<AccessTokenResponse> LoginAsync(string email, string password, CancellationToken cancellationToken)
+    {
+        ProductionLoginRequest payload = new(email, password);
+
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/auth/token", payload, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        AccessTokenResponse? token = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(cancellationToken);
+
+        if (token is null || string.IsNullOrWhiteSpace(token.AccessToken))
+        {
+            throw new InvalidOperationException("The access token response is empty.");
+        }
+
+        await _tokenStore.SaveAccessTokenAsync(token.AccessToken);
+
+        return token;
+    }
+
+    public async Task<AccessTokenResponse> CreateDevelopmentTokenAsync(CancellationToken cancellationToken)
     {
         using HttpResponseMessage response = await _httpClient.PostAsync("api/dev/token", content: null, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        DevelopmentTokenResponse? token = await response.Content.ReadFromJsonAsync<DevelopmentTokenResponse>(cancellationToken);
+        AccessTokenResponse? token = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(cancellationToken);
 
         if (token is null || string.IsNullOrWhiteSpace(token.AccessToken))
         {
