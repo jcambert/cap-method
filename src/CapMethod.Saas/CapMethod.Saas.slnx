@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="CapMethod.Saas.Domain\CapMethod.Saas.Domain.csproj" />
+  <Project Path="CapMethod.Saas.Application\CapMethod.Saas.Application.csproj" />
+  <Project Path="CapMethod.Saas.Infrastructure\CapMethod.Saas.Infrastructure.csproj" />
+  <Project Path="CapMethod.Saas.Shared\CapMethod.Saas.Shared.csproj" />
+  <Project Path="CapMethod.Saas.Server\CapMethod.Saas.Server.csproj" />
+  <Project Path="CapMethod.Saas.Client\CapMethod.Saas.Client.csproj" />
+  <Project Path="CapMethod.Saas.Domain.Tests\CapMethod.Saas.Domain.Tests.csproj" />
+  <Project Path="CapMethod.Saas.Application.Tests\CapMethod.Saas.Application.Tests.csproj" />
+  <Project Path="CapMethod.Saas.Infrastructure.Tests\CapMethod.Saas.Infrastructure.Tests.csproj" />
+  <Project Path="CapMethod.Saas.Compatibility.Tests\CapMethod.Saas.Compatibility.Tests.csproj" />
+</Solution>
