@@ -15,7 +15,7 @@ feature/v3-1-lot3-cap-workflow-model
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -80,13 +80,13 @@ docs/31_release_v3_1_production_ready/LOT_3_STATUS.md
 ## Critères de validation
 
 ```text
-Build server = à vérifier
-Build client = à vérifier
-Tests domaine = à vérifier
-Tests application = à vérifier
-Tests infrastructure = à vérifier
-Tests compatibilité = à vérifier
-CI GitHub Actions = à vérifier
+Build server = validé
+Build client = validé
+Tests domaine = validé
+Tests application = validé
+Tests infrastructure = validé
+Tests compatibilité = validé
+CI GitHub Actions = validé
 ```
 
 ## Prochaine étape après merge
