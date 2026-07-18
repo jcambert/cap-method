@@ -1,3 +1,5 @@
+using CapMethod.Saas.Domain.Workflow;
+
 namespace CapMethod.Saas.Domain.Sessions;
 
 public sealed class CapSession
@@ -52,6 +54,13 @@ public sealed class CapSession
         return new CapSession(tenantId, beneficiaryId, consultantId);
     }
 
+    public CapWorkflowProgress GetWorkflowProgress()
+    {
+        CapWorkflowPlan workflowPlan = CapWorkflowPlan.ForSession(IsAiEnabled);
+
+        return workflowPlan.BuildProgress(Status);
+    }
+
     public void EnableAi()
     {
         IsAiEnabled = true;
@@ -60,6 +69,21 @@ public sealed class CapSession
     public void DisableAi()
     {
         IsAiEnabled = false;
+    }
+
+    public void MarkQuestionnairesSent()
+    {
+        Status = CapSessionStatus.QuestionnairesSent;
+    }
+
+    public void MarkResponsesCompleted()
+    {
+        Status = CapSessionStatus.ResponsesCompleted;
+    }
+
+    public void MarkAnalysisGenerated()
+    {
+        Status = CapSessionStatus.AnalysisGenerated;
     }
 
     public void MarkAiDraftGenerated()
@@ -80,5 +104,15 @@ public sealed class CapSession
     public void MarkValidated()
     {
         Status = CapSessionStatus.Validated;
+    }
+
+    public void MarkDelivered()
+    {
+        Status = CapSessionStatus.Delivered;
+    }
+
+    public void MarkArchived()
+    {
+        Status = CapSessionStatus.Archived;
     }
 }
