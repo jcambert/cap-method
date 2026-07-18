@@ -15,7 +15,7 @@ feature/v3-1-lot4-workflow-ui
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -66,13 +66,13 @@ Actions d'avancement = hors périmètre Lot 4
 ## Critères de validation
 
 ```text
-Build server = à vérifier
-Build client = à vérifier
-Tests domaine = à vérifier
-Tests application = à vérifier
-Tests infrastructure = à vérifier
-Tests compatibilité = à vérifier
-CI GitHub Actions = à vérifier
+Build server = OK
+Build client = OK
+Tests domaine = OK
+Tests application = OK
+Tests infrastructure = OK
+Tests compatibilité = OK
+CI GitHub Actions = OK
 ```
 
 ## Prochaine étape après merge
