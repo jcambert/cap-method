@@ -1,0 +1,83 @@
+@namespace CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Shared.Workflow
+
+<section class="cap-card cap-workflow-card">
+    <h2>Workflow CAP</h2>
+    <p>Progression métier dérivée du statut courant de la session CAP.</p>
+
+    <div class="cap-progress-summary">
+        <div>
+            <p class="cap-kicker">Étape courante</p>
+            <strong>@Progress.CurrentStep.Label</strong>
+        </div>
+        <span class="cap-version-pill">@Progress.CompletionPercent %</span>
+    </div>
+
+    <div class="cap-progress-bar" aria-label="Progression du workflow CAP">
+        <span style="width: @(Progress.CompletionPercent)%"></span>
+    </div>
+
+    <ol class="cap-workflow-steps">
+        @foreach (CapWorkflowStepStateView state in Progress.Steps)
+        {
+            <li class="@GetStepCssClass(state)">
+                <span class="cap-step-order">@state.Step.Order</span>
+                <div>
+                    <strong>@state.Step.Label</strong>
+                    <p>@GetStepStateLabel(state)</p>
+                </div>
+            </li>
+        }
+    </ol>
+</section>
+
+@code {
+    [Parameter]
+    public string Status { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsAiEnabled { get; set; }
+
+    private CapWorkflowProgressView Progress
+    {
+        get
+        {
+            return CapWorkflowProgressProjector.Create(Status, IsAiEnabled);
+        }
+    }
+
+    private static string GetStepCssClass(CapWorkflowStepStateView state)
+    {
+        if (state.IsCurrent)
+        {
+            return "cap-workflow-step cap-workflow-step-current";
+        }
+
+        if (state.IsCompleted)
+        {
+            return "cap-workflow-step cap-workflow-step-completed";
+        }
+
+        return "cap-workflow-step";
+    }
+
+    private static string GetStepStateLabel(CapWorkflowStepStateView state)
+    {
+        if (state.IsCurrent)
+        {
+            return "En cours";
+        }
+
+        if (state.IsCompleted)
+        {
+            return "Terminé";
+        }
+
+        if (state.Step.RequiresAi)
+        {
+            return "Optionnel IA";
+        }
+
+        return "À venir";
+    }
+}
