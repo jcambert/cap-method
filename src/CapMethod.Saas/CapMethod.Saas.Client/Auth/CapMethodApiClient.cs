@@ -35,6 +35,28 @@ public sealed class CapMethodApiClient
         return token;
     }
 
+    public async Task<BeneficiaryAccessTokenResponse> LoginBeneficiaryPortalAsync(
+        string email,
+        string accessCode,
+        CancellationToken cancellationToken)
+    {
+        BeneficiaryPortalLoginRequest payload = new(email, accessCode);
+
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/beneficiary/auth/token", payload, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        BeneficiaryAccessTokenResponse? token = await response.Content.ReadFromJsonAsync<BeneficiaryAccessTokenResponse>(cancellationToken);
+
+        if (token is null || string.IsNullOrWhiteSpace(token.AccessToken))
+        {
+            throw new InvalidOperationException("The beneficiary portal token response is empty.");
+        }
+
+        await _tokenStore.SaveAccessTokenAsync(token.AccessToken);
+
+        return token;
+    }
+
     public async Task<AccessTokenResponse> CreateDevelopmentTokenAsync(CancellationToken cancellationToken)
     {
         using HttpResponseMessage response = await _httpClient.PostAsync("api/dev/token", content: null, cancellationToken);
@@ -68,6 +90,24 @@ public sealed class CapMethodApiClient
         }
 
         return user;
+    }
+
+    public async Task<BeneficiaryPortalContextResponse> GetBeneficiaryPortalContextAsync(CancellationToken cancellationToken)
+    {
+        using HttpRequestMessage request = new(HttpMethod.Get, "api/beneficiary/me");
+        await AddAuthorizationHeaderAsync(request);
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        BeneficiaryPortalContextResponse? context = await response.Content.ReadFromJsonAsync<BeneficiaryPortalContextResponse>(cancellationToken);
+
+        if (context is null)
+        {
+            throw new InvalidOperationException("The beneficiary portal context response is empty.");
+        }
+
+        return context;
     }
 
     public async Task<BeneficiaryResponse> CreateBeneficiaryAsync(

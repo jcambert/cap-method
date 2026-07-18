@@ -1,0 +1,143 @@
+@page "/beneficiary"
+@namespace CapMethod.Saas.Client.Pages
+@using CapMethod.Saas.Client.Auth
+@inject CapMethodApiClient ApiClient
+
+<section class="cap-hero">
+    <p class="cap-kicker">Espace bénéficiaire</p>
+    <h1>Portail bénéficiaire sécurisé</h1>
+    <p>Accès séparé du parcours consultant pour préparer les questionnaires en ligne et le suivi bénéficiaire.</p>
+</section>
+
+<section class="cap-card cap-beneficiary-card">
+    <h2>Connexion bénéficiaire</h2>
+    <p>Le bénéficiaire se connecte avec son email et un code d'accès. Le token contient un claim bénéficiaire dédié.</p>
+
+    <div class="cap-form-grid">
+        <label>
+            Email bénéficiaire
+            <input @bind="_email" placeholder="beneficiaire@cap-method.local" />
+        </label>
+        <label>
+            Code d'accès
+            <input type="password" @bind="_accessCode" placeholder="Code envoyé au bénéficiaire" />
+        </label>
+    </div>
+
+    <div class="cap-actions">
+        <button @onclick="LoginBeneficiaryAsync" disabled="@_isBusy">Connexion bénéficiaire</button>
+        <button @onclick="LoadBeneficiaryContextAsync" disabled="@_isBusy">Lire /api/beneficiary/me</button>
+        <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion locale</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <p class="cap-message">@_message</p>
+    }
+</section>
+
+@if (_token is not null)
+{
+    <section class="cap-card cap-success-card">
+        <h2>Token bénéficiaire</h2>
+        <dl>
+            <dt>Type</dt>
+            <dd>@_token.TokenType</dd>
+            <dt>Expiration UTC</dt>
+            <dd>@_token.ExpiresAtUtc</dd>
+            <dt>Tenant</dt>
+            <dd>@_token.TenantId</dd>
+            <dt>Bénéficiaire</dt>
+            <dd>@_token.BeneficiaryId</dd>
+            <dt>Email</dt>
+            <dd>@_token.Email</dd>
+        </dl>
+    </section>
+}
+
+@if (_context is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>Contexte bénéficiaire serveur</h2>
+        <p>Ce contexte est résolu depuis le JWT Bearer courant, sans identifiant bénéficiaire saisi côté client.</p>
+        <dl>
+            <dt>Tenant</dt>
+            <dd>@_context.TenantId</dd>
+            <dt>Bénéficiaire</dt>
+            <dd>@_context.BeneficiaryId</dd>
+            <dt>Email</dt>
+            <dd>@_context.Email</dd>
+            <dt>Authentifié</dt>
+            <dd>@_context.IsAuthenticated</dd>
+        </dl>
+    </section>
+}
+
+<section class="cap-card">
+    <h2>Préparation questionnaires</h2>
+    <p>Le Lot 5 pose uniquement l'accès sécurisé. Les questionnaires en ligne complets seront ajoutés dans un lot dédié.</p>
+    <ul class="cap-beneficiary-scope">
+        <li>Accès bénéficiaire séparé du consultant.</li>
+        <li>Token bénéficiaire avec claim <code>beneficiary_id</code>.</li>
+        <li>Endpoint protégé <code>GET /api/beneficiary/me</code>.</li>
+        <li>Aucune saisie ou réponse questionnaire persistée dans ce lot.</li>
+    </ul>
+</section>
+
+@code {
+    private bool _isBusy;
+    private string? _message;
+    private string _email = "beneficiaire@cap-method.local";
+    private string _accessCode = string.Empty;
+    private BeneficiaryAccessTokenResponse? _token;
+    private BeneficiaryPortalContextResponse? _context;
+
+    private async Task LoginBeneficiaryAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _token = await ApiClient.LoginBeneficiaryPortalAsync(_email, _accessCode, CancellationToken.None);
+            _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
+            _message = "Connexion bénéficiaire réussie.";
+        });
+    }
+
+    private async Task LoadBeneficiaryContextAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
+            _message = "Contexte bénéficiaire chargé.";
+        });
+    }
+
+    private async Task LogoutAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await ApiClient.LogoutAsync();
+            _token = null;
+            _context = null;
+            _message = "Déconnexion locale effectuée.";
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _isBusy = true;
+        _message = null;
+
+        try
+        {
+            await action();
+        }
+        catch (Exception exception)
+        {
+            _message = exception.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}
