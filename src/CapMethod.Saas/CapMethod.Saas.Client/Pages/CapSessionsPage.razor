@@ -1,0 +1,144 @@
+@page "/cap-sessions"
+@namespace CapMethod.Saas.Client.Pages
+@using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Shared.CapSessions
+@inject CapMethodApiClient ApiClient
+
+<section class="cap-hero">
+    <p class="cap-kicker">Espace consultant</p>
+    <h1>Sessions CAP</h1>
+    <p>Créer, lister et consulter les sessions CAP dans une page dédiée.</p>
+</section>
+
+<section class="cap-card">
+    <h2>Créer une session CAP</h2>
+    <p>Le bénéficiaire doit exister dans le tenant courant. Le consultant et le tenant sont résolus côté serveur.</p>
+
+    <div class="cap-form-grid">
+        <label>
+            Identifiant bénéficiaire
+            <input @bind="_beneficiaryIdText" placeholder="00000000-0000-0000-0000-000000000000" />
+        </label>
+    </div>
+
+    <label class="cap-checkbox">
+        <input type="checkbox" @bind="EnableAiForSession" />
+        Activer l'IA pour cette session
+    </label>
+
+    <div class="cap-actions">
+        <button @onclick="CreateCapSessionAsync" disabled="@_isBusy">Créer la session CAP</button>
+        <button @onclick="LoadCapSessionsAsync" disabled="@_isBusy">Rafraîchir les sessions</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <p class="cap-message">@_message</p>
+    }
+</section>
+
+@if (_createdSession is not null)
+{
+    <section class="cap-card cap-success-card">
+        <h2>Session CAP créée</h2>
+        <dl>
+            <dt>Session</dt>
+            <dd>@_createdSession.CapSessionId</dd>
+            <dt>Tenant</dt>
+            <dd>@_createdSession.TenantId</dd>
+            <dt>Bénéficiaire</dt>
+            <dd>@_createdSession.BeneficiaryId</dd>
+            <dt>Consultant</dt>
+            <dd>@_createdSession.ConsultantId</dd>
+            <dt>Statut</dt>
+            <dd>@_createdSession.Status</dd>
+            <dt>IA activée</dt>
+            <dd>@_createdSession.IsAiEnabled</dd>
+            <dt>Créée UTC</dt>
+            <dd>@_createdSession.CreatedAtUtc</dd>
+        </dl>
+    </section>
+}
+
+<CapSessionListCard
+    Sessions="_capSessions"
+    SelectedSessionId="_selectedSession?.CapSessionId"
+    IsBusy="_isBusy"
+    RefreshRequested="LoadCapSessionsAsync"
+    DetailRequested="LoadCapSessionDetailAsync" />
+
+<CapSessionDetailCard Session="_selectedSession" />
+
+@code {
+    private bool _isBusy;
+    private string? _message;
+    private string? _beneficiaryIdText;
+    private CapSessionResponse? _createdSession;
+    private CapSessionResponse? _selectedSession;
+    private IReadOnlyCollection<CapSessionSummaryResponse> _capSessions = [];
+
+    private bool EnableAiForSession { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCapSessionsAsync();
+    }
+
+    private async Task CreateCapSessionAsync()
+    {
+        await RunAsync(async () =>
+        {
+            if (!Guid.TryParse(_beneficiaryIdText, out Guid beneficiaryId))
+            {
+                throw new InvalidOperationException("L'identifiant bénéficiaire doit être un Guid valide.");
+            }
+
+            _createdSession = await ApiClient.CreateCapSessionAsync(
+                beneficiaryId,
+                EnableAiForSession,
+                CancellationToken.None);
+
+            _selectedSession = _createdSession;
+            _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
+            _message = "Session CAP créée avec succès.";
+        });
+    }
+
+    private async Task LoadCapSessionsAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
+            _message = $"Sessions chargées : {_capSessions.Count}.";
+        });
+    }
+
+    private async Task LoadCapSessionDetailAsync(Guid capSessionId)
+    {
+        await RunAsync(async () =>
+        {
+            _selectedSession = await ApiClient.GetCapSessionAsync(capSessionId, CancellationToken.None);
+            _message = "Détail session chargé.";
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _isBusy = true;
+        _message = null;
+
+        try
+        {
+            await action();
+        }
+        catch (Exception exception)
+        {
+            _message = exception.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}
