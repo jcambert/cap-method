@@ -7,14 +7,26 @@
 <section class="cap-hero">
     <p class="cap-kicker">CAP Method SaaS</p>
     <h1>Tableau de bord</h1>
-    <p>Socle v3.0 publié. Le cycle v3.1 prépare la mise en production métier avec une navigation par pages.</p>
+    <p>Socle v3.0 publié. Le cycle v3.1 prépare la mise en production métier avec une authentification minimale exploitable.</p>
 </section>
 
 <section class="cap-card">
-    <h2>Authentification</h2>
-    <p>Ce lot conserve l'authentification développement existante et prépare la séparation des parcours avant l'authentification production.</p>
+    <h2>Connexion</h2>
+    <p>Le point d'entrée principal utilise <code>POST /api/auth/token</code>. Le bouton de connexion dev reste disponible uniquement pour le développement local.</p>
+
+    <div class="cap-form-grid">
+        <label>
+            Email
+            <input @bind="_email" placeholder="admin@cap-method.local" />
+        </label>
+        <label>
+            Mot de passe
+            <input type="password" @bind="_password" placeholder="Mot de passe" />
+        </label>
+    </div>
 
     <div class="cap-actions">
+        <button @onclick="LoginAsync" disabled="@_isBusy">Connexion</button>
         <button @onclick="LoginDevelopmentAsync" disabled="@_isBusy">Connexion dev</button>
         <button @onclick="LoadCurrentUserAsync" disabled="@_isBusy">Lire /api/me</button>
         <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion</button>
@@ -39,8 +51,25 @@
 @code {
     private bool _isBusy;
     private string? _message;
-    private DevelopmentTokenResponse? _token;
+    private AccessTokenResponse? _token;
     private CurrentUserResponse? _currentUser;
+    private string _email = "admin@cap-method.local";
+    private string _password = string.Empty;
+
+    private async Task LoginAsync()
+    {
+        await RunAsync(async () =>
+        {
+            if (string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))
+            {
+                throw new InvalidOperationException("L'email et le mot de passe sont obligatoires.");
+            }
+
+            _token = await ApiClient.LoginAsync(_email, _password, CancellationToken.None);
+            _currentUser = await ApiClient.GetCurrentUserAsync(CancellationToken.None);
+            _message = "Connexion réussie.";
+        });
+    }
 
     private async Task LoginDevelopmentAsync()
     {
@@ -68,6 +97,7 @@
             await ApiClient.LogoutAsync();
             _token = null;
             _currentUser = null;
+            _password = string.Empty;
             _message = "Déconnexion locale effectuée.";
         });
     }
