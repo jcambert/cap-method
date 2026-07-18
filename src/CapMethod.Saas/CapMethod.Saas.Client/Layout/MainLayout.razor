@@ -14,6 +14,7 @@
             <NavLink href="/" Match="NavLinkMatch.All" class="cap-nav-link">Tableau de bord</NavLink>
             <NavLink href="/beneficiaries" class="cap-nav-link">Bénéficiaires</NavLink>
             <NavLink href="/cap-sessions" class="cap-nav-link">Sessions CAP</NavLink>
+            <NavLink href="/beneficiary" class="cap-nav-link">Espace bénéficiaire</NavLink>
         </nav>
     </aside>
 
@@ -21,9 +22,9 @@
         <header class="cap-topbar">
             <div>
                 <p class="cap-kicker">Production-ready track</p>
-                <strong>Workflow CAP visible dans l'interface</strong>
+                <strong>Espace bénéficiaire sécurisé</strong>
             </div>
-            <span class="cap-version-pill">Lot 4</span>
+            <span class="cap-version-pill">Lot 5</span>
         </header>
 
         <main class="cap-page-content">
@@ -145,6 +146,10 @@
 
     .cap-workflow-card {
         border-color: #7c3aed;
+    }
+
+    .cap-beneficiary-card {
+        border-color: #0f766e;
     }
 
     .cap-selected-row {
@@ -325,6 +330,12 @@
         border-radius: 999px;
         background: #e2e8f0;
         font-weight: 800;
+    }
+
+    .cap-beneficiary-scope {
+        display: grid;
+        gap: 10px;
+        margin: 18px 0 0;
     }
 
     @@media (max-width: 820px) {
