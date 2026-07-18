@@ -3,13 +3,14 @@ name: v3-saas-validation
 on:
   push:
     branches:
-      - feature/v3-final-published-status
+      - feature/v3-1-production-ready-backlog
   pull_request:
     branches:
       - main
     paths:
       - 'src/CapMethod.Saas/**'
       - 'docs/30_release_v3_0_saas/**'
+      - 'docs/31_release_v3_1_production_ready/**'
       - '.github/workflows/v3-saas-validation.yml'
 
 jobs:
