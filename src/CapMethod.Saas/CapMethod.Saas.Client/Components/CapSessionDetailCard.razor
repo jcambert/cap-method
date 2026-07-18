@@ -23,6 +23,8 @@
             <dd>@Session.CreatedAtUtc</dd>
         </dl>
     </section>
+
+    <WorkflowProgressCard Status="@Session.Status" IsAiEnabled="@Session.IsAiEnabled" />
 }
 
 @code {
