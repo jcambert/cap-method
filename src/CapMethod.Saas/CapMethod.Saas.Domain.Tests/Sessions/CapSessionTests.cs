@@ -1,4 +1,5 @@
 using CapMethod.Saas.Domain.Sessions;
+using CapMethod.Saas.Domain.Workflow;
 using Xunit;
 
 namespace CapMethod.Saas.Domain.Tests.Sessions;
@@ -50,5 +51,74 @@ public sealed class CapSessionTests
         session.MarkAiDraftGenerated();
 
         Assert.Equal(CapSessionStatus.AiAnalysisDraftGenerated, session.Status);
+    }
+
+    [Fact]
+    public void GetWorkflowProgress_should_start_on_intake_for_new_session()
+    {
+        CapSession session = CapSession.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        CapWorkflowProgress progress = session.GetWorkflowProgress();
+
+        Assert.Equal(CapWorkflowStep.Intake, progress.CurrentStep);
+        Assert.Equal(0, progress.CompletedRequiredStepCount);
+        Assert.DoesNotContain(progress.Steps, step => step.Step.RequiresAi);
+    }
+
+    [Fact]
+    public void GetWorkflowProgress_should_include_ai_step_when_ai_is_enabled()
+    {
+        CapSession session = CapSession.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        session.EnableAi();
+
+        CapWorkflowProgress progress = session.GetWorkflowProgress();
+
+        Assert.Contains(progress.Steps, step => step.Step == CapWorkflowStep.AiDraft);
+    }
+
+    [Fact]
+    public void GetWorkflowProgress_should_move_to_structured_analysis_after_analysis_generation()
+    {
+        CapSession session = CapSession.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        session.MarkQuestionnairesSent();
+        session.MarkResponsesCompleted();
+        session.MarkAnalysisGenerated();
+
+        CapWorkflowProgress progress = session.GetWorkflowProgress();
+
+        Assert.Equal(CapWorkflowStep.StructuredAnalysis, progress.CurrentStep);
+        Assert.True(progress.CompletedRequiredStepCount > 0);
+    }
+
+    [Fact]
+    public void GetWorkflowProgress_should_move_to_ai_draft_when_ai_draft_is_generated()
+    {
+        CapSession session = CapSession.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        session.EnableAi();
+        session.MarkQuestionnairesSent();
+        session.MarkResponsesCompleted();
+        session.MarkAnalysisGenerated();
+        session.MarkAiDraftGenerated();
+
+        CapWorkflowProgress progress = session.GetWorkflowProgress();
+
+        Assert.Equal(CapWorkflowStep.AiDraft, progress.CurrentStep);
+    }
+
+    [Fact]
+    public void GetWorkflowProgress_should_move_to_delivery_when_session_is_delivered()
+    {
+        CapSession session = CapSession.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        session.MarkConsultantReview();
+        session.MarkValidated();
+        session.MarkDelivered();
+
+        CapWorkflowProgress progress = session.GetWorkflowProgress();
+
+        Assert.Equal(CapWorkflowStep.Delivery, progress.CurrentStep);
     }
 }
