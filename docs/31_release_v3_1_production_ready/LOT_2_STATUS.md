@@ -15,7 +15,7 @@ feature/v3-1-lot2-production-auth
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -84,10 +84,10 @@ docs/31_release_v3_1_production_ready/LOT_2_STATUS.md
 ## Critères de validation
 
 ```text
-Build server = à vérifier
-Build client = à vérifier
-Tests existants = à vérifier
-CI GitHub Actions = à vérifier
+Build server = validé
+Build client = validé
+Tests existants = validés
+CI GitHub Actions = validée
 ```
 
 ## Prochaine étape après merge
