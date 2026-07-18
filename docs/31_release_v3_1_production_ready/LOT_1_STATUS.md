@@ -15,7 +15,7 @@ feature/v3-1-lot1-saas-navigation
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -71,12 +71,12 @@ Base de données = inchangée
 ## Critères de validation
 
 ```text
-Application routée = oui
-Navigation latérale disponible = oui
-Parcours existants conservés = oui
-Build client = à vérifier
-Tests existants = à vérifier
-CI GitHub Actions = à vérifier
+Application routée = validé
+Navigation latérale disponible = validé
+Parcours existants conservés = validé
+Build client = validé
+Tests existants = validé
+CI GitHub Actions = validé
 ```
 
 ## Prochaine étape après merge
