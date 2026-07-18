@@ -1,18 +1,19 @@
 @page "/beneficiary"
 @namespace CapMethod.Saas.Client.Pages
 @using CapMethod.Saas.Client.Auth
+@using CapMethod.Saas.Client.Questionnaires
+@using CapMethod.Saas.Shared.Questionnaires
 @inject CapMethodApiClient ApiClient
+@inject BeneficiaryQuestionnaireApiClient QuestionnaireApiClient
 
 <section class="cap-hero">
     <p class="cap-kicker">Espace bénéficiaire</p>
-    <h1>Portail bénéficiaire sécurisé</h1>
-    <p>Accès séparé du parcours consultant pour préparer les questionnaires en ligne et le suivi bénéficiaire.</p>
+    <h1>Questionnaires en ligne</h1>
+    <p>Connexion sécurisée, sauvegarde intermédiaire et soumission des réponses depuis le portail bénéficiaire.</p>
 </section>
 
 <section class="cap-card cap-beneficiary-card">
     <h2>Connexion bénéficiaire</h2>
-    <p>Le bénéficiaire se connecte avec son email et un code d'accès. Le token contient un claim bénéficiaire dédié.</p>
-
     <div class="cap-form-grid">
         <label>
             Email bénéficiaire
@@ -23,92 +24,172 @@
             <input type="password" @bind="_accessCode" placeholder="Code envoyé au bénéficiaire" />
         </label>
     </div>
-
     <div class="cap-actions">
-        <button @onclick="LoginBeneficiaryAsync" disabled="@_isBusy">Connexion bénéficiaire</button>
-        <button @onclick="LoadBeneficiaryContextAsync" disabled="@_isBusy">Lire /api/beneficiary/me</button>
+        <button @onclick="LoginBeneficiaryAsync" disabled="@_isBusy">Connexion et chargement</button>
+        <button @onclick="LoadQuestionnairesAsync" disabled="@_isBusy">Actualiser</button>
         <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion locale</button>
     </div>
-
     @if (!string.IsNullOrWhiteSpace(_message))
     {
         <p class="cap-message">@_message</p>
     }
 </section>
 
-@if (_token is not null)
-{
-    <section class="cap-card cap-success-card">
-        <h2>Token bénéficiaire</h2>
-        <dl>
-            <dt>Type</dt>
-            <dd>@_token.TokenType</dd>
-            <dt>Expiration UTC</dt>
-            <dd>@_token.ExpiresAtUtc</dd>
-            <dt>Tenant</dt>
-            <dd>@_token.TenantId</dd>
-            <dt>Bénéficiaire</dt>
-            <dd>@_token.BeneficiaryId</dd>
-            <dt>Email</dt>
-            <dd>@_token.Email</dd>
-        </dl>
-    </section>
-}
-
 @if (_context is not null)
 {
-    <section class="cap-card cap-detail-card">
-        <h2>Contexte bénéficiaire serveur</h2>
-        <p>Ce contexte est résolu depuis le JWT Bearer courant, sans identifiant bénéficiaire saisi côté client.</p>
-        <dl>
-            <dt>Tenant</dt>
-            <dd>@_context.TenantId</dd>
-            <dt>Bénéficiaire</dt>
-            <dd>@_context.BeneficiaryId</dd>
-            <dt>Email</dt>
-            <dd>@_context.Email</dd>
-            <dt>Authentifié</dt>
-            <dd>@_context.IsAuthenticated</dd>
-        </dl>
+    <section class="cap-card cap-success-card">
+        <h2>Session bénéficiaire</h2>
+        <p><strong>@_context.Email</strong> — bénéficiaire @_context.BeneficiaryId</p>
     </section>
 }
 
-<section class="cap-card">
-    <h2>Préparation questionnaires</h2>
-    <p>Le Lot 5 pose uniquement l'accès sécurisé. Les questionnaires en ligne complets seront ajoutés dans un lot dédié.</p>
-    <ul class="cap-beneficiary-scope">
-        <li>Accès bénéficiaire séparé du consultant.</li>
-        <li>Token bénéficiaire avec claim <code>beneficiary_id</code>.</li>
-        <li>Endpoint protégé <code>GET /api/beneficiary/me</code>.</li>
-        <li>Aucune saisie ou réponse questionnaire persistée dans ce lot.</li>
-    </ul>
-</section>
+@if (_questionnaires.Count > 0)
+{
+    <section class="cap-card">
+        <h2>Mes questionnaires</h2>
+        <div class="cap-actions">
+            @foreach (QuestionnaireDefinitionResponse questionnaire in _questionnaires)
+            {
+                <button @onclick="() => SelectQuestionnaireAsync(questionnaire)" disabled="@_isBusy">
+                    @questionnaire.Title
+                </button>
+            }
+        </div>
+    </section>
+}
+
+@if (_selectedQuestionnaire is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>@_selectedQuestionnaire.Title</h2>
+        <p>@_selectedQuestionnaire.Description</p>
+
+        @foreach (QuestionnaireQuestionResponse question in _selectedQuestionnaire.Questions)
+        {
+            <label class="cap-questionnaire-question">
+                <strong>@question.Label</strong>
+                @if (question.IsRequired)
+                {
+                    <span>Obligatoire</span>
+                }
+                <textarea rows="5"
+                          maxlength="@question.MaximumLength"
+                          value="@GetAnswer(question.QuestionId)"
+                          @oninput="eventArgs => SetAnswer(question.QuestionId, eventArgs.Value?.ToString())"></textarea>
+            </label>
+        }
+
+        <div class="cap-actions">
+            <button @onclick="SaveDraftAsync" disabled="@_isBusy">Enregistrer le brouillon</button>
+            <button @onclick="SubmitAsync" disabled="@_isBusy">Soumettre</button>
+        </div>
+
+        @if (_progress is not null)
+        {
+            <p>
+                Progression : @_progress.AnsweredQuestions / @_progress.TotalQuestions —
+                @(_progress.IsSubmitted ? "Soumis" : "Brouillon")
+            </p>
+        }
+    </section>
+}
 
 @code {
+    private readonly Dictionary<string, string> _answers = new(StringComparer.Ordinal);
+    private readonly List<QuestionnaireDefinitionResponse> _questionnaires = [];
     private bool _isBusy;
     private string? _message;
     private string _email = "beneficiaire@cap-method.local";
     private string _accessCode = string.Empty;
-    private BeneficiaryAccessTokenResponse? _token;
     private BeneficiaryPortalContextResponse? _context;
+    private QuestionnaireDefinitionResponse? _selectedQuestionnaire;
+    private QuestionnaireProgressResponse? _progress;
 
     private async Task LoginBeneficiaryAsync()
     {
         await RunAsync(async () =>
         {
-            _token = await ApiClient.LoginBeneficiaryPortalAsync(_email, _accessCode, CancellationToken.None);
+            await ApiClient.LoginBeneficiaryPortalAsync(_email, _accessCode, CancellationToken.None);
             _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
+            await LoadQuestionnairesCoreAsync();
             _message = "Connexion bénéficiaire réussie.";
         });
     }
 
-    private async Task LoadBeneficiaryContextAsync()
+    private async Task LoadQuestionnairesAsync()
     {
         await RunAsync(async () =>
         {
             _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
-            _message = "Contexte bénéficiaire chargé.";
+            await LoadQuestionnairesCoreAsync();
+            _message = "Questionnaires actualisés.";
         });
+    }
+
+    private async Task LoadQuestionnairesCoreAsync()
+    {
+        IReadOnlyCollection<QuestionnaireDefinitionResponse> questionnaires =
+            await QuestionnaireApiClient.ListAsync(CancellationToken.None);
+        _questionnaires.Clear();
+        _questionnaires.AddRange(questionnaires);
+    }
+
+    private async Task SelectQuestionnaireAsync(QuestionnaireDefinitionResponse questionnaire)
+    {
+        await RunAsync(async () =>
+        {
+            _selectedQuestionnaire = questionnaire;
+            _progress = await QuestionnaireApiClient.GetProgressAsync(questionnaire.QuestionnaireId, CancellationToken.None);
+            _answers.Clear();
+
+            foreach (QuestionnaireAnswerResponse answer in _progress.Answers)
+            {
+                _answers[answer.QuestionId] = answer.Value;
+            }
+
+            _message = $"Questionnaire '{questionnaire.Title}' chargé.";
+        });
+    }
+
+    private Task SaveDraftAsync()
+    {
+        return SaveAsync(submit: false);
+    }
+
+    private Task SubmitAsync()
+    {
+        return SaveAsync(submit: true);
+    }
+
+    private async Task SaveAsync(bool submit)
+    {
+        if (_selectedQuestionnaire is null)
+        {
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            QuestionnaireAnswerRequest[] answers = _selectedQuestionnaire.Questions
+                .Select(question => new QuestionnaireAnswerRequest(question.QuestionId, GetAnswer(question.QuestionId)))
+                .ToArray();
+            _progress = await QuestionnaireApiClient.SaveAsync(
+                _selectedQuestionnaire.QuestionnaireId,
+                answers,
+                submit,
+                CancellationToken.None);
+            _message = submit ? "Questionnaire soumis." : "Brouillon enregistré.";
+        });
+    }
+
+    private string GetAnswer(string questionId)
+    {
+        return _answers.TryGetValue(questionId, out string? value) ? value : string.Empty;
+    }
+
+    private void SetAnswer(string questionId, string? value)
+    {
+        _answers[questionId] = value ?? string.Empty;
     }
 
     private async Task LogoutAsync()
@@ -116,8 +197,11 @@
         await RunAsync(async () =>
         {
             await ApiClient.LogoutAsync();
-            _token = null;
             _context = null;
+            _questionnaires.Clear();
+            _selectedQuestionnaire = null;
+            _progress = null;
+            _answers.Clear();
             _message = "Déconnexion locale effectuée.";
         });
     }
