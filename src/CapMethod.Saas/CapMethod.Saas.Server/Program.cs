@@ -17,6 +17,9 @@ ConfigureAuthentication(builder);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICapUserContextAccessor, HttpCapUserContextAccessor>();
 builder.Services.AddScoped<DevelopmentJwtTokenService>();
+builder.Services.AddScoped<ProductionJwtTokenService>();
+builder.Services.AddScoped<PasswordHashVerifier>();
+builder.Services.Configure<ProductionAuthenticationOptions>(builder.Configuration.GetSection("Authentication:ProductionUser"));
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
@@ -40,10 +43,24 @@ app.UseAuthorization();
 
 app.MapGet("/api/info", () => new ApiInfo(
     "CAP Method SaaS",
-    "v3.0-saas",
+    "v3.1-saas-production-ready",
     "Blazor WebAssembly hosted",
     AzureRequired: false,
     AiRequired: false));
+
+app.MapPost("/api/auth/token", (
+    ProductionLoginRequest request,
+    ProductionJwtTokenService tokenService) =>
+{
+    AccessTokenResponse? response = tokenService.TryCreateToken(request.Email, request.Password);
+
+    if (response is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    return Results.Ok(response);
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -185,6 +202,11 @@ static void ConfigureAuthentication(WebApplicationBuilder builder)
     JwtOptions jwtOptions = builder.Configuration.GetSection("Authentication:Jwt").Get<JwtOptions>() ?? new JwtOptions();
     jwtOptions.Validate();
 
+    if (!builder.Environment.IsDevelopment() && IsUnsafeDefaultSigningKey(jwtOptions.SigningKey))
+    {
+        throw new InvalidOperationException("Authentication:Jwt:SigningKey must be overridden outside Development.");
+    }
+
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Authentication:Jwt"));
     builder.Services.AddAuthorization();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -202,6 +224,14 @@ static void ConfigureAuthentication(WebApplicationBuilder builder)
                 ClockSkew = TimeSpan.FromMinutes(1)
             };
         });
+}
+
+static bool IsUnsafeDefaultSigningKey(string signingKey)
+{
+    return string.Equals(
+        signingKey,
+        "CHANGE_ME_WITH_A_SECURE_32_CHARACTERS_MINIMUM_SECRET",
+        StringComparison.Ordinal);
 }
 
 static Guid ReadRequiredConfigurationGuid(IConfiguration configuration, string key)
