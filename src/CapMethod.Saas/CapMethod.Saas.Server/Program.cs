@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using CapMethod.Saas.Application.Beneficiaries;
 using CapMethod.Saas.Application.Sessions;
@@ -18,8 +19,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICapUserContextAccessor, HttpCapUserContextAccessor>();
 builder.Services.AddScoped<DevelopmentJwtTokenService>();
 builder.Services.AddScoped<ProductionJwtTokenService>();
+builder.Services.AddScoped<BeneficiaryPortalJwtTokenService>();
 builder.Services.AddScoped<PasswordHashVerifier>();
 builder.Services.Configure<ProductionAuthenticationOptions>(builder.Configuration.GetSection("Authentication:ProductionUser"));
+builder.Services.Configure<BeneficiaryPortalAuthenticationOptions>(builder.Configuration.GetSection("Authentication:BeneficiaryPortal"));
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
 builder.Services.AddScoped<CreateCapSessionUseCase>();
 builder.Services.AddScoped<GetCapSessionUseCase>();
@@ -62,6 +65,20 @@ app.MapPost("/api/auth/token", (
     return Results.Ok(response);
 });
 
+app.MapPost("/api/beneficiary/auth/token", (
+    BeneficiaryPortalLoginRequest request,
+    BeneficiaryPortalJwtTokenService tokenService) =>
+{
+    BeneficiaryAccessTokenResponse? response = tokenService.TryCreateToken(request.Email, request.AccessCode);
+
+    if (response is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    return Results.Ok(response);
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.MapPost("/api/dev/token", (
@@ -70,7 +87,7 @@ if (app.Environment.IsDevelopment())
     {
         Guid tenantId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentTenantId");
         Guid userId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentUserId");
-        DevelopmentTokenResponse response = tokenService.CreateToken(tenantId, userId);
+        AccessTokenResponse response = tokenService.CreateToken(tenantId, userId);
 
         return Results.Ok(response);
     });
@@ -87,6 +104,24 @@ app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
         userContext.IsAuthenticated,
         userContext.IsDevelopmentFallback
     });
+}).RequireAuthorization();
+
+app.MapGet("/api/beneficiary/me", (ClaimsPrincipal user) =>
+{
+    Guid tenantId = ReadRequiredGuidClaim(user, "tenant_id");
+    Guid beneficiaryId = ReadRequiredGuidClaim(user, BeneficiaryPortalJwtTokenService.BeneficiaryIdClaimType);
+    string email = user.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+
+    if (string.IsNullOrWhiteSpace(email))
+    {
+        throw new UnauthorizedAccessException("Claim 'email' is required for beneficiary portal context.");
+    }
+
+    return Results.Ok(new BeneficiaryPortalContextResponse(
+        tenantId,
+        beneficiaryId,
+        email,
+        IsAuthenticated: true));
 }).RequireAuthorization();
 
 app.MapPost("/api/beneficiaries", async (
@@ -241,6 +276,18 @@ static Guid ReadRequiredConfigurationGuid(IConfiguration configuration, string k
     if (!Guid.TryParse(value, out Guid parsed) || parsed == Guid.Empty)
     {
         throw new InvalidOperationException($"Configuration '{key}' must be a non-empty GUID.");
+    }
+
+    return parsed;
+}
+
+static Guid ReadRequiredGuidClaim(ClaimsPrincipal principal, string claimType)
+{
+    string? value = principal.FindFirstValue(claimType);
+
+    if (!Guid.TryParse(value, out Guid parsed) || parsed == Guid.Empty)
+    {
+        throw new UnauthorizedAccessException($"Claim '{claimType}' must be a non-empty GUID.");
     }
 
     return parsed;
