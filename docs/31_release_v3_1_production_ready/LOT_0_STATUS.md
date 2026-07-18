@@ -15,7 +15,7 @@ feature/v3-1-production-ready-backlog
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -79,7 +79,15 @@ User stories v3.1 présentes = oui
 Backlog v3.1 priorisé = oui
 Production readiness documentée = oui
 Workflow CI mis à jour = oui
-CI GitHub Actions = à vérifier
+CI GitHub Actions = validée
+```
+
+## Validation
+
+```text
+CI GitHub Actions = OK
+PR #23 = prête à fusionner
+Décision = squash merge dans main
 ```
 
 ## Prochaine étape après merge
