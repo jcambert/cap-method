@@ -14,7 +14,8 @@ Usage développement = oui
 Obligation production = non
 Persistence par défaut = InMemory
 Server + Client orchestrés = oui
-Packages centralisés = oui
+Packages centralisés SaaS = oui
+AppHost Aspire = SDK NuGet Aspire.AppHost.Sdk
 ```
 
 ## Projet ajouté
@@ -22,6 +23,16 @@ Packages centralisés = oui
 ```text
 src/CapMethod.Saas/CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
 ```
+
+## Modèle Aspire 13+
+
+L'AppHost utilise le modèle SDK NuGet Aspire 13+ :
+
+```xml
+<Project Sdk="Aspire.AppHost.Sdk/13.4.3">
+```
+
+Il n'utilise pas l'ancien workload Aspire ni `IsAspireHost`.
 
 ## Lancement local
 
@@ -52,7 +63,7 @@ Le client attend le serveur via `WaitFor(server)`.
 ```text
 Aspire limité au développement = oui
 AppHost inclus dans la solution .slnx = oui
-Version Aspire centralisée = oui
+Ancien workload Aspire = non
 Modification métier = non
 Migration EF = non
 Déploiement production Aspire = non
