@@ -10,7 +10,7 @@ feature/v3-1-lot6-online-questionnaires
 
 ## Statut
 
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 
 ## Fonctionnalités livrées
 
@@ -35,13 +35,13 @@ IMPLEMENTED - CI TO VERIFY
 
 ## Critères de validation
 
-- Restore solution slnx : à vérifier.
-- Build solution slnx : à vérifier.
-- Tests domaine : à vérifier.
-- Tests application : à vérifier.
-- Tests infrastructure : à vérifier.
-- Tests compatibilité : à vérifier.
-- CI GitHub Actions : à vérifier.
+- Restore solution slnx : OK.
+- Build solution slnx : OK.
+- Tests domaine : OK.
+- Tests application : OK.
+- Tests infrastructure : OK.
+- Tests compatibilité : OK.
+- CI GitHub Actions : OK.
 
 ## Prochaine étape après merge
 
