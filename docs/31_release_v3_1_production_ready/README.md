@@ -3,56 +3,85 @@
 ## Statut
 
 ```text
-PLANNED - BACKLOG INITIAL
+IN PROGRESS - LOTS 0 À 7 VALIDÉS
 ```
 
-## Décision
+La version `v3.1-saas-production-ready` transforme le socle `v3.0-saas` en application métier exploitable pour conduire un bilan de compétences complet.
 
-La version `v3.0-saas` est publiée comme socle SaaS stable.
+## État actuel
 
-La version `v3.1-saas-production-ready` démarre le chantier permettant de transformer ce socle en application exploitable en production réelle pour un bilan de compétences.
+| Lot | Objet | Statut |
+|---|---|---|
+| 0 | Cadrage production-ready | ✅ Validé |
+| 1 | Navigation SaaS par pages | ✅ Validé |
+| 2 | Authentification production minimale | ✅ Validé |
+| 3 | Modèle de workflow CAP | ✅ Validé |
+| 4 | UI workflow CAP | ✅ Validé |
+| 5 | Espace bénéficiaire sécurisé | ✅ Validé |
+| 6 | Questionnaires en ligne | ✅ Validé |
+| 7 | Analyse structurée SaaS | ✅ Validé |
+| 8 | Synthèse éditable | ⏳ À faire |
+| 9 | Plan d'action | ⏳ À faire |
+| 10 | Exports livrables | ⏳ À faire |
+| 11 | Configuration production | ⏳ À faire |
+| 12 | Observabilité minimale | ⏳ À faire |
+| 13 | Audit et sécurité minimale | ⏳ À faire |
 
-## Positionnement
+## Fonctionnalités disponibles
 
-```text
-v3.0-saas
-  = socle SaaS stable publié
+- navigation applicative consultant ;
+- authentification consultant hors token de développement ;
+- espace bénéficiaire sécurisé ;
+- création et suivi de sessions CAP ;
+- workflow CAP pilotable depuis l'interface ;
+- questionnaires en ligne avec brouillon et soumission ;
+- progression bénéficiaire ;
+- analyse structurée déterministe ;
+- isolation tenant et bénéficiaire côté serveur ;
+- solution `.slnx`, packages NuGet centralisés et AppHost Aspire pour le développement.
 
-v3.1-saas-production-ready
-  = application SaaS exploitable en production métier
-```
+## Limites actuelles
 
-## Objectif produit
+La v3.1 n'est pas encore production-ready.
 
-Permettre à un consultant de piloter un bilan de compétences complet depuis l'application SaaS :
+Points bloquants connus :
 
-- gérer son espace consultant ;
-- créer et suivre des bénéficiaires ;
-- ouvrir une session CAP structurée ;
-- faire avancer le bénéficiaire dans un parcours étape par étape ;
-- collecter les réponses aux questionnaires ;
-- préparer l'analyse ;
-- produire les livrables ;
-- sécuriser les accès ;
-- préparer une exploitation production.
+- réponses questionnaires stockées en mémoire serveur ;
+- analyse structurée générée à la demande et non persistée durablement ;
+- synthèse éditable non livrée ;
+- plan d'action non livré ;
+- exports SaaS non livrés ;
+- configuration et migrations PostgreSQL des nouveaux agrégats à compléter ;
+- observabilité et audit à finaliser.
 
-## Documents du cycle
+## Documents transverses
 
 ```text
 docs/31_release_v3_1_production_ready/VISION.md
 docs/31_release_v3_1_production_ready/USER_STORIES.md
 docs/31_release_v3_1_production_ready/BACKLOG.md
 docs/31_release_v3_1_production_ready/PRODUCTION_READINESS.md
-docs/31_release_v3_1_production_ready/LOT_0_STATUS.md
+docs/31_release_v3_1_production_ready/DOCUMENTATION_INDEX.md
+```
+
+## Base technique
+
+```text
+.NET = 10
+C# = LangVersion 14
+Solution = src/CapMethod.Saas/CapMethod.Saas.slnx
+Packages = src/CapMethod.Saas/Directory.Packages.props
+Développement orchestré = Aspire AppHost
+Production dépendante d'Aspire = non
 ```
 
 ## Règle de livraison
 
 Aucun lot v3.1 ne doit être fusionné sans :
 
-- user stories rattachées ;
-- critères d'acceptation ;
+- périmètre et critères d'acceptation explicites ;
 - tests adaptés ;
-- documentation mise à jour ;
+- documentation de lot mise à jour ;
+- documents transverses impactés mis à jour ;
 - CI verte ;
 - validation explicite.
