@@ -301,18 +301,6 @@ static Guid ReadRequiredConfigurationGuid(IConfiguration configuration, string k
     return parsed;
 }
 
-static Guid ReadRequiredGuidClaim(ClaimsPrincipal principal, string claimType)
-{
-    string? value = principal.FindFirstValue(claimType);
-
-    if (!Guid.TryParse(value, out Guid parsed) || parsed == Guid.Empty)
-    {
-        throw new UnauthorizedAccessException($"Claim '{claimType}' must be a non-empty GUID.");
-    }
-
-    return parsed;
-}
-
 static bool TryReadGuidClaim(ClaimsPrincipal principal, string claimType, out Guid value)
 {
     string? rawValue = principal.FindFirstValue(claimType);
