@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="CapMethod.Saas.AppHost\CapMethod.Saas.AppHost.csproj" />
+  <Project Path="CapMethod.Saas.ServiceDefaults\CapMethod.Saas.ServiceDefaults.csproj" />
   <Project Path="CapMethod.Saas.Domain\CapMethod.Saas.Domain.csproj" />
   <Project Path="CapMethod.Saas.Application\CapMethod.Saas.Application.csproj" />
   <Project Path="CapMethod.Saas.Infrastructure\CapMethod.Saas.Infrastructure.csproj" />
@@ -10,4 +11,5 @@
   <Project Path="CapMethod.Saas.Application.Tests\CapMethod.Saas.Application.Tests.csproj" />
   <Project Path="CapMethod.Saas.Infrastructure.Tests\CapMethod.Saas.Infrastructure.Tests.csproj" />
   <Project Path="CapMethod.Saas.Compatibility.Tests\CapMethod.Saas.Compatibility.Tests.csproj" />
+  <Project Path="CapMethod.Saas.Aspire.Tests\CapMethod.Saas.Aspire.Tests.csproj" />
 </Solution>
