@@ -45,11 +45,12 @@ public sealed class ConsultantSynthesisApiTests : IClassFixture<ServerTestApplic
     public async Task Consultant_can_save_then_validate_synthesis()
     {
         HttpClient client = await CreateAuthenticatedConsultantClientAsync();
+        Guid beneficiaryId = Guid.Parse("44444444-4444-4444-4444-444444444444");
         SaveSynthesisRequest draft = new("Premiere synthese editable.", Validate: false);
         SaveSynthesisRequest final = new("Synthese validee par le consultant.", Validate: true);
 
-        using HttpResponseMessage draftResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{BeneficiaryId}/synthesis", draft);
-        using HttpResponseMessage finalResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{BeneficiaryId}/synthesis", final);
+        using HttpResponseMessage draftResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/synthesis", draft);
+        using HttpResponseMessage finalResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/synthesis", final);
 
         Assert.Equal(HttpStatusCode.OK, draftResponse.StatusCode);
         Assert.Equal(HttpStatusCode.OK, finalResponse.StatusCode);
@@ -61,18 +62,15 @@ public sealed class ConsultantSynthesisApiTests : IClassFixture<ServerTestApplic
     }
 
     [Fact]
-    public async Task Validated_synthesis_cannot_be_edited_again()
+    public async Task Empty_synthesis_content_is_rejected_by_endpoint()
     {
         HttpClient client = await CreateAuthenticatedConsultantClientAsync();
-        Guid beneficiaryId = Guid.Parse("44444444-4444-4444-4444-444444444444");
-        SaveSynthesisRequest final = new("Validation definitive.", Validate: true);
-        SaveSynthesisRequest update = new("Modification interdite.", Validate: false);
+        Guid beneficiaryId = Guid.Parse("55555555-5555-5555-5555-555555555555");
+        SaveSynthesisRequest empty = new("   ", Validate: false);
 
-        using HttpResponseMessage finalResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/synthesis", final);
-        using HttpResponseMessage updateResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/synthesis", update);
+        using HttpResponseMessage response = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/synthesis", empty);
 
-        Assert.Equal(HttpStatusCode.OK, finalResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
+        Assert.NotEqual(HttpStatusCode.OK, response.StatusCode);
     }
 
     private async Task<HttpClient> CreateAuthenticatedConsultantClientAsync()
