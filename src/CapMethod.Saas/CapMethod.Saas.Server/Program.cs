@@ -6,6 +6,7 @@ using CapMethod.Saas.Infrastructure;
 using CapMethod.Saas.Server.Analysis;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Server.Security;
+using CapMethod.Saas.Server.Synthesis;
 using CapMethod.Saas.Shared.Api;
 using CapMethod.Saas.Shared.Beneficiaries;
 using CapMethod.Saas.Shared.CapSessions;
@@ -25,6 +26,7 @@ builder.Services.AddScoped<BeneficiaryPortalJwtTokenService>();
 builder.Services.AddScoped<PasswordHashVerifier>();
 builder.Services.AddSingleton<BeneficiaryQuestionnaireStore>();
 builder.Services.AddSingleton<StructuredAnalysisService>();
+builder.Services.AddSingleton<EditableSynthesisStore>();
 builder.Services.Configure<ProductionAuthenticationOptions>(builder.Configuration.GetSection("Authentication:ProductionUser"));
 builder.Services.Configure<BeneficiaryPortalAuthenticationOptions>(builder.Configuration.GetSection("Authentication:BeneficiaryPortal"));
 builder.Services.AddScoped<CreateBeneficiaryUseCase>();
@@ -130,6 +132,7 @@ app.MapGet("/api/beneficiary/me", (ClaimsPrincipal user) =>
 
 app.MapBeneficiaryQuestionnaireEndpoints();
 app.MapStructuredAnalysisEndpoints();
+app.MapEditableSynthesisEndpoints();
 
 app.MapPost("/api/beneficiaries", async (
     CreateBeneficiaryRequest request,
