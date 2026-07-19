@@ -35,30 +35,49 @@ public static class Extensions
     public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
+        bool exportOtlp = !string.IsNullOrWhiteSpace(
+            builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.IncludeFormattedMessage = true;
             logging.IncludeScopes = true;
+
+            if (exportOtlp)
+            {
+                logging.AddOtlpExporter();
+            }
         });
 
         builder.Services.AddOpenTelemetry()
-            .WithMetrics(metrics => metrics
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation())
-            .WithTracing(tracing => tracing
-                .AddAspNetCoreInstrumentation(options =>
-                {
-                    options.Filter = context =>
-                        !context.Request.Path.StartsWithSegments(HealthEndpointPath) &&
-                        !context.Request.Path.StartsWithSegments(AliveEndpointPath);
-                })
-                .AddHttpClientInstrumentation());
+            .WithMetrics(metrics =>
+            {
+                metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation();
 
-        if (!string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
-        {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
-        }
+                if (exportOtlp)
+                {
+                    metrics.AddOtlpExporter();
+                }
+            })
+            .WithTracing(tracing =>
+            {
+                tracing
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        options.Filter = context =>
+                            !context.Request.Path.StartsWithSegments(HealthEndpointPath) &&
+                            !context.Request.Path.StartsWithSegments(AliveEndpointPath);
+                    })
+                    .AddHttpClientInstrumentation();
+
+                if (exportOtlp)
+                {
+                    tracing.AddOtlpExporter();
+                }
+            });
 
         return builder;
     }
