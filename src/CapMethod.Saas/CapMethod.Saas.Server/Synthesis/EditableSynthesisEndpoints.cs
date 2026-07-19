@@ -63,13 +63,24 @@ public static class EditableSynthesisEndpoints
             SaveActionPlanRequest request,
             ICapUserContextAccessor userContextAccessor) =>
         {
-            CapUserContext userContext = userContextAccessor.GetRequiredContext();
-            ActionPlanResponse response = ActionPlans.Save(
-                userContext.TenantId,
-                beneficiaryId,
-                userContext.UserId,
-                request);
-            return Results.Ok(response);
+            try
+            {
+                CapUserContext userContext = userContextAccessor.GetRequiredContext();
+                ActionPlanResponse response = ActionPlans.Save(
+                    userContext.TenantId,
+                    beneficiaryId,
+                    userContext.UserId,
+                    request);
+                return Results.Ok(response);
+            }
+            catch (ArgumentException exception)
+            {
+                return Results.BadRequest(new { error = exception.Message });
+            }
+            catch (InvalidOperationException exception)
+            {
+                return Results.BadRequest(new { error = exception.Message });
+            }
         });
 
         group.MapPost("items/{itemId:guid}/complete", (
@@ -77,9 +88,20 @@ public static class EditableSynthesisEndpoints
             Guid itemId,
             ICapUserContextAccessor userContextAccessor) =>
         {
-            CapUserContext userContext = userContextAccessor.GetRequiredContext();
-            ActionPlanResponse response = ActionPlans.CompleteItem(userContext.TenantId, beneficiaryId, itemId);
-            return Results.Ok(response);
+            try
+            {
+                CapUserContext userContext = userContextAccessor.GetRequiredContext();
+                ActionPlanResponse response = ActionPlans.CompleteItem(userContext.TenantId, beneficiaryId, itemId);
+                return Results.Ok(response);
+            }
+            catch (ArgumentException exception)
+            {
+                return Results.BadRequest(new { error = exception.Message });
+            }
+            catch (KeyNotFoundException exception)
+            {
+                return Results.NotFound(new { error = exception.Message });
+            }
         });
     }
 }
