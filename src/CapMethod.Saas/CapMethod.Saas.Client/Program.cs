@@ -1,4 +1,5 @@
 using CapMethod.Saas.Client;
+using CapMethod.Saas.Client.ActionPlans;
 using CapMethod.Saas.Client.Auth;
 using CapMethod.Saas.Client.Questionnaires;
 using CapMethod.Saas.Client.Synthesis;
@@ -18,5 +19,6 @@ builder.Services.AddScoped<BrowserTokenStore>();
 builder.Services.AddScoped<CapMethodApiClient>();
 builder.Services.AddScoped<BeneficiaryQuestionnaireApiClient>();
 builder.Services.AddScoped<SynthesisApiClient>();
+builder.Services.AddScoped<ActionPlanApiClient>();
 
 await builder.Build().RunAsync();
