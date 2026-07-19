@@ -1,74 +1,57 @@
-# Aspire en développement - v3.1
+# Aspire - environnement distribue de developpement
 
-## Objectif
+## Statut
 
-Ajouter un AppHost Aspire pour simplifier le lancement local du SaaS CAP Method pendant le développement.
+IMPLEMENTED - CI TO VERIFY
 
-Aspire est utilisé comme confort de développement uniquement. Il ne devient pas une dépendance de déploiement production.
+## Architecture
 
-## Périmètre livré
+Aspire orchestre maintenant :
 
-```text
-AppHost Aspire = ajouté
-Usage développement = oui
-Obligation production = non
-Persistence par défaut = InMemory
-Server + Client orchestrés = oui
-Packages centralisés SaaS = oui
-AppHost Aspire = SDK NuGet Aspire.AppHost.Sdk
-```
+- un serveur PostgreSQL avec volume de donnees ;
+- la base `capmethod-saas-db` ;
+- le serveur ASP.NET Core `capmethod-saas` ;
+- le client Blazor WebAssembly heberge par le serveur ;
+- un parametre secret pour la cle JWT.
 
-## Projet ajouté
+Le serveur attend PostgreSQL, recoit la chaine de connexion `CapMethodSaas` et expose un health check.
 
-```text
-src/CapMethod.Saas/CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
-```
+## Service Defaults
 
-## Modèle Aspire 13+
+Le projet `CapMethod.Saas.ServiceDefaults` fournit :
 
-L'AppHost utilise le modèle SDK NuGet Aspire 13+ :
+- OpenTelemetry pour les traces, metriques et logs ;
+- export OTLP lorsqu'il est configure ;
+- service discovery ;
+- resilience HTTP standard ;
+- endpoints `/health` et `/alive`.
 
-```xml
-<Project Sdk="Aspire.AppHost.Sdk/13.4.3">
-```
+## Correction du client
 
-Il n'utilise pas l'ancien workload Aspire ni `IsAspireHost`.
+Le client n'est plus lance comme un service independant sans URL API garantie. Il est heberge par ASP.NET Core et utilise la meme origine que l'API.
 
-## Lancement local
+## Securite
 
-Depuis la racine du dépôt :
+La cle JWT de developpement est un parametre secret Aspire. Elle n'est pas stockee dans le depot.
+
+Les suppressions globales `NU1902` et `NU1903` ont ete retirees. Les alertes de vulnerabilite ne sont plus masquees.
+
+## Lancement
 
 ```bash
 dotnet run --project src/CapMethod.Saas/CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
 ```
 
-Ou depuis le dossier SaaS :
+## Tests
 
-```bash
-cd src/CapMethod.Saas
-dotnet run --project CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
-```
+`CapMethod.Saas.Aspire.Tests` demarre l'AppHost complet avec `Aspire.Hosting.Testing` et verifie :
 
-## Services orchestrés
+- la sante du serveur ;
+- `/health` ;
+- `/api/info` ;
+- le chargement du client Blazor ;
+- le demarrage avec PostgreSQL.
 
-```text
-capmethod-saas-server = API ASP.NET Core
-capmethod-saas-client = Blazor WebAssembly client
-```
+## Limites
 
-Le client attend le serveur via `WaitFor(server)`.
-
-## Décisions
-
-```text
-Aspire limité au développement = oui
-AppHost inclus dans la solution .slnx = oui
-Ancien workload Aspire = non
-Modification métier = non
-Migration EF = non
-Déploiement production Aspire = non
-```
-
-## Prochaine étape
-
-Reprendre le Lot 6 : questionnaires en ligne sur cette base de développement locale améliorée.
+Aspire reste un outil de developpement et de test. Les migrations completes et la persistance des stores des lots 6 a 8 restent prevues au Lot 11.

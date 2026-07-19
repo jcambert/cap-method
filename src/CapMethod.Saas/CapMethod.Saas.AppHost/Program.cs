@@ -1,12 +1,22 @@
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-IResourceBuilder<ProjectResource> server = builder.AddProject<Projects.CapMethod_Saas_Server>("capmethod-saas-server")
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
-    .WithEnvironment("Persistence__Provider", "InMemory");
+IResourceBuilder<ParameterResource> jwtSigningKey =
+    builder.AddParameter("jwt-signing-key", secret: true);
 
-builder.AddProject<Projects.CapMethod_Saas_Client>("capmethod-saas-client")
+IResourceBuilder<PostgresServerResource> postgres =
+    builder.AddPostgres("postgres")
+        .WithDataVolume();
+
+IResourceBuilder<PostgresDatabaseResource> database =
+    postgres.AddDatabase("capmethod-saas-db");
+
+builder.AddProject<Projects.CapMethod_Saas_Server>("capmethod-saas")
+    .WithReference(database, "CapMethodSaas")
+    .WaitFor(database)
     .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
-    .WithReference(server)
-    .WaitFor(server);
+    .WithEnvironment("Persistence__Provider", "PostgreSql")
+    .WithEnvironment("Authentication__Jwt__SigningKey", jwtSigningKey)
+    .WithHttpHealthCheck("/health")
+    .WithExternalHttpEndpoints();
 
 builder.Build().Run();

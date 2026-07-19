@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 ConfigurePersistence(builder);
 ConfigureAuthentication(builder);
 
@@ -46,9 +47,13 @@ builder.Services.AddCors(options =>
 
 WebApplication app = builder.Build();
 
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapDefaultEndpoints();
 
 app.MapGet("/api/info", () => new ApiInfo(
     "CAP Method SaaS",
@@ -214,6 +219,7 @@ app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     return Results.Ok(response);
 }).RequireAuthorization();
 
+app.MapFallbackToFile("index.html");
 app.Run();
 
 static void ConfigurePersistence(WebApplicationBuilder builder)
@@ -357,4 +363,8 @@ static CapSessionSummaryResponse MapListResultToSummaryResponse(ListCapSessionRe
         result.Status,
         result.IsAiEnabled,
         result.CreatedAtUtc);
+}
+
+public partial class Program
+{
 }
