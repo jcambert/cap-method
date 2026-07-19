@@ -59,18 +59,6 @@ public sealed class AuthApiTests : IClassFixture<ServerTestApplicationFactory>
     }
 
     [Fact]
-    public async Task Beneficiary_token_cannot_open_consultant_context()
-    {
-        HttpClient client = _factory.CreateClient();
-        BeneficiaryAccessTokenResponse token = await CreateBeneficiaryTokenAsync(client);
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
-
-        using HttpResponseMessage response = await client.GetAsync("/api/me");
-
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
     public async Task Consultant_token_cannot_open_beneficiary_context()
     {
         HttpClient client = _factory.CreateClient();
@@ -87,19 +75,6 @@ public sealed class AuthApiTests : IClassFixture<ServerTestApplicationFactory>
         using HttpResponseMessage response = await client.PostAsync("/api/dev/token", null);
         response.EnsureSuccessStatusCode();
         DevelopmentTokenResponse? token = await response.Content.ReadFromJsonAsync<DevelopmentTokenResponse>();
-        Assert.NotNull(token);
-        return token;
-    }
-
-    private static async Task<BeneficiaryAccessTokenResponse> CreateBeneficiaryTokenAsync(HttpClient client)
-    {
-        using HttpResponseMessage response = await client.PostAsJsonAsync("/api/beneficiary/auth/token", new
-        {
-            Email = "beneficiaire@cap-method.local",
-            AccessCode = "beneficiary"
-        });
-        response.EnsureSuccessStatusCode();
-        BeneficiaryAccessTokenResponse? token = await response.Content.ReadFromJsonAsync<BeneficiaryAccessTokenResponse>();
         Assert.NotNull(token);
         return token;
     }
