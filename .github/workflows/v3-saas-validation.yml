@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/v3-1-aspire-hardening
+      - test/v3-1-hardening-from-main
   pull_request:
     branches:
       - main
@@ -18,7 +18,7 @@ jobs:
   build-test:
     name: Build and test v3 SaaS
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -36,16 +36,28 @@ jobs:
         run: dotnet build src/CapMethod.Saas/CapMethod.Saas.slnx --no-restore
 
       - name: Test domain
-        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Domain.Tests/CapMethod.Saas.Domain.Tests.csproj --no-build --logger trx
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Domain.Tests/CapMethod.Saas.Domain.Tests.csproj --no-build --logger trx --collect:"XPlat Code Coverage"
 
       - name: Test application
-        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Application.Tests/CapMethod.Saas.Application.Tests.csproj --no-build --logger trx
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Application.Tests/CapMethod.Saas.Application.Tests.csproj --no-build --logger trx --collect:"XPlat Code Coverage"
 
       - name: Test infrastructure
-        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Infrastructure.Tests/CapMethod.Saas.Infrastructure.Tests.csproj --no-build --logger trx
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Infrastructure.Tests/CapMethod.Saas.Infrastructure.Tests.csproj --no-build --logger trx --collect:"XPlat Code Coverage"
 
       - name: Test compatibility
-        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Compatibility.Tests/CapMethod.Saas.Compatibility.Tests.csproj --no-build --logger trx
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Compatibility.Tests/CapMethod.Saas.Compatibility.Tests.csproj --no-build --logger trx --collect:"XPlat Code Coverage"
+
+      - name: Test server API
+        run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Server.Tests/CapMethod.Saas.Server.Tests.csproj --no-build --logger trx --collect:"XPlat Code Coverage"
 
       - name: Test Aspire distributed application
         run: dotnet test src/CapMethod.Saas/CapMethod.Saas.Aspire.Tests/CapMethod.Saas.Aspire.Tests.csproj --no-build --logger trx
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-saas-test-results
+          path: |
+            **/*.trx
+            **/coverage.cobertura.xml
