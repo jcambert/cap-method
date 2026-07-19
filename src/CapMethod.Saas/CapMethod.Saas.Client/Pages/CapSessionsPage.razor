@@ -2,13 +2,16 @@
 @namespace CapMethod.Saas.Client.Pages
 @using CapMethod.Saas.Client.Auth
 @using CapMethod.Saas.Client.Components
+@using CapMethod.Saas.Client.Synthesis
 @using CapMethod.Saas.Shared.CapSessions
+@using CapMethod.Saas.Shared.Synthesis
 @inject CapMethodApiClient ApiClient
+@inject SynthesisApiClient SynthesisApiClient
 
 <section class="cap-hero">
     <p class="cap-kicker">Espace consultant</p>
     <h1>Sessions CAP</h1>
-    <p>Créer, lister et consulter les sessions CAP dans une page dédiée.</p>
+    <p>Créer, suivre et produire une synthèse validée humainement pour chaque session.</p>
 </section>
 
 <section class="cap-card">
@@ -70,15 +73,57 @@
 
 <CapSessionDetailCard Session="_selectedSession" />
 
+@if (_selectedSession is not null && _synthesis is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>Synthèse éditable</h2>
+        <p>
+            Brouillon généré depuis l'analyse structurée. Le contenu doit être relu, reformulé et validé par le consultant.
+        </p>
+
+        <textarea rows="24"
+                  maxlength="30000"
+                  @bind="_synthesisContent"
+                  disabled="@(_isBusy || _synthesis.IsValidated)"></textarea>
+
+        <div class="cap-actions">
+            <button @onclick="SaveSynthesisDraftAsync"
+                    disabled="@(_isBusy || _synthesis.IsValidated)">
+                Enregistrer le brouillon
+            </button>
+            <button @onclick="ValidateSynthesisAsync"
+                    disabled="@(_isBusy || _synthesis.IsValidated)">
+                Valider humainement
+            </button>
+        </div>
+
+        <dl>
+            <dt>État</dt>
+            <dd>@(_synthesis.IsValidated ? "Validée" : "Brouillon")</dd>
+            <dt>Mise à jour UTC</dt>
+            <dd>@_synthesis.UpdatedAtUtc</dd>
+            @if (_synthesis.ValidatedAtUtc is not null)
+            {
+                <dt>Validation UTC</dt>
+                <dd>@_synthesis.ValidatedAtUtc</dd>
+                <dt>Validée par</dt>
+                <dd>@_synthesis.ValidatedByUserId</dd>
+            }
+        </dl>
+    </section>
+}
+
 @code {
     private bool _isBusy;
     private string? _message;
     private string _beneficiaryIdText = string.Empty;
+    private string _synthesisContent = string.Empty;
     private CapSessionResponse? _createdSession;
     private CapSessionResponse? _selectedSession;
+    private SynthesisResponse? _synthesis;
     private IReadOnlyCollection<CapSessionSummaryResponse> _capSessions = [];
 
-    private bool EnableAiForSession { get; set; } = false;
+    private bool EnableAiForSession { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,8 +143,8 @@
                 beneficiaryId,
                 EnableAiForSession,
                 CancellationToken.None);
-
             _selectedSession = _createdSession;
+            await LoadSynthesisCoreAsync(_createdSession.BeneficiaryId);
             _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
             _message = "Session CAP créée avec succès.";
         });
@@ -119,8 +164,44 @@
         await RunAsync(async () =>
         {
             _selectedSession = await ApiClient.GetCapSessionAsync(capSessionId, CancellationToken.None);
-            _message = "Détail session chargé.";
+            await LoadSynthesisCoreAsync(_selectedSession.BeneficiaryId);
+            _message = "Détail session et synthèse chargés.";
         });
+    }
+
+    private Task SaveSynthesisDraftAsync()
+    {
+        return SaveSynthesisAsync(validate: false);
+    }
+
+    private Task ValidateSynthesisAsync()
+    {
+        return SaveSynthesisAsync(validate: true);
+    }
+
+    private async Task SaveSynthesisAsync(bool validate)
+    {
+        if (_selectedSession is null)
+        {
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            _synthesis = await SynthesisApiClient.SaveAsync(
+                _selectedSession.BeneficiaryId,
+                _synthesisContent,
+                validate,
+                CancellationToken.None);
+            _synthesisContent = _synthesis.Content;
+            _message = validate ? "Synthèse validée humainement." : "Brouillon de synthèse enregistré.";
+        });
+    }
+
+    private async Task LoadSynthesisCoreAsync(Guid beneficiaryId)
+    {
+        _synthesis = await SynthesisApiClient.GetAsync(beneficiaryId, CancellationToken.None);
+        _synthesisContent = _synthesis.Content;
     }
 
     private async Task RunAsync(Func<Task> action)
