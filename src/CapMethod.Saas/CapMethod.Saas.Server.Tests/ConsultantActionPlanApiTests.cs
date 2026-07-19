@@ -9,7 +9,6 @@ namespace CapMethod.Saas.Server.Tests;
 
 public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestApplicationFactory>
 {
-    private static readonly Guid BeneficiaryId = Guid.Parse("55555555-5555-5555-5555-555555555555");
     private readonly ServerTestApplicationFactory _factory;
 
     public ConsultantActionPlanApiTests(ServerTestApplicationFactory factory)
@@ -20,9 +19,10 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
     [Fact]
     public async Task Action_plan_requires_authentication()
     {
+        Guid beneficiaryId = Guid.Parse("55555555-5555-5555-5555-555555555551");
         HttpClient client = _factory.CreateClient();
 
-        using HttpResponseMessage response = await client.GetAsync($"/api/beneficiaries/{BeneficiaryId}/action-plan");
+        using HttpResponseMessage response = await client.GetAsync($"/api/beneficiaries/{beneficiaryId}/action-plan");
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -30,14 +30,15 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
     [Fact]
     public async Task Consultant_can_get_empty_action_plan_draft()
     {
+        Guid beneficiaryId = Guid.Parse("55555555-5555-5555-5555-555555555552");
         HttpClient client = await CreateAuthenticatedConsultantClientAsync();
 
-        using HttpResponseMessage response = await client.GetAsync($"/api/beneficiaries/{BeneficiaryId}/action-plan");
+        using HttpResponseMessage response = await client.GetAsync($"/api/beneficiaries/{beneficiaryId}/action-plan");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         ActionPlanResponse? actionPlan = await response.Content.ReadFromJsonAsync<ActionPlanResponse>();
         Assert.NotNull(actionPlan);
-        Assert.Equal(BeneficiaryId, actionPlan.BeneficiaryId);
+        Assert.Equal(beneficiaryId, actionPlan.BeneficiaryId);
         Assert.False(actionPlan.IsValidated);
         Assert.Empty(actionPlan.Items);
     }
@@ -45,6 +46,7 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
     [Fact]
     public async Task Consultant_can_save_validate_and_complete_action_plan_item()
     {
+        Guid beneficiaryId = Guid.Parse("55555555-5555-5555-5555-555555555553");
         HttpClient client = await CreateAuthenticatedConsultantClientAsync();
         SaveActionPlanRequest draft = new(
             [
@@ -58,7 +60,7 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
             ],
             Validate: false);
 
-        using HttpResponseMessage draftResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{BeneficiaryId}/action-plan", draft);
+        using HttpResponseMessage draftResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/action-plan", draft);
 
         Assert.Equal(HttpStatusCode.OK, draftResponse.StatusCode);
         ActionPlanResponse? draftPlan = await draftResponse.Content.ReadFromJsonAsync<ActionPlanResponse>();
@@ -78,7 +80,7 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
                 .ToArray(),
             Validate: true);
 
-        using HttpResponseMessage finalResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{BeneficiaryId}/action-plan", final);
+        using HttpResponseMessage finalResponse = await client.PutAsJsonAsync($"/api/beneficiaries/{beneficiaryId}/action-plan", final);
 
         Assert.Equal(HttpStatusCode.OK, finalResponse.StatusCode);
         ActionPlanResponse? validatedPlan = await finalResponse.Content.ReadFromJsonAsync<ActionPlanResponse>();
@@ -88,7 +90,7 @@ public sealed class ConsultantActionPlanApiTests : IClassFixture<ServerTestAppli
         Assert.NotNull(validatedPlan.ValidatedByUserId);
 
         using HttpResponseMessage completeResponse = await client.PostAsync(
-            $"/api/beneficiaries/{BeneficiaryId}/action-plan/items/{item.ItemId}/complete",
+            $"/api/beneficiaries/{beneficiaryId}/action-plan/items/{item.ItemId}/complete",
             null);
 
         Assert.Equal(HttpStatusCode.OK, completeResponse.StatusCode);
