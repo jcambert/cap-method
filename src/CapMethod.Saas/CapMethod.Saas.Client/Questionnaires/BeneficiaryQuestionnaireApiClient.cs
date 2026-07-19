@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CapMethod.Saas.Client.Auth;
+using CapMethod.Saas.Shared.Analysis;
 using CapMethod.Saas.Shared.Questionnaires;
 
 namespace CapMethod.Saas.Client.Questionnaires;
@@ -54,6 +55,16 @@ public sealed class BeneficiaryQuestionnaireApiClient
         response.EnsureSuccessStatusCode();
         QuestionnaireProgressResponse? progress = await response.Content.ReadFromJsonAsync<QuestionnaireProgressResponse>(cancellationToken);
         return progress ?? throw new InvalidOperationException("The questionnaire save response is empty.");
+    }
+
+    public async Task<StructuredAnalysisResponse> GetStructuredAnalysisAsync(CancellationToken cancellationToken)
+    {
+        using HttpRequestMessage request = new(HttpMethod.Get, "api/beneficiary/analysis");
+        await AddAuthorizationHeaderAsync(request);
+        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        StructuredAnalysisResponse? analysis = await response.Content.ReadFromJsonAsync<StructuredAnalysisResponse>(cancellationToken);
+        return analysis ?? throw new InvalidOperationException("The structured analysis response is empty.");
     }
 
     private async Task AddAuthorizationHeaderAsync(HttpRequestMessage request)
