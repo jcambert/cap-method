@@ -7,7 +7,7 @@
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Objectif
@@ -28,6 +28,14 @@ Corriger l'insuffisance de couverture constatee apres le Lot 8 avant de reprendr
 - Publication des resultats de tests et fichiers Cobertura en artefacts CI.
 - Solution `.slnx` mise a jour avec les tests serveur.
 
+## Validation CI
+
+- Restore solution `.slnx` : OK.
+- Build solution : OK.
+- Tests domaine, application, infrastructure, compatibilite, serveur et Aspire : OK.
+- Artefacts de couverture disponibles dans la CI : OK.
+- Aucune regression Aspire apres la modification locale du `launchSettings.json` : OK.
+
 ## Ce que ce lot ne pretend pas encore couvrir
 
 - Tests UI Blazor avec bUnit.
@@ -38,14 +46,6 @@ Corriger l'insuffisance de couverture constatee apres le Lot 8 avant de reprendr
 
 Ces points restent a traiter dans les lots de durcissement suivants ou au Lot 11 pour la persistance.
 
-## Validation attendue
-
-- Restore solution `.slnx`.
-- Build solution.
-- Tests domaine, application, infrastructure, compatibilite, serveur et Aspire.
-- Artefacts de couverture disponibles dans la CI.
-- Aucune regression Aspire apres la modification locale du `launchSettings.json`.
-
 ## Suite
 
-Reprendre le Lot 9 uniquement apres validation de ce lot de tests.
+Reprendre le Lot 9.
