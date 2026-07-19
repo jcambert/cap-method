@@ -61,6 +61,15 @@ public sealed class BeneficiaryQuestionnaireStore
         return MapProgress(definition, stored);
     }
 
+    public IReadOnlyCollection<QuestionnaireProgressResponse> ListSubmittedProgress(Guid tenantId, Guid beneficiaryId)
+    {
+        return Definitions
+            .Select(definition => GetProgress(tenantId, beneficiaryId, definition.QuestionnaireId))
+            .Where(progress => progress.IsSubmitted)
+            .OrderBy(progress => progress.QuestionnaireId, StringComparer.Ordinal)
+            .ToArray();
+    }
+
     public QuestionnaireProgressResponse Save(
         Guid tenantId,
         Guid beneficiaryId,

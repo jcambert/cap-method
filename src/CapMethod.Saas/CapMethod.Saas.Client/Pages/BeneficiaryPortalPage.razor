@@ -2,14 +2,15 @@
 @namespace CapMethod.Saas.Client.Pages
 @using CapMethod.Saas.Client.Auth
 @using CapMethod.Saas.Client.Questionnaires
+@using CapMethod.Saas.Shared.Analysis
 @using CapMethod.Saas.Shared.Questionnaires
 @inject CapMethodApiClient ApiClient
 @inject BeneficiaryQuestionnaireApiClient QuestionnaireApiClient
 
 <section class="cap-hero">
     <p class="cap-kicker">Espace bénéficiaire</p>
-    <h1>Questionnaires en ligne</h1>
-    <p>Connexion sécurisée, sauvegarde intermédiaire et soumission des réponses depuis le portail bénéficiaire.</p>
+    <h1>Questionnaires et analyse structurée</h1>
+    <p>Connexion sécurisée, saisie des questionnaires et restitution d’indicateurs déterministes.</p>
 </section>
 
 <section class="cap-card cap-beneficiary-card">
@@ -27,6 +28,7 @@
     <div class="cap-actions">
         <button @onclick="LoginBeneficiaryAsync" disabled="@_isBusy">Connexion et chargement</button>
         <button @onclick="LoadQuestionnairesAsync" disabled="@_isBusy">Actualiser</button>
+        <button @onclick="LoadAnalysisAsync" disabled="@(_isBusy || _context is null)">Générer l’analyse</button>
         <button @onclick="LogoutAsync" disabled="@_isBusy">Déconnexion locale</button>
     </div>
     @if (!string.IsNullOrWhiteSpace(_message))
@@ -94,6 +96,41 @@
     </section>
 }
 
+@if (_analysis is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>Analyse structurée</h2>
+        <p>
+            @_analysis.SubmittedQuestionnaires questionnaire(s) soumis,
+            @_analysis.TotalAnswers réponse(s), @_analysis.TotalCharacters caractères analysés.
+        </p>
+        <p><strong>Complétude globale : @_analysis.CompletionScore / 100</strong></p>
+
+        <h3>Indicateurs</h3>
+        <div class="cap-form-grid">
+            @foreach (StructuredAnalysisIndicatorResponse indicator in _analysis.Indicators)
+            {
+                <article class="cap-card">
+                    <strong>@indicator.Label</strong>
+                    <p>@indicator.Score / @indicator.MaximumScore</p>
+                    <small>@indicator.Evidence</small>
+                </article>
+            }
+        </div>
+
+        <h3>Mots-clés dominants</h3>
+        @if (_analysis.Keywords.Count == 0)
+        {
+            <p>Aucun mot-clé significatif tant qu’aucun questionnaire n’est soumis.</p>
+        }
+        else
+        {
+            <p>@string.Join(" · ", _analysis.Keywords)</p>
+        }
+        <small>Analyse générée le @_analysis.GeneratedAtUtc.ToLocalTime().</small>
+    </section>
+}
+
 @code {
     private readonly Dictionary<string, string> _answers = new(StringComparer.Ordinal);
     private readonly List<QuestionnaireDefinitionResponse> _questionnaires = [];
@@ -104,6 +141,7 @@
     private BeneficiaryPortalContextResponse? _context;
     private QuestionnaireDefinitionResponse? _selectedQuestionnaire;
     private QuestionnaireProgressResponse? _progress;
+    private StructuredAnalysisResponse? _analysis;
 
     private async Task LoginBeneficiaryAsync()
     {
@@ -112,6 +150,7 @@
             await ApiClient.LoginBeneficiaryPortalAsync(_email, _accessCode, CancellationToken.None);
             _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
             await LoadQuestionnairesCoreAsync();
+            _analysis = await QuestionnaireApiClient.GetStructuredAnalysisAsync(CancellationToken.None);
             _message = "Connexion bénéficiaire réussie.";
         });
     }
@@ -123,6 +162,15 @@
             _context = await ApiClient.GetBeneficiaryPortalContextAsync(CancellationToken.None);
             await LoadQuestionnairesCoreAsync();
             _message = "Questionnaires actualisés.";
+        });
+    }
+
+    private async Task LoadAnalysisAsync()
+    {
+        await RunAsync(async () =>
+        {
+            _analysis = await QuestionnaireApiClient.GetStructuredAnalysisAsync(CancellationToken.None);
+            _message = "Analyse structurée actualisée.";
         });
     }
 
@@ -178,7 +226,13 @@
                 answers,
                 submit,
                 CancellationToken.None);
-            _message = submit ? "Questionnaire soumis." : "Brouillon enregistré.";
+
+            if (submit)
+            {
+                _analysis = await QuestionnaireApiClient.GetStructuredAnalysisAsync(CancellationToken.None);
+            }
+
+            _message = submit ? "Questionnaire soumis et analyse actualisée." : "Brouillon enregistré.";
         });
     }
 
@@ -201,6 +255,7 @@
             _questionnaires.Clear();
             _selectedQuestionnaire = null;
             _progress = null;
+            _analysis = null;
             _answers.Clear();
             _message = "Déconnexion locale effectuée.";
         });
