@@ -71,7 +71,7 @@ public static class EditableSynthesisEndpoints
                     beneficiaryId,
                     userContext.UserId,
                     request);
-                return Results.Ok(response);
+                return (IResult)Results.Ok(response);
             }
             catch (ArgumentException exception)
             {
@@ -92,7 +92,7 @@ public static class EditableSynthesisEndpoints
             {
                 CapUserContext userContext = userContextAccessor.GetRequiredContext();
                 ActionPlanResponse response = ActionPlans.CompleteItem(userContext.TenantId, beneficiaryId, itemId);
-                return Results.Ok(response);
+                return (IResult)Results.Ok(response);
             }
             catch (ArgumentException exception)
             {
