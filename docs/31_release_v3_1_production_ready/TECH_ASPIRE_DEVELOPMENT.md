@@ -2,7 +2,7 @@
 
 ## Statut
 
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 
 ## Architecture
 
@@ -34,9 +34,60 @@ Le client n'est plus lance comme un service independant sans URL API garantie. I
 
 La cle JWT de developpement est un parametre secret Aspire. Elle n'est pas stockee dans le depot.
 
+Cle attendue :
+
+```text
+Parameters:jwt-signing-key
+```
+
+Valeur locale possible :
+
+```text
+CAP_METHOD_LOCAL_DEV_SIGNING_KEY_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ
+```
+
 Les suppressions globales `NU1902` et `NU1903` ont ete retirees. Les alertes de vulnerabilite ne sont plus masquees.
 
-## Lancement
+## Lancement depuis Visual Studio
+
+Scenario nominal :
+
+1. ouvrir `src/CapMethod.Saas/CapMethod.Saas.slnx` dans Visual Studio ;
+2. definir `CapMethod.Saas.AppHost` comme projet de demarrage ;
+3. selectionner le profil `CapMethod.Saas.AppHost` ;
+4. lancer avec F5 ou Ctrl+F5 ;
+5. renseigner `jwt-signing-key` dans la fenetre Aspire si le secret local n'existe pas encore ;
+6. cocher `Enregistrer dans les secrets utilisateur` pour ne pas le ressaisir.
+
+Le profil Visual Studio est declare dans :
+
+```text
+src/CapMethod.Saas/CapMethod.Saas.AppHost/Properties/launchSettings.json
+```
+
+## Lancement depuis Aspire CLI
+
+Depuis `src/CapMethod.Saas` :
+
+```bash
+aspire run --project CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
+```
+
+Ou depuis le dossier AppHost :
+
+```bash
+aspire run
+```
+
+Pour preconfigurer le secret avec Aspire CLI depuis le dossier AppHost :
+
+```bash
+aspire secret set Parameters:jwt-signing-key CAP_METHOD_LOCAL_DEV_SIGNING_KEY_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ
+```
+
+## Lancement avec dotnet
+
+Le lancement direct reste possible, mais n'est pas le scenario principal :
 
 ```bash
 dotnet run --project src/CapMethod.Saas/CapMethod.Saas.AppHost/CapMethod.Saas.AppHost.csproj
