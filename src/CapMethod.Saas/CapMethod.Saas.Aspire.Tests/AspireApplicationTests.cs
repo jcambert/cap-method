@@ -1,5 +1,6 @@
 using System.Net;
 using Aspire.Hosting.Testing;
+using Xunit;
 
 namespace CapMethod.Saas.Aspire.Tests;
 
