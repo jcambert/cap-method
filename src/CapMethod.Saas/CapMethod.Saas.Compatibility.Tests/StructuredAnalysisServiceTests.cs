@@ -2,6 +2,7 @@ using CapMethod.Saas.Server.Analysis;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Shared.Analysis;
 using CapMethod.Saas.Shared.Questionnaires;
+using Xunit;
 
 namespace CapMethod.Saas.Compatibility.Tests;
 
