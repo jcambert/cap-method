@@ -365,4 +365,6 @@ static CapSessionSummaryResponse MapListResultToSummaryResponse(ListCapSessionRe
         result.CreatedAtUtc);
 }
 
-public partial class Program;
+public partial class Program
+{
+}
