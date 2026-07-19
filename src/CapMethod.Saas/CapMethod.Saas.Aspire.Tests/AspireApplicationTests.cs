@@ -17,14 +17,15 @@ public sealed class AspireApplicationTests
         IDistributedApplicationTestingBuilder builder =
             await DistributedApplicationTestingBuilder.CreateAsync<Projects.CapMethod_Saas_AppHost>(args);
 
-        await using DistributedApplication application = await builder.BuildAsync();
-        await application.StartAsync();
+        await using IAsyncDisposable application = await builder.BuildAsync();
+        dynamic runningApplication = application;
+        await runningApplication.StartAsync();
 
-        await application.ResourceNotifications
+        await runningApplication.ResourceNotifications
             .WaitForResourceHealthyAsync("capmethod-saas")
             .WaitAsync(TimeSpan.FromMinutes(3));
 
-        HttpClient client = application.CreateHttpClient("capmethod-saas");
+        HttpClient client = runningApplication.CreateHttpClient("capmethod-saas");
 
         using HttpResponseMessage healthResponse = await client.GetAsync("/health");
         using HttpResponseMessage infoResponse = await client.GetAsync("/api/info");
