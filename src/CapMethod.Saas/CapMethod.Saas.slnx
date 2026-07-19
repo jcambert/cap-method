@@ -11,5 +11,6 @@
   <Project Path="CapMethod.Saas.Application.Tests\CapMethod.Saas.Application.Tests.csproj" />
   <Project Path="CapMethod.Saas.Infrastructure.Tests\CapMethod.Saas.Infrastructure.Tests.csproj" />
   <Project Path="CapMethod.Saas.Compatibility.Tests\CapMethod.Saas.Compatibility.Tests.csproj" />
+  <Project Path="CapMethod.Saas.Server.Tests\CapMethod.Saas.Server.Tests.csproj" />
   <Project Path="CapMethod.Saas.Aspire.Tests\CapMethod.Saas.Aspire.Tests.csproj" />
 </Solution>
