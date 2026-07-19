@@ -1,375 +1,136 @@
 # Backlog - v3.1-saas-production-ready
 
-## Objectif de découpage
-
-La v3.1 est découpée en lots courts, chacun fusionnable par PR indépendante.
-
-Règle :
+## Règle de livraison
 
 ```text
-1 lot = 1 branche feature
+1 lot = 1 branche
 1 branche = 1 PR
 1 PR = squash merge
 CI verte obligatoire
+Documentation de lot et documentation transverse mises à jour
 ```
 
----
+## Vue consolidée
 
-# Priorité P0 - indispensable production-ready
+| Lot | Priorité | Objet | Statut | Référence |
+|---|---|---|---|---|
+| 0 | P0 | Cadrage production-ready | ✅ Validé | `LOT_0_STATUS.md` |
+| 1 | P0 | Navigation SaaS par pages | ✅ Validé | `LOT_1_STATUS.md` |
+| 2 | P0 | Authentification production minimale | ✅ Validé | `LOT_2_STATUS.md` |
+| 3 | P0 | Modèle de workflow CAP | ✅ Validé | `LOT_3_STATUS.md` |
+| 4 | P0 | UI workflow CAP | ✅ Validé | `LOT_4_STATUS.md` |
+| 5 | P0 | Espace bénéficiaire sécurisé | ✅ Validé | `LOT_5_STATUS.md` |
+| 6 | P0 | Questionnaires en ligne | ✅ Validé | `LOT_6_STATUS.md` |
+| 7 | P1 | Analyse structurée SaaS | ✅ Validé | `LOT_7_STATUS.md` |
+| 8 | P1 | Synthèse éditable | ⏳ À faire | — |
+| 9 | P1 | Plan d'action | ⏳ À faire | — |
+| 10 | P1 | Exports livrables | ⏳ À faire | — |
+| 11 | P2 | Configuration production | ⏳ À faire | — |
+| 12 | P2 | Observabilité minimale | ⏳ À faire | — |
+| 13 | P2 | Audit et sécurité minimale | ⏳ À faire | — |
 
-## Lot 0 - Cadrage v3.1 production-ready
+## Lots validés
 
-Statut :
+### Lots 0 à 5
 
-```text
-IN PROGRESS
-```
+Le cadrage, la navigation, l'authentification consultant, le workflow CAP, son interface et l'espace bénéficiaire sécurisé sont intégrés dans `main` avec CI verte.
 
-Contenu :
+### Lot 6 - Questionnaires en ligne
 
-- vision v3.1 ;
-- user stories ;
-- backlog priorisé ;
-- critères production-ready ;
-- CI documentaire v3.1.
+Livré :
 
-Livrables :
+- catalogue initial ;
+- formulaire bénéficiaire ;
+- sauvegarde de brouillon ;
+- soumission ;
+- validation serveur ;
+- progression ;
+- isolation tenant et bénéficiaire.
 
-```text
-docs/31_release_v3_1_production_ready/README.md
-docs/31_release_v3_1_production_ready/VISION.md
-docs/31_release_v3_1_production_ready/USER_STORIES.md
-docs/31_release_v3_1_production_ready/BACKLOG.md
-docs/31_release_v3_1_production_ready/PRODUCTION_READINESS.md
-docs/31_release_v3_1_production_ready/LOT_0_STATUS.md
-```
+Limite : le stockage des réponses est actuellement en mémoire serveur. La persistance PostgreSQL et les migrations EF Core restent obligatoires avant production.
 
----
+### Lot 7 - Analyse structurée SaaS
 
-## Lot 1 - Navigation SaaS par pages
+Livré :
 
-Objectif :
+- analyse déterministe des questionnaires soumis ;
+- scores de complétude, profondeur et diversité ;
+- extraction de mots-clés ;
+- restitution API et UI ;
+- tests d'isolation et de non-régression.
 
-Remplacer l'écran unique v3.0 par une navigation applicative exploitable.
+Limite : l'analyse est générée à la demande et n'est pas encore persistée comme snapshot durable.
 
-User stories couvertes :
+## Prochains lots
 
-```text
-US-31-NAV-001
-US-31-NAV-002
-```
+### Lot 8 - Synthèse éditable
 
-Tâches :
+User story : `US-31-LIV-001`.
 
-- créer un layout applicatif ;
-- créer les routes principales ;
-- protéger les pages métier ;
-- séparer dashboard, bénéficiaires, sessions, paramètres ;
-- conserver les appels API existants ;
-- ajouter tests de build et documentation.
-
-Critères de sortie :
-
-- l'application n'est plus un écran unique ;
-- le consultant dispose d'un tableau de bord minimal ;
-- les pages protégées redirigent si non connecté ;
-- CI verte.
-
----
-
-## Lot 2 - Authentification production minimale
-
-Objectif :
-
-Sortir du fonctionnement centré sur le token de développement.
-
-User stories couvertes :
-
-```text
-US-31-AUTH-001
-US-31-AUTH-002
-US-31-PRD-003
-```
-
-Tâches :
-
-- introduire un mode d'authentification production minimal ;
-- désactiver clairement les tokens dev hors environnement Development ;
-- documenter les secrets et variables ;
-- renforcer les erreurs d'authentification ;
-- tester les endpoints protégés.
-
-Critères de sortie :
-
-- le token dev n'est pas utilisable en production ;
-- la configuration production est explicite ;
-- les endpoints métier restent protégés ;
-- CI verte.
-
----
-
-## Lot 3 - Modèle de workflow CAP
-
-Objectif :
-
-Ajouter les étapes métier d'une session CAP.
-
-User stories couvertes :
-
-```text
-US-31-WF-001
-US-31-WF-002
-US-31-WF-003
-```
-
-Tâches :
-
-- modéliser les étapes de session ;
-- ajouter les statuts d'étape ;
-- contrôler les transitions ;
-- calculer l'avancement ;
-- exposer les informations côté API ;
-- ajouter tests domaine/application/infrastructure.
-
-Critères de sortie :
-
-- une session peut être démarrée ;
-- l'avancement est visible ;
-- les transitions invalides sont refusées ;
-- CI verte.
-
----
-
-## Lot 4 - UI workflow CAP
-
-Objectif :
-
-Afficher et piloter le workflow CAP depuis l'interface consultant.
-
-User stories couvertes :
-
-```text
-US-31-WF-001
-US-31-WF-002
-US-31-WF-003
-US-31-NAV-002
-```
-
-Tâches :
-
-- afficher les étapes d'une session ;
-- afficher l'avancement ;
-- ajouter actions démarrer / avancer / clôturer selon règles ;
-- afficher les erreurs métier ;
-- documenter le comportement.
-
-Critères de sortie :
-
-- le consultant peut piloter une session depuis l'UI ;
-- les actions indisponibles sont bloquées ou masquées ;
-- CI verte.
-
----
-
-## Lot 5 - Espace bénéficiaire sécurisé
-
-Objectif :
-
-Préparer un accès bénéficiaire limité à sa session.
-
-User stories couvertes :
-
-```text
-US-31-AUTH-003
-US-31-QST-001
-```
-
-Tâches :
-
-- créer les routes bénéficiaire ;
-- limiter l'accès à une session ;
-- éviter toute exposition inter-tenant ;
-- préparer l'affichage des questionnaires ;
-- ajouter tests d'isolation.
-
-Critères de sortie :
-
-- un bénéficiaire ne voit qu'une session autorisée ;
-- les données d'un autre bénéficiaire sont inaccessibles ;
-- CI verte.
-
----
-
-## Lot 6 - Questionnaires en ligne
-
-Objectif :
-
-Intégrer les questionnaires dans le SaaS.
-
-User stories couvertes :
-
-```text
-US-31-QST-001
-US-31-QST-002
-```
-
-Tâches :
-
-- définir le modèle questionnaire ;
-- définir le modèle réponse ;
-- stocker les réponses ;
-- permettre la reprise ;
-- afficher l'avancement ;
-- ajouter migrations EF Core.
-
-Critères de sortie :
-
-- le bénéficiaire peut répondre en ligne ;
-- les réponses sont persistées ;
-- le consultant voit l'avancement ;
-- CI verte.
-
----
-
-# Priorité P1 - nécessaire pour exploitation métier
-
-## Lot 7 - Analyse structurée SaaS
-
-Objectif :
-
-Créer un snapshot d'analyse à partir des réponses SaaS.
-
-User stories couvertes :
-
-```text
-US-31-ANA-001
-```
-
-Tâches :
-
-- convertir les réponses en snapshot ;
-- conserver les garde-fous métier ;
-- préparer la relecture consultant ;
-- tester la non-régression CAP v1/v2.
-
----
-
-## Lot 8 - Synthèse éditable
-
-Objectif :
-
-Créer et modifier une synthèse depuis l'application.
-
-User stories couvertes :
-
-```text
-US-31-LIV-001
-```
-
-Tâches :
+Objectifs :
 
 - créer le modèle de synthèse ;
-- exposer API lecture/écriture ;
-- créer UI d'édition ;
-- tracer la validation humaine.
+- générer un brouillon initial depuis l'analyse structurée ;
+- exposer les API de lecture et d'écriture ;
+- fournir une UI d'édition consultant ;
+- tracer la validation humaine ;
+- préparer la persistance durable et le versionnement.
 
----
+Critères de sortie :
 
-## Lot 9 - Plan d'action
+- la synthèse est modifiable par le consultant ;
+- aucune synthèse n'est considérée finale sans validation humaine ;
+- l'isolation tenant est garantie ;
+- tests et CI sont verts.
 
-Objectif :
+### Lot 9 - Plan d'action
 
-Créer un plan d'action exploitable.
+User story : `US-31-LIV-002`.
 
-User stories couvertes :
+Objectifs : modéliser les actions, échéances et statuts, fournir API/UI et rattacher le plan à la session.
 
-```text
-US-31-LIV-002
-```
+### Lot 10 - Exports livrables
 
-Tâches :
+User story : `US-31-LIV-003`.
 
-- modéliser les actions ;
-- créer API et UI ;
-- rattacher le plan à la session ;
-- préparer l'export.
+Objectifs : produire au minimum un export exploitable, contrôler les sections obligatoires et garantir l'isolation tenant.
 
----
+### Lot 11 - Configuration production
 
-## Lot 10 - Exports livrables
+User story : `US-31-PRD-001`.
 
-Objectif :
+Objectifs :
 
-Exporter les livrables depuis le SaaS.
+- PostgreSQL comme persistance de référence ;
+- migrations EF Core de tous les agrégats v3.1 ;
+- secrets et profils d'environnement ;
+- documentation de déploiement ;
+- conserver Aspire uniquement comme outil de développement.
 
-User stories couvertes :
+### Lot 12 - Observabilité minimale
 
-```text
-US-31-LIV-003
-```
+User story : `US-31-PRD-002`.
 
-Tâches :
+Objectifs : logs API, diagnostics, erreurs UI compréhensibles et absence de données sensibles dans les journaux.
 
-- générer un export minimal ;
-- valider les sections obligatoires ;
-- éviter les données inter-tenant ;
-- documenter les limites.
+### Lot 13 - Audit et sécurité minimale
 
----
+User stories : `US-31-PRD-003`, `US-31-BEN-001`, `US-31-BEN-002`.
 
-# Priorité P2 - durcissement production
+Objectifs : audit des actions sensibles, tests inter-tenant, protection des modifications et identification RGPD des données.
 
-## Lot 11 - Configuration production
+## Cible de release
 
-User stories couvertes :
-
-```text
-US-31-PRD-001
-```
-
-Contenu :
-
-- configuration PostgreSQL de référence ;
-- gestion secrets ;
-- profils d'environnement ;
-- documentation déploiement.
-
-## Lot 12 - Observabilité minimale
-
-User stories couvertes :
+La release peut être taguée uniquement lorsque :
 
 ```text
-US-31-PRD-002
+Lots 0 à 13 requis pour le périmètre retenu = validés
+Questionnaires et analyses = persistés durablement
+Synthèse, plan d'action et exports = opérationnels
+Configuration production = documentée et testée
+CI main = verte
+Checklist production-ready = validée
+Aucun bug bloquant connu = oui
 ```
 
-Contenu :
-
-- logs API ;
-- erreurs UI ;
-- diagnostics ;
-- non-exposition des données sensibles.
-
-## Lot 13 - Audit et sécurité minimale
-
-User stories couvertes :
-
-```text
-US-31-PRD-003
-US-31-BEN-001
-US-31-BEN-002
-```
-
-Contenu :
-
-- audit minimal des actions sensibles ;
-- tests inter-tenant ;
-- protection des modifications ;
-- identification RGPD des données sensibles.
-
----
-
-# Cible de release
-
-La release `v3.1-saas-production-ready` pourra être considérée prête quand les lots P0 et P1 seront intégrés, et que les critères production-ready minimum seront validés.
-
-Les lots P2 peuvent être intégrés dans v3.1 ou réservés à v3.1.1 selon l'état de la stabilisation.
+Les fonctionnalités des Lots 0 à 7 sont intégrées, mais la release n'est pas encore production-ready.

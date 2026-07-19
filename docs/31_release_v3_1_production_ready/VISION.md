@@ -2,54 +2,48 @@
 
 ## Constat de départ
 
-`v3.0-saas` est une version stable du socle SaaS, mais elle ne couvre pas encore les fonctionnalités indispensables à une mise en production réelle.
+`v3.0-saas` a validé le socle Blazor WebAssembly hosted / ASP.NET Core, le JWT, le contexte tenant, les bénéficiaires, les sessions CAP, la persistance InMemory/PostgreSQL et la CI.
 
-Elle valide :
+`v3.1-saas-production-ready` doit transformer ce socle en parcours métier complet exploitable par un consultant et un bénéficiaire.
 
-- l'architecture Blazor WebAssembly hosted / ASP.NET Core ;
-- l'API sécurisée par JWT ;
-- le contexte tenant côté serveur ;
-- la création de bénéficiaires ;
-- la création et la consultation de sessions CAP ;
-- la persistance InMemory / PostgreSQL ;
-- la CI dédiée.
-
-Elle ne suffit pas encore pour exploiter un bilan de compétences complet en production.
-
-## Ambition v3.1
-
-`v3.1-saas-production-ready` doit rendre le SaaS utilisable sur un parcours métier réel, même avec un périmètre encore volontairement limité.
-
-La priorité est de produire un MVP production-ready, pas une plateforme complète.
-
-## Parcours cible
+## État d'avancement
 
 ```text
-Consultant
+Lots 0 à 7 = intégrés et validés par CI
+Lots 8 à 13 = restant à livrer
+Release production-ready = non atteinte
+```
+
+Le parcours est actuellement opérationnel jusqu'à l'analyse structurée :
+
+```text
+Connexion consultant
   ↓
-Connexion sécurisée
+Navigation et tableau de bord
   ↓
-Tableau de bord
+Création bénéficiaire et session CAP
   ↓
-Création / suivi bénéficiaire
+Workflow CAP
   ↓
-Création session CAP
-  ↓
-Parcours bilan étape par étape
+Espace bénéficiaire sécurisé
   ↓
 Questionnaires en ligne
   ↓
-Réponses bénéficiaire
-  ↓
-Analyse consultant
-  ↓
+Analyse structurée déterministe
+```
+
+La suite restant à livrer :
+
+```text
 Synthèse éditable
   ↓
 Plan d'action
   ↓
-Export livrables
+Exports livrables
   ↓
-Clôture / archivage
+Durcissement production
+  ↓
+Release v3.1
 ```
 
 ## Principes produit
@@ -58,24 +52,45 @@ Clôture / archivage
 Le consultant pilote.
 Le bénéficiaire répond.
 Le système structure.
-L'IA assiste uniquement si elle est activée.
-Le livrable final reste validé humainement.
+L'IA reste optionnelle.
+Le livrable final est validé humainement.
+Aspire facilite le développement mais n'est pas une dépendance de production.
 ```
 
 ## Périmètre production-ready minimal
 
-La v3.1 doit couvrir au minimum :
+La v3.1 doit couvrir :
 
-- une authentification exploitable hors mode dev ;
-- une navigation SaaS par pages ;
-- un espace consultant utilisable ;
-- un espace bénéficiaire sécurisé ;
-- un workflow de session CAP ;
-- la collecte persistée des réponses ;
-- le suivi d'avancement ;
-- une première chaîne de livrables ;
-- des paramètres production documentés ;
-- une stratégie de sécurité et d'audit minimale.
+- authentification exploitable hors mode développement ;
+- navigation consultant et espace bénéficiaire sécurisé ;
+- workflow CAP ;
+- questionnaires et réponses persistés durablement ;
+- suivi d'avancement ;
+- analyse structurée persistable et relisible ;
+- synthèse éditable ;
+- plan d'action ;
+- exports livrables ;
+- configuration PostgreSQL et migrations ;
+- observabilité, audit et sécurité minimaux.
+
+## Situation réelle au Lot 7
+
+Déjà disponible :
+
+- authentification consultant et bénéficiaire ;
+- isolation tenant/bénéficiaire ;
+- navigation et workflow ;
+- questionnaires, brouillons, soumission et progression ;
+- analyse structurée déterministe ;
+- base technique `.slnx`, packages centralisés et Aspire dev.
+
+Écarts bloquant la production :
+
+- réponses questionnaires encore stockées en mémoire ;
+- analyse non persistée durablement ;
+- synthèse, plan d'action et exports absents ;
+- migrations des nouveaux agrégats absentes ;
+- observabilité et audit incomplets.
 
 ## Hors périmètre v3.1
 
@@ -92,4 +107,4 @@ IA autonome de décision
 
 ## Critère de réussite
 
-La v3.1 est réussie si un consultant peut réaliser un bilan de compétences de bout en bout dans l'application, avec des exports exploitables, sans dépendre de manipulations manuelles techniques.
+La v3.1 est réussie lorsque le consultant peut conduire un bilan de bout en bout, avec données persistées, synthèse relue, plan d'action, exports exploitables et exploitation production documentée, sans manipulation technique manuelle.

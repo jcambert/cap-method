@@ -1,254 +1,132 @@
 # User Stories - v3.1-saas-production-ready
 
-## Personas
+## Légende
 
 ```text
-Consultant
-  Professionnel qui pilote le bilan de compétences.
-
-Bénéficiaire
-  Personne accompagnée dans le bilan de compétences.
-
-Administrateur
-  Responsable technique ou fonctionnel de l'instance SaaS.
-
-Système
-  Application CAP Method SaaS.
+✅ VALIDÉ = fonctionnalité intégrée dans main avec CI verte
+🟡 PARTIEL = fonctionnalité disponible mais critère production incomplet
+⏳ À FAIRE = non livrée
 ```
 
----
+## Vue consolidée
 
-# Epic 1 - Authentification production
+| User story | Objet | État | Lot |
+|---|---|---|---|
+| US-31-AUTH-001 | Connexion consultant | ✅ Validé | 2 |
+| US-31-AUTH-002 | Déconnexion | ✅ Validé | 2 |
+| US-31-AUTH-003 | Accès bénéficiaire sécurisé | ✅ Validé | 5 |
+| US-31-NAV-001 | Layout applicatif | ✅ Validé | 1 |
+| US-31-NAV-002 | Tableau de bord consultant | ✅ Validé | 1 et 4 |
+| US-31-BEN-001 | Fiche bénéficiaire complète | 🟡 Partiel | Base existante, durcissement Lot 13 |
+| US-31-BEN-002 | Mise à jour bénéficiaire | ⏳ À faire | 13 |
+| US-31-WF-001 | Étapes d'une session CAP | ✅ Validé | 3 et 4 |
+| US-31-WF-002 | Démarrage de session | ✅ Validé | 3 et 4 |
+| US-31-WF-003 | Clôture de session | 🟡 Partiel | Workflow livré, livrables requis absents |
+| US-31-QST-001 | Questionnaires en ligne | 🟡 Partiel | Fonctionnel Lot 6, persistance durable absente |
+| US-31-QST-002 | Suivi des réponses | ✅ Validé fonctionnellement | 6 |
+| US-31-ANA-001 | Préparation analyse | ✅ Validé fonctionnellement | 7 |
+| US-31-LIV-001 | Synthèse éditable | ⏳ À faire | 8 |
+| US-31-LIV-002 | Plan d'action | ⏳ À faire | 9 |
+| US-31-LIV-003 | Export livrables | ⏳ À faire | 10 |
+| US-31-PRD-001 | Configuration production | ⏳ À faire | 11 |
+| US-31-PRD-002 | Observabilité minimale | ⏳ À faire | 12 |
+| US-31-PRD-003 | Sécurité minimale consolidée | 🟡 Partiel | Base Lots 2/5/7, finalisation Lot 13 |
 
-## US-31-AUTH-001 - Connexion consultant
+## Personas
 
-En tant que consultant, je veux me connecter avec un compte sécurisé afin d'accéder à mon espace professionnel.
+- **Consultant** : pilote le bilan de compétences.
+- **Bénéficiaire** : répond aux questionnaires et suit son parcours.
+- **Administrateur** : configure et exploite l'instance SaaS.
+- **Système** : structure les données sans remplacer la validation humaine.
 
-Critères d'acceptation :
+## Epic 1 - Authentification
 
-- la connexion ne dépend pas du token de développement ;
-- l'utilisateur authentifié est identifié côté serveur ;
-- le tenant est résolu côté serveur ;
-- les endpoints métier restent protégés ;
-- les erreurs d'authentification sont compréhensibles côté UI.
+### US-31-AUTH-001 - Connexion consultant — ✅ VALIDÉ
 
-## US-31-AUTH-002 - Déconnexion
+Le consultant se connecte sans dépendre du token de développement. L'utilisateur et le tenant sont résolus côté serveur et les endpoints métier restent protégés.
 
-En tant que consultant, je veux me déconnecter afin de fermer ma session applicative.
+### US-31-AUTH-002 - Déconnexion — ✅ VALIDÉ
 
-Critères d'acceptation :
+Le token local est supprimé et les appels protégés ne sont plus possibles après déconnexion.
 
-- le token local est supprimé ;
-- l'UI revient à l'écran de connexion ;
-- les appels API protégés ne passent plus après déconnexion.
+### US-31-AUTH-003 - Accès bénéficiaire sécurisé — ✅ VALIDÉ
 
-## US-31-AUTH-003 - Accès bénéficiaire sécurisé
+Le bénéficiaire utilise un token dédié contenant son identifiant. Le tenant et le bénéficiaire sont résolus depuis le JWT ; aucune sélection de tenant n'est acceptée côté UI.
 
-En tant que bénéficiaire, je veux accéder uniquement à ma session afin de répondre aux questionnaires sans voir les données d'autres bénéficiaires.
+## Epic 2 - Navigation SaaS
 
-Critères d'acceptation :
+### US-31-NAV-001 - Layout applicatif — ✅ VALIDÉ
 
-- l'accès est limité à une session donnée ;
-- aucun identifiant tenant n'est saisi côté UI ;
-- l'accès à une autre session est refusé ;
-- les réponses sont rattachées à la bonne session.
+La navigation par pages remplace l'écran unique et reste compatible avec Blazor WebAssembly hosted.
 
----
+### US-31-NAV-002 - Tableau de bord consultant — ✅ VALIDÉ
 
-# Epic 2 - Navigation SaaS
+Le consultant accède aux sessions, à leur statut et au workflow depuis l'interface.
 
-## US-31-NAV-001 - Layout applicatif
+## Epic 3 - Gestion bénéficiaires
 
-En tant qu'utilisateur connecté, je veux une navigation claire afin d'accéder rapidement aux fonctions principales.
+### US-31-BEN-001 - Fiche bénéficiaire — 🟡 PARTIEL
 
-Critères d'acceptation :
+La création et le rattachement aux sessions existent. La fiche complète, l'identification RGPD et l'audit restent à consolider.
 
-- une structure de pages remplace l'écran unique ;
-- les routes principales sont protégées ;
-- la navigation affiche les sections disponibles selon le rôle ;
-- l'expérience reste compatible Blazor WebAssembly hosted.
+### US-31-BEN-002 - Mise à jour bénéficiaire — ⏳ À FAIRE
 
-## US-31-NAV-002 - Tableau de bord consultant
+La modification protégée, validée et auditée reste au backlog.
 
-En tant que consultant, je veux voir mes sessions en cours afin de savoir où agir en priorité.
+## Epic 4 - Workflow CAP
 
-Critères d'acceptation :
+### US-31-WF-001 - Étapes d'une session — ✅ VALIDÉ
 
-- le tableau de bord liste les sessions actives ;
-- chaque session affiche son statut et son avancement ;
-- un accès rapide permet d'ouvrir le détail ;
-- les données sont filtrées par tenant côté serveur.
+Les étapes, statuts, transitions et calculs d'avancement sont disponibles.
 
----
+### US-31-WF-002 - Démarrage de session — ✅ VALIDÉ
 
-# Epic 3 - Gestion bénéficiaires
+Les transitions de démarrage sont contrôlées et pilotables depuis l'UI.
 
-## US-31-BEN-001 - Fiche bénéficiaire
+### US-31-WF-003 - Clôture de session — 🟡 PARTIEL
 
-En tant que consultant, je veux consulter la fiche d'un bénéficiaire afin de suivre son accompagnement.
+Le workflow sait progresser, mais la clôture complète dépend encore de la synthèse, du plan d'action et des exports.
 
-Critères d'acceptation :
+## Epic 5 - Questionnaires et réponses
 
-- la fiche affiche les informations principales ;
-- seules les données du tenant courant sont accessibles ;
-- les sessions liées sont visibles ;
-- les champs sensibles sont préparés pour une gestion RGPD.
+### US-31-QST-001 - Questionnaires en ligne — 🟡 PARTIEL
 
-## US-31-BEN-002 - Mise à jour bénéficiaire
+Le bénéficiaire peut charger un questionnaire, enregistrer un brouillon, reprendre et soumettre ses réponses. Le stockage est actuellement en mémoire serveur : la persistance PostgreSQL reste obligatoire avant production.
 
-En tant que consultant, je veux modifier les informations d'un bénéficiaire afin de corriger ou compléter son dossier.
+### US-31-QST-002 - Suivi des réponses — ✅ VALIDÉ FONCTIONNELLEMENT
 
-Critères d'acceptation :
+La progression et le statut brouillon/soumis sont exposés. L'isolation tenant/bénéficiaire est appliquée côté serveur.
 
-- la modification passe par une API protégée ;
-- les données sont validées ;
-- un audit minimal est prévu ;
-- le bénéficiaire d'un autre tenant ne peut pas être modifié.
+## Epic 6 - Analyse et livrables
 
----
+### US-31-ANA-001 - Préparation analyse — ✅ VALIDÉ FONCTIONNELLEMENT
 
-# Epic 4 - Workflow CAP
+Les questionnaires soumis alimentent une analyse structurée déterministe : complétude, profondeur, diversité et mots-clés. Les brouillons sont exclus et aucune conclusion définitive n'est imposée.
 
-## US-31-WF-001 - Étapes d'une session CAP
+Limite : l'analyse n'est pas encore persistée comme snapshot durable.
 
-En tant que consultant, je veux suivre une session CAP par étapes afin de piloter le bilan de manière structurée.
+### US-31-LIV-001 - Synthèse éditable — ⏳ À FAIRE
 
-Critères d'acceptation :
+Le consultant doit pouvoir générer, modifier et valider humainement une synthèse issue de l'analyse.
 
-- une session possède des étapes métier ;
-- chaque étape a un statut ;
-- le passage d'étape est contrôlé ;
-- l'avancement global est calculé.
+### US-31-LIV-002 - Plan d'action — ⏳ À FAIRE
 
-## US-31-WF-002 - Démarrage de session
+Le plan doit être lié à la session et contenir actions, échéances et statuts.
 
-En tant que consultant, je veux démarrer une session CAP afin d'ouvrir le parcours au bénéficiaire.
+### US-31-LIV-003 - Export livrables — ⏳ À FAIRE
 
-Critères d'acceptation :
+Le SaaS doit fournir au moins un export exploitable, reproductible et isolé par tenant.
 
-- une session en brouillon peut être démarrée ;
-- le statut change de manière explicite ;
-- l'accès bénéficiaire peut être préparé ;
-- les transitions invalides sont refusées.
+## Epic 7 - Production readiness
 
-## US-31-WF-003 - Clôture de session
+### US-31-PRD-001 - Configuration production — ⏳ À FAIRE
 
-En tant que consultant, je veux clôturer une session afin de figer le bilan terminé.
+PostgreSQL doit devenir la référence de tous les agrégats v3.1, avec migrations, secrets et profils documentés. Aspire reste réservé au développement.
 
-Critères d'acceptation :
+### US-31-PRD-002 - Observabilité minimale — ⏳ À FAIRE
 
-- la clôture n'est possible que si les livrables obligatoires sont prêts ;
-- les réponses restent consultables ;
-- les livrables restent exportables ;
-- la clôture est tracée.
+Logs API, diagnostics, messages UI et protection des données sensibles restent à finaliser.
 
----
+### US-31-PRD-003 - Sécurité minimale — 🟡 PARTIEL
 
-# Epic 5 - Questionnaires et réponses
-
-## US-31-QST-001 - Questionnaires en ligne
-
-En tant que bénéficiaire, je veux répondre aux questionnaires en ligne afin de compléter mon bilan sans utiliser de fichiers externes.
-
-Critères d'acceptation :
-
-- un questionnaire est affiché dans l'espace bénéficiaire ;
-- les questions sont rattachées à une session ;
-- les réponses sont persistées ;
-- une reprise ultérieure est possible.
-
-## US-31-QST-002 - Suivi des réponses
-
-En tant que consultant, je veux voir l'avancement des réponses afin de relancer le bénéficiaire si nécessaire.
-
-Critères d'acceptation :
-
-- le nombre de réponses attendues est visible ;
-- le nombre de réponses complétées est visible ;
-- le statut de chaque questionnaire est affiché ;
-- le consultant ne peut voir que son tenant.
-
----
-
-# Epic 6 - Analyse et livrables
-
-## US-31-ANA-001 - Préparation analyse
-
-En tant que consultant, je veux préparer une analyse structurée depuis les réponses afin de produire une synthèse exploitable.
-
-Critères d'acceptation :
-
-- les réponses sont transformées en snapshot d'analyse ;
-- aucune conclusion automatique définitive n'est imposée ;
-- le consultant peut relire les éléments ;
-- l'analyse conserve les garde-fous métier.
-
-## US-31-LIV-001 - Synthèse éditable
-
-En tant que consultant, je veux éditer une synthèse afin de produire un livrable validé humainement.
-
-Critères d'acceptation :
-
-- une synthèse est créée à partir de l'analyse ;
-- le contenu reste modifiable ;
-- les validations humaines sont explicites ;
-- les versions peuvent être tracées ultérieurement.
-
-## US-31-LIV-002 - Plan d'action
-
-En tant que consultant, je veux produire un plan d'action afin de formaliser les prochaines étapes du bénéficiaire.
-
-Critères d'acceptation :
-
-- le plan d'action est lié à la session ;
-- les actions ont un libellé, une échéance et un statut ;
-- le plan est exportable ;
-- le consultant reste responsable de la validation.
-
-## US-31-LIV-003 - Export livrables
-
-En tant que consultant, je veux exporter les livrables afin de remettre un dossier au bénéficiaire.
-
-Critères d'acceptation :
-
-- au moins un export PDF ou DOCX est disponible ;
-- l'export contient les sections obligatoires ;
-- le fichier ne contient pas de données d'un autre tenant ;
-- l'export peut être relancé.
-
----
-
-# Epic 7 - Production readiness
-
-## US-31-PRD-001 - Configuration production
-
-En tant qu'administrateur, je veux une configuration production documentée afin de déployer l'application sans réglages implicites.
-
-Critères d'acceptation :
-
-- les variables de configuration sont listées ;
-- les secrets ne sont pas versionnés ;
-- PostgreSQL est le mode de persistance de référence ;
-- le mode InMemory est explicitement réservé au local/dev.
-
-## US-31-PRD-002 - Observabilité minimale
-
-En tant qu'administrateur, je veux disposer de logs et de diagnostics afin de comprendre les erreurs de production.
-
-Critères d'acceptation :
-
-- les erreurs API sont journalisées ;
-- les informations sensibles ne sont pas exposées ;
-- les erreurs UI affichent un message utilisateur ;
-- la stratégie de logs est documentée.
-
-## US-31-PRD-003 - Sécurité minimale
-
-En tant qu'administrateur, je veux une base de sécurité production afin de limiter les risques de fuite ou d'accès indu.
-
-Critères d'acceptation :
-
-- les endpoints métier sont protégés ;
-- les accès inter-tenant sont testés ;
-- les tokens dev ne sont pas utilisés en production ;
-- les données sensibles sont identifiées.
+Les endpoints, JWT et accès inter-tenant disposent déjà d'une base solide. L'audit, les tests consolidés et l'identification des données sensibles restent au Lot 13.
