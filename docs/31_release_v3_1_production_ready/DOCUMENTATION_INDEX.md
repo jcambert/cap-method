@@ -4,11 +4,11 @@
 
 | Document | Rôle | État |
 |---|---|---|
-| `README.md` | Vue d'ensemble v3.1 | À jour jusqu'au Lot 7 |
-| `VISION.md` | Vision produit et cible | À jour jusqu'au Lot 7 |
-| `USER_STORIES.md` | User stories et statut d'implémentation | À jour jusqu'au Lot 7 |
-| `BACKLOG.md` | Lots validés et travail restant | À jour jusqu'au Lot 7 |
-| `PRODUCTION_READINESS.md` | Matrice des critères de production | À jour jusqu'au Lot 7 |
+| `README.md` | Vue d'ensemble v3.1 | À jour jusqu'au Lot 8 |
+| `VISION.md` | Vision produit et cible | À jour jusqu'au Lot 7, vision inchangée au Lot 8 |
+| `USER_STORIES.md` | User stories et statut d'implémentation | À jour jusqu'au Lot 8 |
+| `BACKLOG.md` | Lots livrés et travail restant | À jour jusqu'au Lot 8 |
+| `PRODUCTION_READINESS.md` | Matrice des critères de production | À jour jusqu'au Lot 8 |
 
 ## Documentation technique transverse
 
@@ -17,7 +17,7 @@
 | `TECH_SOLUTION_CENTRAL_PACKAGES.md` | Solution `.slnx` et Central Package Management |
 | `TECH_ASPIRE_DEVELOPMENT.md` | Aspire AppHost pour le développement local |
 
-## Lots validés
+## Lots validés dans main
 
 | Lot | Statut | Documentation principale |
 |---|---|---|
@@ -30,10 +30,15 @@
 | 6 | ✅ CI OK | `LOT_6_STATUS.md`, `ONLINE_QUESTIONNAIRES.md` |
 | 7 | ✅ CI OK | `LOT_7_STATUS.md`, `STRUCTURED_ANALYSIS.md` |
 
+## Lot courant
+
+| Lot | Statut | Documentation principale |
+|---|---|---|
+| 8 | 🟡 Implémenté, CI à vérifier | `LOT_8_STATUS.md`, `EDITABLE_SYNTHESIS.md` |
+
 ## Lots restants
 
 ```text
-Lot 8   Synthèse éditable
 Lot 9   Plan d'action
 Lot 10  Exports livrables
 Lot 11  Configuration production et persistance

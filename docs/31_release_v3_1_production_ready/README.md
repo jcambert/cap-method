@@ -3,7 +3,8 @@
 ## Statut
 
 ```text
-IN PROGRESS - LOTS 0 À 7 VALIDÉS
+IN PROGRESS - LOTS 0 À 8 IMPLEMENTÉS
+LOT 8 EN ATTENTE DE VALIDATION CI
 ```
 
 La version `v3.1-saas-production-ready` transforme le socle `v3.0-saas` en application métier exploitable pour conduire un bilan de compétences complet.
@@ -20,7 +21,7 @@ La version `v3.1-saas-production-ready` transforme le socle `v3.0-saas` en appli
 | 5 | Espace bénéficiaire sécurisé | ✅ Validé |
 | 6 | Questionnaires en ligne | ✅ Validé |
 | 7 | Analyse structurée SaaS | ✅ Validé |
-| 8 | Synthèse éditable | ⏳ À faire |
+| 8 | Synthèse éditable | 🟡 Implémenté, CI à vérifier |
 | 9 | Plan d'action | ⏳ À faire |
 | 10 | Exports livrables | ⏳ À faire |
 | 11 | Configuration production | ⏳ À faire |
@@ -37,8 +38,12 @@ La version `v3.1-saas-production-ready` transforme le socle `v3.0-saas` en appli
 - questionnaires en ligne avec brouillon et soumission ;
 - progression bénéficiaire ;
 - analyse structurée déterministe ;
+- brouillon de synthèse généré depuis l'analyse ;
+- édition consultant et validation humaine explicite ;
+- verrouillage de la synthèse après validation ;
 - isolation tenant et bénéficiaire côté serveur ;
-- solution `.slnx`, packages NuGet centralisés et AppHost Aspire pour le développement.
+- solution `.slnx`, packages NuGet centralisés et AppHost Aspire pour le développement ;
+- `.gitignore` adapté à .NET, Aspire et aux secrets locaux.
 
 ## Limites actuelles
 
@@ -48,7 +53,7 @@ Points bloquants connus :
 
 - réponses questionnaires stockées en mémoire serveur ;
 - analyse structurée générée à la demande et non persistée durablement ;
-- synthèse éditable non livrée ;
+- synthèse stockée en mémoire serveur, sans historique de versions ;
 - plan d'action non livré ;
 - exports SaaS non livrés ;
 - configuration et migrations PostgreSQL des nouveaux agrégats à compléter ;

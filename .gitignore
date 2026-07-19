@@ -1,0 +1,71 @@
+# .NET build outputs
+**/bin/
+**/obj/
+**/out/
+**/artifacts/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+_ReSharper*/
+*.sln.iml
+
+# Test and coverage outputs
+TestResults/
+**/TestResults/
+coverage/
+**/coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# ASP.NET Core / local secrets and overrides
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/appsettings.Development.local.json
+**/secrets.json
+.env
+.env.*
+!.env.example
+
+# Aspire local state
+.aspire/
+**/.aspire/
+
+# Node tooling used by legacy/document-generation assets
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Generated deliverables and temporary exports
+questionnaire-engine/**/generated/
+questionnaire-engine/deliverables/packages/
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
