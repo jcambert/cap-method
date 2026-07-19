@@ -7,7 +7,7 @@
 ## Statut
 
 ```text
-IMPLEMENTED - CI TO VERIFY
+VALIDATED - CI OK
 ```
 
 ## Livrables
@@ -26,17 +26,18 @@ IMPLEMENTED - CI TO VERIFY
 - CI et solution `.slnx` mises a jour.
 - Documentation Aspire reecrite.
 
-## Validation attendue
+## Validation CI
 
-- restore et build de la solution ;
-- absence d'alertes de vulnerabilite masquees ;
-- lancement du conteneur PostgreSQL ;
-- ressource serveur saine ;
-- `/health` accessible ;
-- `/api/info` accessible ;
-- application Blazor accessible ;
-- tests distribues verts.
+- Restore solution : OK.
+- Build solution : OK.
+- Tests existants : OK.
+- Test distribue Aspire : OK.
+- Conteneur PostgreSQL lance par Aspire : OK.
+- Ressource serveur saine : OK.
+- `/health` accessible : OK.
+- `/api/info` accessible : OK.
+- Application Blazor accessible : OK.
 
 ## Suite
 
-Le durcissement general des tests reprend uniquement apres validation de cette PR.
+Le durcissement general des tests peut reprendre apres merge de cette PR.
