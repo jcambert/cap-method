@@ -119,13 +119,17 @@ app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
 
 app.MapGet("/api/beneficiary/me", (ClaimsPrincipal user) =>
 {
-    Guid tenantId = ReadRequiredGuidClaim(user, "tenant_id");
-    Guid beneficiaryId = ReadRequiredGuidClaim(user, BeneficiaryPortalJwtTokenService.BeneficiaryIdClaimType);
+    if (!TryReadGuidClaim(user, "tenant_id", out Guid tenantId) ||
+        !TryReadGuidClaim(user, BeneficiaryPortalJwtTokenService.BeneficiaryIdClaimType, out Guid beneficiaryId))
+    {
+        return Results.Unauthorized();
+    }
+
     string email = user.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
 
     if (string.IsNullOrWhiteSpace(email))
     {
-        throw new UnauthorizedAccessException("Claim 'email' is required for beneficiary portal context.");
+        return Results.Unauthorized();
     }
 
     return Results.Ok(new BeneficiaryPortalContextResponse(
@@ -307,6 +311,12 @@ static Guid ReadRequiredGuidClaim(ClaimsPrincipal principal, string claimType)
     }
 
     return parsed;
+}
+
+static bool TryReadGuidClaim(ClaimsPrincipal principal, string claimType, out Guid value)
+{
+    string? rawValue = principal.FindFirstValue(claimType);
+    return Guid.TryParse(rawValue, out value) && value != Guid.Empty;
 }
 
 static BeneficiaryResponse MapCreateBeneficiaryResultToResponse(CreateBeneficiaryResult result)
