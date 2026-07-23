@@ -1,17 +1,20 @@
 @page "/cap-sessions"
 @namespace CapMethod.Saas.Client.Pages
+@using CapMethod.Saas.Client.ActionPlans
 @using CapMethod.Saas.Client.Auth
 @using CapMethod.Saas.Client.Components
 @using CapMethod.Saas.Client.Synthesis
+@using CapMethod.Saas.Shared.ActionPlans
 @using CapMethod.Saas.Shared.CapSessions
 @using CapMethod.Saas.Shared.Synthesis
 @inject CapMethodApiClient ApiClient
 @inject SynthesisApiClient SynthesisApiClient
+@inject ActionPlanApiClient ActionPlanApiClient
 
 <section class="cap-hero">
     <p class="cap-kicker">Espace consultant</p>
     <h1>Sessions CAP</h1>
-    <p>Créer, suivre et produire une synthèse validée humainement pour chaque session.</p>
+    <p>Créer, suivre, produire une synthèse validée et formaliser un plan d'action opérationnel.</p>
 </section>
 
 <section class="cap-card">
@@ -113,14 +116,90 @@
     </section>
 }
 
+@if (_selectedSession is not null && _actionPlan is not null)
+{
+    <section class="cap-card cap-detail-card">
+        <h2>Plan d'action</h2>
+        <p>
+            Transformer la synthèse validée en actions concrètes, priorisées et suivables avec le bénéficiaire.
+        </p>
+
+        <div class="cap-form-grid">
+            <label>
+                Action
+                <input @bind="_actionTitle" maxlength="180" placeholder="Ex. Mettre à jour le CV" disabled="@(_isBusy || _actionPlan.IsValidated)" />
+            </label>
+            <label>
+                Catégorie
+                <input @bind="_actionCategory" maxlength="120" placeholder="Ex. Positionnement" disabled="@(_isBusy || _actionPlan.IsValidated)" />
+            </label>
+            <label>
+                Priorité
+                <input @bind="_actionPriority" maxlength="40" placeholder="Haute, moyenne ou basse" disabled="@(_isBusy || _actionPlan.IsValidated)" />
+            </label>
+            <label>
+                Échéance
+                <input type="date" @bind="_actionDueDate" disabled="@(_isBusy || _actionPlan.IsValidated)" />
+            </label>
+        </div>
+
+        <label>
+            Description
+            <textarea rows="5" maxlength="2000" @bind="_actionDescription" disabled="@(_isBusy || _actionPlan.IsValidated)"></textarea>
+        </label>
+
+        <div class="cap-actions">
+            <button @onclick="AddActionItemAsync" disabled="@(_isBusy || _actionPlan.IsValidated)">Ajouter l'action</button>
+            <button @onclick="ValidateActionPlanAsync" disabled="@(_isBusy || _actionPlan.IsValidated || _actionPlan.Items.Count == 0)">Valider le plan d'action</button>
+        </div>
+
+        <dl>
+            <dt>État</dt>
+            <dd>@(_actionPlan.IsValidated ? "Validé" : "Brouillon")</dd>
+            <dt>Actions</dt>
+            <dd>@_actionPlan.Items.Count</dd>
+            <dt>Mise à jour UTC</dt>
+            <dd>@_actionPlan.UpdatedAtUtc</dd>
+        </dl>
+
+        @if (_actionPlan.Items.Count > 0)
+        {
+            <ul class="cap-list">
+                @foreach (ActionPlanItemResponse item in _actionPlan.Items)
+                {
+                    <li>
+                        <strong>@item.Title</strong>
+                        <span>@item.Category · @item.Priority · @item.Status</span>
+                        <p>@item.Description</p>
+                        @if (item.DueDate is not null)
+                        {
+                            <small>Échéance : @item.DueDate</small>
+                        }
+                        @if (item.Status != "Completed")
+                        {
+                            <button @onclick="() => CompleteActionItemAsync(item.ItemId)" disabled="@_isBusy">Marquer terminée</button>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+}
+
 @code {
     private bool _isBusy;
     private string? _message;
     private string _beneficiaryIdText = string.Empty;
     private string _synthesisContent = string.Empty;
+    private string _actionTitle = string.Empty;
+    private string _actionDescription = string.Empty;
+    private string _actionCategory = "Projet professionnel";
+    private string _actionPriority = "Moyenne";
+    private DateOnly? _actionDueDate;
     private CapSessionResponse? _createdSession;
     private CapSessionResponse? _selectedSession;
     private SynthesisResponse? _synthesis;
+    private ActionPlanResponse? _actionPlan;
     private IReadOnlyCollection<CapSessionSummaryResponse> _capSessions = [];
 
     private bool EnableAiForSession { get; set; }
@@ -145,6 +224,7 @@
                 CancellationToken.None);
             _selectedSession = _createdSession;
             await LoadSynthesisCoreAsync(_createdSession.BeneficiaryId);
+            await LoadActionPlanCoreAsync(_createdSession.BeneficiaryId);
             _capSessions = await ApiClient.ListCapSessionsAsync(CancellationToken.None);
             _message = "Session CAP créée avec succès.";
         });
@@ -165,7 +245,8 @@
         {
             _selectedSession = await ApiClient.GetCapSessionAsync(capSessionId, CancellationToken.None);
             await LoadSynthesisCoreAsync(_selectedSession.BeneficiaryId);
-            _message = "Détail session et synthèse chargés.";
+            await LoadActionPlanCoreAsync(_selectedSession.BeneficiaryId);
+            _message = "Détail session, synthèse et plan d'action chargés.";
         });
     }
 
@@ -198,10 +279,102 @@
         });
     }
 
+    private async Task AddActionItemAsync()
+    {
+        if (_selectedSession is null || _actionPlan is null)
+        {
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            List<SaveActionPlanItemRequest> items = _actionPlan.Items
+                .Select(item => new SaveActionPlanItemRequest(
+                    item.ItemId,
+                    item.Title,
+                    item.Description,
+                    item.Category,
+                    item.Priority,
+                    item.DueDate))
+                .ToList();
+
+            items.Add(new SaveActionPlanItemRequest(
+                null,
+                _actionTitle,
+                _actionDescription,
+                _actionCategory,
+                _actionPriority,
+                _actionDueDate));
+
+            _actionPlan = await ActionPlanApiClient.SaveAsync(
+                _selectedSession.BeneficiaryId,
+                items,
+                validate: false,
+                CancellationToken.None);
+
+            _actionTitle = string.Empty;
+            _actionDescription = string.Empty;
+            _actionCategory = "Projet professionnel";
+            _actionPriority = "Moyenne";
+            _actionDueDate = null;
+            _message = "Action ajoutée au plan.";
+        });
+    }
+
+    private async Task ValidateActionPlanAsync()
+    {
+        if (_selectedSession is null || _actionPlan is null)
+        {
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            SaveActionPlanItemRequest[] items = _actionPlan.Items
+                .Select(item => new SaveActionPlanItemRequest(
+                    item.ItemId,
+                    item.Title,
+                    item.Description,
+                    item.Category,
+                    item.Priority,
+                    item.DueDate))
+                .ToArray();
+
+            _actionPlan = await ActionPlanApiClient.SaveAsync(
+                _selectedSession.BeneficiaryId,
+                items,
+                validate: true,
+                CancellationToken.None);
+            _message = "Plan d'action validé.";
+        });
+    }
+
+    private async Task CompleteActionItemAsync(Guid itemId)
+    {
+        if (_selectedSession is null)
+        {
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            _actionPlan = await ActionPlanApiClient.CompleteItemAsync(
+                _selectedSession.BeneficiaryId,
+                itemId,
+                CancellationToken.None);
+            _message = "Action marquée comme terminée.";
+        });
+    }
+
     private async Task LoadSynthesisCoreAsync(Guid beneficiaryId)
     {
         _synthesis = await SynthesisApiClient.GetAsync(beneficiaryId, CancellationToken.None);
         _synthesisContent = _synthesis.Content;
+    }
+
+    private async Task LoadActionPlanCoreAsync(Guid beneficiaryId)
+    {
+        _actionPlan = await ActionPlanApiClient.GetAsync(beneficiaryId, CancellationToken.None);
     }
 
     private async Task RunAsync(Func<Task> action)
