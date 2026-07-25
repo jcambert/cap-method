@@ -20,6 +20,11 @@ public sealed class StructuredAnalysisService
     private readonly BeneficiaryQuestionnaireStore _store;
     private readonly IOperationalSnapshotStore _snapshots;
 
+    public StructuredAnalysisService(BeneficiaryQuestionnaireStore store)
+        : this(store, new InMemoryOperationalSnapshotStore())
+    {
+    }
+
     public StructuredAnalysisService(BeneficiaryQuestionnaireStore store, IOperationalSnapshotStore snapshots)
     {
         _store = store;
