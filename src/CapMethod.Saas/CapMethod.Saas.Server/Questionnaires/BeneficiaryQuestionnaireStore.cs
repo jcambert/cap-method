@@ -26,6 +26,11 @@ public sealed class BeneficiaryQuestionnaireStore
 
     private readonly IOperationalSnapshotStore _snapshots;
 
+    public BeneficiaryQuestionnaireStore()
+        : this(new InMemoryOperationalSnapshotStore())
+    {
+    }
+
     public BeneficiaryQuestionnaireStore(IOperationalSnapshotStore snapshots)
     {
         _snapshots = snapshots;
