@@ -101,7 +101,7 @@ if (app.Environment.IsDevelopment())
         return Results.Ok(tokenService.CreateToken(tenantId, userId));
     });
 
-    app.MapGet("/api/dev/diagnostics/failure", () =>
+    app.MapGet("/api/dev/diagnostics/failure", (HttpContext _) =>
         throw new InvalidOperationException("Diagnostic failure without sensitive payload."));
 }
 
