@@ -18,12 +18,10 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddCapMethodSaasPostgreSqlInfrastructure(
-        this IServiceCollection services,
-        string connectionString)
+    public static IServiceCollection AddCapMethodSaasPostgreSqlInfrastructure(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<CapMethodSaasDbContext>(options => options.UseNpgsql(connectionString));
         services.AddDbContextFactory<CapMethodSaasDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddScoped(provider => provider.GetRequiredService<IDbContextFactory<CapMethodSaasDbContext>>().CreateDbContext());
         services.AddScoped<ICapSessionRepository, EfCapSessionRepository>();
         services.AddScoped<IBeneficiaryRepository, EfBeneficiaryRepository>();
         services.AddSingleton<IOperationalSnapshotStore, EfOperationalSnapshotStore>();
