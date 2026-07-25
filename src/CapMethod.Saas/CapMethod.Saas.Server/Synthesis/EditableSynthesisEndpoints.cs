@@ -8,42 +8,25 @@ namespace CapMethod.Saas.Server.Synthesis;
 
 public static class EditableSynthesisEndpoints
 {
-    private static readonly ActionPlanStore ActionPlans = new();
     private static readonly DeliverableExportService Exports = new();
 
     public static IEndpointRouteBuilder MapEditableSynthesisEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        RouteGroupBuilder group = endpoints.MapGroup("/api/beneficiaries/{beneficiaryId:guid}/synthesis");
-        group.RequireAuthorization();
-
-        group.MapGet("", (
-            Guid beneficiaryId,
-            ICapUserContextAccessor userContextAccessor,
-            EditableSynthesisStore store) =>
+        RouteGroupBuilder synthesisGroup = endpoints.MapGroup("/api/beneficiaries/{beneficiaryId:guid}/synthesis");
+        synthesisGroup.RequireAuthorization();
+        synthesisGroup.MapGet("", (Guid beneficiaryId, ICapUserContextAccessor accessor, EditableSynthesisStore store) =>
         {
-            CapUserContext userContext = userContextAccessor.GetRequiredContext();
-            SynthesisResponse response = store.GetOrCreate(userContext.TenantId, beneficiaryId);
-            return Results.Ok(response);
+            CapUserContext context = accessor.GetRequiredContext();
+            return Results.Ok(store.GetOrCreate(context.TenantId, beneficiaryId));
         });
-
-        group.MapPut("", (
-            Guid beneficiaryId,
-            SaveSynthesisRequest request,
-            ICapUserContextAccessor userContextAccessor,
-            EditableSynthesisStore store) =>
+        synthesisGroup.MapPut("", (Guid beneficiaryId, SaveSynthesisRequest request, ICapUserContextAccessor accessor, EditableSynthesisStore store) =>
         {
-            CapUserContext userContext = userContextAccessor.GetRequiredContext();
-            SynthesisResponse response = store.Save(
-                userContext.TenantId,
-                beneficiaryId,
-                userContext.UserId,
-                request);
-            return Results.Ok(response);
+            CapUserContext context = accessor.GetRequiredContext();
+            return Results.Ok(store.Save(context.TenantId, beneficiaryId, context.UserId, request));
         });
 
         MapActionPlanEndpoints(endpoints);
         MapDeliverableExportEndpoints(endpoints);
-
         return endpoints;
     }
 
@@ -51,60 +34,30 @@ public static class EditableSynthesisEndpoints
     {
         RouteGroupBuilder group = endpoints.MapGroup("/api/beneficiaries/{beneficiaryId:guid}/action-plan");
         group.RequireAuthorization();
-
-        group.MapGet("", (
-            Guid beneficiaryId,
-            ICapUserContextAccessor userContextAccessor) =>
+        group.MapGet("", (Guid beneficiaryId, ICapUserContextAccessor accessor, ActionPlanStore store) =>
         {
-            CapUserContext userContext = userContextAccessor.GetRequiredContext();
-            ActionPlanResponse response = ActionPlans.GetOrCreate(userContext.TenantId, beneficiaryId);
-            return Results.Ok(response);
+            CapUserContext context = accessor.GetRequiredContext();
+            return Results.Ok(store.GetOrCreate(context.TenantId, beneficiaryId));
         });
-
-        group.MapPut("", (
-            Guid beneficiaryId,
-            SaveActionPlanRequest request,
-            ICapUserContextAccessor userContextAccessor) =>
+        group.MapPut("", (Guid beneficiaryId, SaveActionPlanRequest request, ICapUserContextAccessor accessor, ActionPlanStore store) =>
         {
             try
             {
-                CapUserContext userContext = userContextAccessor.GetRequiredContext();
-                ActionPlanResponse response = ActionPlans.Save(
-                    userContext.TenantId,
-                    beneficiaryId,
-                    userContext.UserId,
-                    request);
-                return (IResult)Results.Ok(response);
+                CapUserContext context = accessor.GetRequiredContext();
+                return (IResult)Results.Ok(store.Save(context.TenantId, beneficiaryId, context.UserId, request));
             }
-            catch (ArgumentException exception)
-            {
-                return Results.BadRequest(new { error = exception.Message });
-            }
-            catch (InvalidOperationException exception)
-            {
-                return Results.BadRequest(new { error = exception.Message });
-            }
+            catch (ArgumentException exception) { return Results.BadRequest(new { error = exception.Message }); }
+            catch (InvalidOperationException exception) { return Results.BadRequest(new { error = exception.Message }); }
         });
-
-        group.MapPost("items/{itemId:guid}/complete", (
-            Guid beneficiaryId,
-            Guid itemId,
-            ICapUserContextAccessor userContextAccessor) =>
+        group.MapPost("items/{itemId:guid}/complete", (Guid beneficiaryId, Guid itemId, ICapUserContextAccessor accessor, ActionPlanStore store) =>
         {
             try
             {
-                CapUserContext userContext = userContextAccessor.GetRequiredContext();
-                ActionPlanResponse response = ActionPlans.CompleteItem(userContext.TenantId, beneficiaryId, itemId);
-                return (IResult)Results.Ok(response);
+                CapUserContext context = accessor.GetRequiredContext();
+                return (IResult)Results.Ok(store.CompleteItem(context.TenantId, beneficiaryId, itemId));
             }
-            catch (ArgumentException exception)
-            {
-                return Results.BadRequest(new { error = exception.Message });
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return Results.NotFound(new { error = exception.Message });
-            }
+            catch (ArgumentException exception) { return Results.BadRequest(new { error = exception.Message }); }
+            catch (KeyNotFoundException exception) { return Results.NotFound(new { error = exception.Message }); }
         });
     }
 
@@ -112,29 +65,18 @@ public static class EditableSynthesisEndpoints
     {
         RouteGroupBuilder group = endpoints.MapGroup("/api/beneficiaries/{beneficiaryId:guid}/deliverables");
         group.RequireAuthorization();
-
-        group.MapGet("bilan.md", (
-            Guid beneficiaryId,
-            ICapUserContextAccessor userContextAccessor,
-            EditableSynthesisStore synthesisStore) =>
+        group.MapGet("bilan.md", (Guid beneficiaryId, ICapUserContextAccessor accessor, EditableSynthesisStore synthesisStore, ActionPlanStore actionPlanStore) =>
         {
             try
             {
-                CapUserContext userContext = userContextAccessor.GetRequiredContext();
-                SynthesisResponse synthesis = synthesisStore.GetOrCreate(userContext.TenantId, beneficiaryId);
-                ActionPlanResponse actionPlan = ActionPlans.GetOrCreate(userContext.TenantId, beneficiaryId);
-                DeliverableExport export = Exports.Build(userContext.TenantId, beneficiaryId, synthesis, actionPlan);
-
+                CapUserContext context = accessor.GetRequiredContext();
+                SynthesisResponse synthesis = synthesisStore.GetOrCreate(context.TenantId, beneficiaryId);
+                ActionPlanResponse actionPlan = actionPlanStore.GetOrCreate(context.TenantId, beneficiaryId);
+                DeliverableExport export = Exports.Build(context.TenantId, beneficiaryId, synthesis, actionPlan);
                 return (IResult)Results.File(export.Content, export.ContentType, export.FileName);
             }
-            catch (ArgumentException exception)
-            {
-                return Results.BadRequest(new { error = exception.Message });
-            }
-            catch (InvalidOperationException exception)
-            {
-                return Results.Conflict(new { error = exception.Message });
-            }
+            catch (ArgumentException exception) { return Results.BadRequest(new { error = exception.Message }); }
+            catch (InvalidOperationException exception) { return Results.Conflict(new { error = exception.Message }); }
         });
     }
 }
