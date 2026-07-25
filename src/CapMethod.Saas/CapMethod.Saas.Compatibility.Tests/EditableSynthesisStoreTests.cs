@@ -1,3 +1,4 @@
+using CapMethod.Saas.Infrastructure.Persistence;
 using CapMethod.Saas.Server.Analysis;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Server.Synthesis;
@@ -11,9 +12,7 @@ public sealed class EditableSynthesisStoreTests
     public void GetOrCreate_builds_an_editable_draft_from_structured_analysis()
     {
         EditableSynthesisStore store = CreateStore();
-
         SynthesisResponse result = store.GetOrCreate(Guid.NewGuid(), Guid.NewGuid());
-
         Assert.False(result.IsValidated);
         Assert.Contains("Synthèse du bilan de compétences", result.Content);
         Assert.Contains("validation humaine", result.Content, StringComparison.OrdinalIgnoreCase);
@@ -26,18 +25,8 @@ public sealed class EditableSynthesisStoreTests
         Guid beneficiaryId = Guid.NewGuid();
         Guid consultantId = Guid.NewGuid();
         EditableSynthesisStore store = CreateStore();
-
-        SynthesisResponse draft = store.Save(
-            tenantId,
-            beneficiaryId,
-            consultantId,
-            new SaveSynthesisRequest("Contenu relu par le consultant.", Validate: false));
-        SynthesisResponse validated = store.Save(
-            tenantId,
-            beneficiaryId,
-            consultantId,
-            new SaveSynthesisRequest("Contenu final validé.", Validate: true));
-
+        SynthesisResponse draft = store.Save(tenantId, beneficiaryId, consultantId, new SaveSynthesisRequest("Contenu relu par le consultant.", false));
+        SynthesisResponse validated = store.Save(tenantId, beneficiaryId, consultantId, new SaveSynthesisRequest("Contenu final validé.", true));
         Assert.False(draft.IsValidated);
         Assert.True(validated.IsValidated);
         Assert.Equal("Contenu final validé.", validated.Content);
@@ -52,18 +41,8 @@ public sealed class EditableSynthesisStoreTests
         Guid beneficiaryId = Guid.NewGuid();
         Guid consultantId = Guid.NewGuid();
         EditableSynthesisStore store = CreateStore();
-        store.Save(
-            tenantId,
-            beneficiaryId,
-            consultantId,
-            new SaveSynthesisRequest("Version validée.", Validate: true));
-
-        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => store.Save(
-            tenantId,
-            beneficiaryId,
-            consultantId,
-            new SaveSynthesisRequest("Modification interdite.", Validate: false)));
-
+        store.Save(tenantId, beneficiaryId, consultantId, new SaveSynthesisRequest("Version validée.", true));
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => store.Save(tenantId, beneficiaryId, consultantId, new SaveSynthesisRequest("Modification interdite.", false)));
         Assert.Contains("cannot be modified", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -73,23 +52,18 @@ public sealed class EditableSynthesisStoreTests
         Guid tenantId = Guid.NewGuid();
         Guid beneficiaryId = Guid.NewGuid();
         EditableSynthesisStore store = CreateStore();
-        store.Save(
-            tenantId,
-            beneficiaryId,
-            Guid.NewGuid(),
-            new SaveSynthesisRequest("Synthèse privée.", Validate: false));
-
+        store.Save(tenantId, beneficiaryId, Guid.NewGuid(), new SaveSynthesisRequest("Synthèse privée.", false));
         SynthesisResponse otherTenant = store.GetOrCreate(Guid.NewGuid(), beneficiaryId);
         SynthesisResponse otherBeneficiary = store.GetOrCreate(tenantId, Guid.NewGuid());
-
         Assert.DoesNotContain("Synthèse privée.", otherTenant.Content);
         Assert.DoesNotContain("Synthèse privée.", otherBeneficiary.Content);
     }
 
     private static EditableSynthesisStore CreateStore()
     {
-        BeneficiaryQuestionnaireStore questionnaireStore = new();
-        StructuredAnalysisService analysisService = new(questionnaireStore);
-        return new EditableSynthesisStore(analysisService);
+        InMemoryOperationalSnapshotStore snapshots = new();
+        BeneficiaryQuestionnaireStore questionnaireStore = new(snapshots);
+        StructuredAnalysisService analysisService = new(questionnaireStore, snapshots);
+        return new EditableSynthesisStore(analysisService, snapshots);
     }
 }
