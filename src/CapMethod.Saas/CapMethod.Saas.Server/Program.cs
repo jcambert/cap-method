@@ -4,6 +4,7 @@ using CapMethod.Saas.Application.Beneficiaries;
 using CapMethod.Saas.Application.Sessions;
 using CapMethod.Saas.Infrastructure;
 using CapMethod.Saas.Server.Analysis;
+using CapMethod.Saas.Server.Audit;
 using CapMethod.Saas.Server.Observability;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Server.Security;
@@ -35,6 +36,7 @@ builder.Services.AddScoped<DevelopmentJwtTokenService>();
 builder.Services.AddScoped<ProductionJwtTokenService>();
 builder.Services.AddScoped<BeneficiaryPortalJwtTokenService>();
 builder.Services.AddScoped<PasswordHashVerifier>();
+builder.Services.AddSingleton<AuditEventStore>();
 builder.Services.AddSingleton<BeneficiaryQuestionnaireStore>();
 builder.Services.AddSingleton<StructuredAnalysisService>();
 builder.Services.AddSingleton<EditableSynthesisStore>();
@@ -57,12 +59,14 @@ builder.Services.AddCors(options =>
 
 WebApplication app = builder.Build();
 
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseCors();
 app.UseAuthentication();
+app.UseMiddleware<AuditMiddleware>();
 app.UseAuthorization();
 
 app.MapDefaultEndpoints();
@@ -131,6 +135,7 @@ app.MapGet("/api/beneficiary/me", (ClaimsPrincipal user) =>
         : Results.Ok(new BeneficiaryPortalContextResponse(tenantId, beneficiaryId, email, IsAuthenticated: true));
 }).RequireAuthorization();
 
+app.MapAuditEndpoints();
 app.MapBeneficiaryQuestionnaireEndpoints();
 app.MapStructuredAnalysisEndpoints();
 app.MapEditableSynthesisEndpoints();
