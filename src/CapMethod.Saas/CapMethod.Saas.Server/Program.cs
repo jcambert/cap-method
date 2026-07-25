@@ -4,6 +4,7 @@ using CapMethod.Saas.Application.Beneficiaries;
 using CapMethod.Saas.Application.Sessions;
 using CapMethod.Saas.Infrastructure;
 using CapMethod.Saas.Server.Analysis;
+using CapMethod.Saas.Server.Observability;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Server.Security;
 using CapMethod.Saas.Server.Synthesis;
@@ -19,6 +20,15 @@ builder.AddServiceDefaults();
 ConfigurePersistence(builder);
 ConfigureAuthentication(builder);
 
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions["correlationId"] = context.HttpContext.TraceIdentifier;
+        context.ProblemDetails.Extensions["timestamp"] = DateTimeOffset.UtcNow;
+    };
+});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICapUserContextAccessor, HttpCapUserContextAccessor>();
 builder.Services.AddScoped<DevelopmentJwtTokenService>();
@@ -47,6 +57,8 @@ builder.Services.AddCors(options =>
 
 WebApplication app = builder.Build();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseExceptionHandler();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseCors();
@@ -67,13 +79,7 @@ app.MapPost("/api/auth/token", (
     ProductionJwtTokenService tokenService) =>
 {
     AccessTokenResponse? response = tokenService.TryCreateToken(request.Email, request.Password);
-
-    if (response is null)
-    {
-        return Results.Unauthorized();
-    }
-
-    return Results.Ok(response);
+    return response is null ? Results.Unauthorized() : Results.Ok(response);
 });
 
 app.MapPost("/api/beneficiary/auth/token", (
@@ -81,13 +87,7 @@ app.MapPost("/api/beneficiary/auth/token", (
     BeneficiaryPortalJwtTokenService tokenService) =>
 {
     BeneficiaryAccessTokenResponse? response = tokenService.TryCreateToken(request.Email, request.AccessCode);
-
-    if (response is null)
-    {
-        return Results.Unauthorized();
-    }
-
-    return Results.Ok(response);
+    return response is null ? Results.Unauthorized() : Results.Ok(response);
 });
 
 if (app.Environment.IsDevelopment())
@@ -98,16 +98,16 @@ if (app.Environment.IsDevelopment())
     {
         Guid tenantId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentTenantId");
         Guid userId = ReadRequiredConfigurationGuid(configuration, "Security:DevelopmentUserId");
-        DevelopmentTokenResponse response = tokenService.CreateToken(tenantId, userId);
-
-        return Results.Ok(response);
+        return Results.Ok(tokenService.CreateToken(tenantId, userId));
     });
+
+    app.MapGet("/api/dev/diagnostics/failure", (HttpContext _) =>
+        throw new InvalidOperationException("Diagnostic failure without sensitive payload."));
 }
 
 app.MapGet("/api/me", (ICapUserContextAccessor userContextAccessor) =>
 {
     CapUserContext userContext = userContextAccessor.GetRequiredContext();
-
     return Results.Ok(new
     {
         userContext.TenantId,
@@ -126,17 +126,9 @@ app.MapGet("/api/beneficiary/me", (ClaimsPrincipal user) =>
     }
 
     string email = user.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-
-    if (string.IsNullOrWhiteSpace(email))
-    {
-        return Results.Unauthorized();
-    }
-
-    return Results.Ok(new BeneficiaryPortalContextResponse(
-        tenantId,
-        beneficiaryId,
-        email,
-        IsAuthenticated: true));
+    return string.IsNullOrWhiteSpace(email)
+        ? Results.Unauthorized()
+        : Results.Ok(new BeneficiaryPortalContextResponse(tenantId, beneficiaryId, email, IsAuthenticated: true));
 }).RequireAuthorization();
 
 app.MapBeneficiaryQuestionnaireEndpoints();
@@ -150,15 +142,12 @@ app.MapPost("/api/beneficiaries", async (
     CancellationToken cancellationToken) =>
 {
     CapUserContext userContext = userContextAccessor.GetRequiredContext();
-    CreateBeneficiaryCommand command = new(
+    CreateBeneficiaryResult result = await useCase.ExecuteAsync(new CreateBeneficiaryCommand(
         userContext.TenantId,
         request.FirstName,
         request.LastName,
-        request.Email);
-
-    CreateBeneficiaryResult result = await useCase.ExecuteAsync(command, cancellationToken);
+        request.Email), cancellationToken);
     BeneficiaryResponse response = MapCreateBeneficiaryResultToResponse(result);
-
     return Results.Created($"/api/beneficiaries/{response.BeneficiaryId}", response);
 }).RequireAuthorization();
 
@@ -169,13 +158,11 @@ app.MapPost("/api/cap-sessions", async (
     CancellationToken cancellationToken) =>
 {
     CapUserContext userContext = userContextAccessor.GetRequiredContext();
-    CreateCapSessionCommand command = new(
+    CreateCapSessionResult result = await useCase.ExecuteAsync(new CreateCapSessionCommand(
         userContext.TenantId,
         request.BeneficiaryId,
         userContext.UserId,
-        request.EnableAi);
-
-    CreateCapSessionResult result = await useCase.ExecuteAsync(command, cancellationToken);
+        request.EnableAi), cancellationToken);
 
     if (result.IsBeneficiaryNotFound)
     {
@@ -183,7 +170,6 @@ app.MapPost("/api/cap-sessions", async (
     }
 
     CapSessionResponse response = MapCreateSessionResultToResponse(result);
-
     return Results.Created($"/api/cap-sessions/{response.CapSessionId}", response);
 }).RequireAuthorization();
 
@@ -193,14 +179,9 @@ app.MapGet("/api/cap-sessions", async (
     CancellationToken cancellationToken) =>
 {
     CapUserContext userContext = userContextAccessor.GetRequiredContext();
-    ListCapSessionsQuery query = new(userContext.TenantId);
-    IReadOnlyCollection<ListCapSessionResult> results = await useCase.ExecuteAsync(query, cancellationToken);
-
-    CapSessionSummaryResponse[] response = results
-        .Select(MapListResultToSummaryResponse)
-        .ToArray();
-
-    return Results.Ok(response);
+    IReadOnlyCollection<ListCapSessionResult> results = await useCase.ExecuteAsync(
+        new ListCapSessionsQuery(userContext.TenantId), cancellationToken);
+    return Results.Ok(results.Select(MapListResultToSummaryResponse).ToArray());
 }).RequireAuthorization();
 
 app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
@@ -210,17 +191,9 @@ app.MapGet("/api/cap-sessions/{capSessionId:guid}", async (
     CancellationToken cancellationToken) =>
 {
     CapUserContext userContext = userContextAccessor.GetRequiredContext();
-    GetCapSessionQuery query = new(userContext.TenantId, capSessionId);
-    GetCapSessionResult? result = await useCase.ExecuteAsync(query, cancellationToken);
-
-    if (result is null)
-    {
-        return Results.NotFound();
-    }
-
-    CapSessionResponse response = MapGetResultToResponse(result);
-
-    return Results.Ok(response);
+    GetCapSessionResult? result = await useCase.ExecuteAsync(
+        new GetCapSessionQuery(userContext.TenantId, capSessionId), cancellationToken);
+    return result is null ? Results.NotFound() : Results.Ok(MapGetResultToResponse(result));
 }).RequireAuthorization();
 
 app.MapFallbackToFile("index.html");
@@ -233,7 +206,6 @@ static void ConfigurePersistence(WebApplicationBuilder builder)
     if (string.Equals(provider, "PostgreSql", StringComparison.OrdinalIgnoreCase))
     {
         string? connectionString = builder.Configuration.GetConnectionString("CapMethodSaas");
-
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new InvalidOperationException("ConnectionStrings:CapMethodSaas is required when Persistence:Provider is PostgreSql.");
@@ -281,18 +253,14 @@ static void ConfigureAuthentication(WebApplicationBuilder builder)
         });
 }
 
-static bool IsUnsafeDefaultSigningKey(string signingKey)
-{
-    return string.Equals(
-        signingKey,
-        "CHANGE_ME_WITH_A_SECURE_32_CHARACTERS_MINIMUM_SECRET",
-        StringComparison.Ordinal);
-}
+static bool IsUnsafeDefaultSigningKey(string signingKey) => string.Equals(
+    signingKey,
+    "CHANGE_ME_WITH_A_SECURE_32_CHARACTERS_MINIMUM_SECRET",
+    StringComparison.Ordinal);
 
 static Guid ReadRequiredConfigurationGuid(IConfiguration configuration, string key)
 {
     string? value = configuration[key];
-
     if (!Guid.TryParse(value, out Guid parsed) || parsed == Guid.Empty)
     {
         throw new InvalidOperationException($"Configuration '{key}' must be a non-empty GUID.");
@@ -307,24 +275,18 @@ static bool TryReadGuidClaim(ClaimsPrincipal principal, string claimType, out Gu
     return Guid.TryParse(rawValue, out value) && value != Guid.Empty;
 }
 
-static BeneficiaryResponse MapCreateBeneficiaryResultToResponse(CreateBeneficiaryResult result)
-{
-    return new BeneficiaryResponse(
-        result.BeneficiaryId,
-        result.TenantId,
-        result.FirstName,
-        result.LastName,
-        result.Email,
-        result.CreatedAtUtc);
-}
+static BeneficiaryResponse MapCreateBeneficiaryResultToResponse(CreateBeneficiaryResult result) => new(
+    result.BeneficiaryId,
+    result.TenantId,
+    result.FirstName,
+    result.LastName,
+    result.Email,
+    result.CreatedAtUtc);
 
 static CapSessionResponse MapCreateSessionResultToResponse(CreateCapSessionResult result)
 {
-    if (result.CapSessionId is null ||
-        result.ConsultantId is null ||
-        result.Status is null ||
-        result.IsAiEnabled is null ||
-        result.CreatedAtUtc is null)
+    if (result.CapSessionId is null || result.ConsultantId is null || result.Status is null ||
+        result.IsAiEnabled is null || result.CreatedAtUtc is null)
     {
         throw new InvalidOperationException("A created CAP session result is incomplete.");
     }
@@ -339,29 +301,23 @@ static CapSessionResponse MapCreateSessionResultToResponse(CreateCapSessionResul
         result.CreatedAtUtc.Value);
 }
 
-static CapSessionResponse MapGetResultToResponse(GetCapSessionResult result)
-{
-    return new CapSessionResponse(
-        result.CapSessionId,
-        result.TenantId,
-        result.BeneficiaryId,
-        result.ConsultantId,
-        result.Status,
-        result.IsAiEnabled,
-        result.CreatedAtUtc);
-}
+static CapSessionResponse MapGetResultToResponse(GetCapSessionResult result) => new(
+    result.CapSessionId,
+    result.TenantId,
+    result.BeneficiaryId,
+    result.ConsultantId,
+    result.Status,
+    result.IsAiEnabled,
+    result.CreatedAtUtc);
 
-static CapSessionSummaryResponse MapListResultToSummaryResponse(ListCapSessionResult result)
-{
-    return new CapSessionSummaryResponse(
-        result.CapSessionId,
-        result.TenantId,
-        result.BeneficiaryId,
-        result.ConsultantId,
-        result.Status,
-        result.IsAiEnabled,
-        result.CreatedAtUtc);
-}
+static CapSessionSummaryResponse MapListResultToSummaryResponse(ListCapSessionResult result) => new(
+    result.CapSessionId,
+    result.TenantId,
+    result.BeneficiaryId,
+    result.ConsultantId,
+    result.Status,
+    result.IsAiEnabled,
+    result.CreatedAtUtc);
 
 public partial class Program
 {
