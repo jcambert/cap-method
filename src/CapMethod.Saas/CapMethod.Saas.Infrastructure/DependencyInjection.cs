@@ -14,6 +14,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<ICapSessionRepository, InMemoryCapSessionRepository>();
         services.AddSingleton<IBeneficiaryRepository, InMemoryBeneficiaryRepository>();
+        services.AddSingleton<IOperationalSnapshotStore, InMemoryOperationalSnapshotStore>();
         return services;
     }
 
@@ -21,14 +22,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         string connectionString)
     {
-        services.AddDbContext<CapMethodSaasDbContext>(options =>
-        {
-            options.UseNpgsql(connectionString);
-        });
-
+        services.AddDbContext<CapMethodSaasDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContextFactory<CapMethodSaasDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<ICapSessionRepository, EfCapSessionRepository>();
         services.AddScoped<IBeneficiaryRepository, EfBeneficiaryRepository>();
-
+        services.AddSingleton<IOperationalSnapshotStore, EfOperationalSnapshotStore>();
         return services;
     }
 }
