@@ -1,3 +1,5 @@
+using System.Text.Json;
+using CapMethod.Saas.Infrastructure.Persistence;
 using CapMethod.Saas.Server.Questionnaires;
 using CapMethod.Saas.Shared.Analysis;
 using CapMethod.Saas.Shared.Questionnaires;
@@ -6,6 +8,8 @@ namespace CapMethod.Saas.Server.Analysis;
 
 public sealed class StructuredAnalysisService
 {
+    private const string DocumentType = "structured-analysis";
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private static readonly HashSet<string> StopWords = new(StringComparer.OrdinalIgnoreCase)
     {
         "avec", "dans", "pour", "plus", "moins", "mais", "donc", "ainsi", "cette", "comme",
@@ -14,74 +18,48 @@ public sealed class StructuredAnalysisService
     };
 
     private readonly BeneficiaryQuestionnaireStore _store;
+    private readonly IOperationalSnapshotStore _snapshots;
 
-    public StructuredAnalysisService(BeneficiaryQuestionnaireStore store)
+    public StructuredAnalysisService(BeneficiaryQuestionnaireStore store, IOperationalSnapshotStore snapshots)
     {
         _store = store;
+        _snapshots = snapshots;
     }
 
     public StructuredAnalysisResponse Generate(Guid tenantId, Guid beneficiaryId)
     {
         IReadOnlyCollection<QuestionnaireProgressResponse> submitted = _store.ListSubmittedProgress(tenantId, beneficiaryId);
-        QuestionnaireAnswerResponse[] answers = submitted
-            .SelectMany(progress => progress.Answers)
-            .Where(answer => !string.IsNullOrWhiteSpace(answer.Value))
-            .ToArray();
-
+        QuestionnaireAnswerResponse[] answers = submitted.SelectMany(progress => progress.Answers).Where(answer => !string.IsNullOrWhiteSpace(answer.Value)).ToArray();
         int totalCharacters = answers.Sum(answer => answer.Value.Length);
         int definitionCount = _store.ListDefinitions().Count;
-        int completionScore = definitionCount == 0
-            ? 0
-            : (int)Math.Round(submitted.Count * 100d / definitionCount, MidpointRounding.AwayFromZero);
-
+        int completionScore = definitionCount == 0 ? 0 : (int)Math.Round(submitted.Count * 100d / definitionCount, MidpointRounding.AwayFromZero);
         string[] keywords = ExtractKeywords(answers);
         StructuredAnalysisIndicatorResponse[] indicators =
         [
-            new StructuredAnalysisIndicatorResponse(
-                "completion",
-                "Complétude des questionnaires",
-                completionScore,
-                100,
-                $"{submitted.Count} questionnaire(s) soumis sur {definitionCount}."),
-            new StructuredAnalysisIndicatorResponse(
-                "response-depth",
-                "Profondeur des réponses",
-                Math.Min(100, totalCharacters / 30),
-                100,
-                $"{totalCharacters} caractères exploitables dans {answers.Length} réponse(s)."),
-            new StructuredAnalysisIndicatorResponse(
-                "topic-diversity",
-                "Diversité des thèmes",
-                Math.Min(100, keywords.Length * 10),
-                100,
-                $"{keywords.Length} mot(s)-clé(s) significatif(s) identifié(s).")
+            new StructuredAnalysisIndicatorResponse("completion", "Complétude des questionnaires", completionScore, 100, $"{submitted.Count} questionnaire(s) soumis sur {definitionCount}."),
+            new StructuredAnalysisIndicatorResponse("response-depth", "Profondeur des réponses", Math.Min(100, totalCharacters / 30), 100, $"{totalCharacters} caractères exploitables dans {answers.Length} réponse(s)."),
+            new StructuredAnalysisIndicatorResponse("topic-diversity", "Diversité des thèmes", Math.Min(100, keywords.Length * 10), 100, $"{keywords.Length} mot(s)-clé(s) significatif(s) identifié(s).")
         ];
 
-        return new StructuredAnalysisResponse(
-            tenantId,
-            beneficiaryId,
-            submitted.Count,
-            answers.Length,
-            totalCharacters,
-            completionScore,
-            keywords,
-            indicators,
-            DateTimeOffset.UtcNow);
+        StructuredAnalysisResponse response = new(tenantId, beneficiaryId, submitted.Count, answers.Length, totalCharacters, completionScore, keywords, indicators, DateTimeOffset.UtcNow);
+        _snapshots.Write(tenantId, beneficiaryId, DocumentType, "default", JsonSerializer.Serialize(response, JsonOptions));
+        return response;
     }
 
-    private static string[] ExtractKeywords(IEnumerable<QuestionnaireAnswerResponse> answers)
+    public StructuredAnalysisResponse? GetLatest(Guid tenantId, Guid beneficiaryId)
     {
-        return answers
-            .SelectMany(answer => answer.Value.Split(
-                [' ', '\t', '\r', '\n', ',', '.', ';', ':', '!', '?', '(', ')', '\'', '’', '"', '-', '/'],
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-            .Select(word => word.ToLowerInvariant())
-            .Where(word => word.Length >= 4 && !StopWords.Contains(word))
-            .GroupBy(word => word, StringComparer.OrdinalIgnoreCase)
-            .OrderByDescending(group => group.Count())
-            .ThenBy(group => group.Key, StringComparer.Ordinal)
-            .Take(10)
-            .Select(group => group.Key)
-            .ToArray();
+        string? payload = _snapshots.Read(tenantId, beneficiaryId, DocumentType);
+        return payload is null ? null : JsonSerializer.Deserialize<StructuredAnalysisResponse>(payload, JsonOptions);
     }
+
+    private static string[] ExtractKeywords(IEnumerable<QuestionnaireAnswerResponse> answers) => answers
+        .SelectMany(answer => answer.Value.Split([' ', '\t', '\r', '\n', ',', '.', ';', ':', '!', '?', '(', ')', '\'', '’', '"', '-', '/'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        .Select(word => word.ToLowerInvariant())
+        .Where(word => word.Length >= 4 && !StopWords.Contains(word))
+        .GroupBy(word => word, StringComparer.OrdinalIgnoreCase)
+        .OrderByDescending(group => group.Count())
+        .ThenBy(group => group.Key, StringComparer.Ordinal)
+        .Take(10)
+        .Select(group => group.Key)
+        .ToArray();
 }
